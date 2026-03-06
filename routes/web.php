@@ -62,6 +62,7 @@ use App\Http\Controllers\MasaStudiLulusanController;
 use App\Http\Controllers\PublikasiIlmiahMahasiswaController;
 use App\Http\Controllers\PublikasiMahasiswaTerapanController;
 use App\Http\Controllers\LuaranHkiMahasiswaController;
+use App\Http\Controllers\LuaranHkiBagian2Controller;
 
 
 
@@ -278,3 +279,10 @@ Route::delete('/lkps/publikasi-mahasiswa-terapan/{id}', [PublikasiMahasiswaTerap
 Route::get('/lkps/luaran-hki-mahasiswa', [LuaranHkiMahasiswaController::class, 'index'])->name('luaran_hki_mahasiswa.index');
 Route::post('/lkps/luaran-hki-mahasiswa', [LuaranHkiMahasiswaController::class, 'store'])->name('luaran_hki_mahasiswa.store');
 Route::delete('/lkps/luaran-hki-mahasiswa/{id}', [LuaranHkiMahasiswaController::class, 'destroy'])->name('luaran_hki_mahasiswa.destroy');
+
+
+// Rute Tabel 6.e.3 (Bagian-2 HKI)
+Route::get('/lkps/luaran-hki-bagian2', [LuaranHkiBagian2Controller::class, 'index'])->name('luaran_hki_bagian2.index');
+Route::post('/lkps/luaran-hki-bagian2', [LuaranHkiBagian2Controller::class, 'store'])->name('luaran_hki_bagian2.store');
+Route::delete('/lkps/luaran-hki-bagian2/{id}', [LuaranHkiBagian2Controller::class, 'destroy'])->name('luaran_hki_bagian2.destroy');
+Route::get('/lkps/luaran-hki-bagian2/export', [LuaranHkiBagian2Controller::class, 'export'])->name('luaran_hki_bagian2.export');

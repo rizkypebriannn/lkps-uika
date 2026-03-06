@@ -45,6 +45,7 @@ use App\Models\MasaStudiLulusan;
 use App\Models\PublikasiIlmiahMahasiswa;
 use App\Models\PublikasiMahasiswaTerapan;
 use App\Models\LuaranHkiMahasiswa;
+use App\Models\LuaranHkiBagian2;
 
 class ExportController extends Controller
 {
@@ -1065,6 +1066,27 @@ class ExportController extends Controller
                 
                 $row6e3++;
                 $no6e3++;
+            }
+        }
+        // EKSPOR TABEL 6.e.3-2: BAGIAN-2 HKI
+        // Nama sheet menyesuaikan tab di excel Anda yaitu '6e3-2'
+        if ($spreadsheet->sheetNameExists('6e3-2')) {
+            $sheet6e3_2 = $spreadsheet->getSheetByName('6e3-2');
+            $hki_bagian2 = \App\Models\LuaranHkiBagian2::where('prodi_id', auth()->user()->prodi_id)
+                    ->orderBy('tanggal', 'desc')
+                    ->get();
+            
+            $row6e3_2 = 7; // Mulai dari baris ke-7 sesuai baris kuning di gambar Excel
+            $no6e3_2 = 1;
+
+            foreach ($hki_bagian2 as $item) {
+                $sheet6e3_2->setCellValue('A' . $row6e3_2, $no6e3_2);
+                $sheet6e3_2->setCellValue('B' . $row6e3_2, $item->luaran_penelitian_pkm);
+                $sheet6e3_2->setCellValue('C' . $row6e3_2, \Carbon\Carbon::parse($item->tanggal)->format('d/m/Y'));
+                $sheet6e3_2->setCellValue('D' . $row6e3_2, $item->nomor_hki);
+
+                $row6e3_2++;
+                $no6e3_2++;
             }
         }
 

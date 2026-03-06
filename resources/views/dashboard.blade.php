@@ -703,6 +703,24 @@
                             </div>
                         </div>
                     </div>
+
+                    <div class="col-md-6 col-lg-4 mb-4">
+                     <div class="card card-lkps shadow-sm h-100 p-3 border">
+                        <div class="card-body d-flex flex-column">
+                            <div class="icon-box" style="color: #f97316;">
+                                <i class="bi bi-c-circle-fill"></i>
+                            </div>
+                            <h5 class="card-title fw-bold text-dark mb-1">Tabel 6.e.3-2</h5>
+                            <h6 class="text-muted mb-3 fs-6">HKI Bagian 2 (Hak Cipta, dll)</h6>
+                            <p class="card-text text-secondary mb-4 fs-6 small">Data luaran penelitian dan PkM mahasiswa berupa HKI (Hak Cipta, Desain Produk Industri, dll).</p>
+                            <div class="mt-auto">
+                                <a href="{{ route('luaran_hki_bagian2.index') }}" class="btn btn-outline-warning w-100 btn-pill" style="color: #f97316; border-color: #f97316;">
+                                    Isi Data <i class="bi bi-arrow-right ms-1"></i>
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
             
         
                 
