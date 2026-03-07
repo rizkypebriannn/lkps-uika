@@ -721,6 +721,92 @@
                         </div>
                     </div>
                 </div>
+                <div class="col-md-6 col-lg-4 mb-4">
+                     <div class="card card-lkps shadow-sm h-100 p-3 border">
+                         <div class="card-body d-flex flex-column">
+                             <div class="icon-box" style="color: #0dcaf0;">
+                              <i class="bi bi-cpu-fill"></i>
+                            </div>
+                                <h5 class="card-title fw-bold text-dark mb-1">Tabel 6.e.3-3</h5>
+                                    <h6 class="text-muted mb-3 fs-6">Teknologi Tepat Guna / Produk</h6>
+                                <p class="card-text text-secondary mb-4 fs-6 small">Data luaran penelitian dan PkM mahasiswa berupa Teknologi Tepat Guna atau Produk (Terstandarisasi/Tersertifikasi).</p>
+                                <div class="mt-auto">
+                                <a href="{{ route('luaran_hki_bagian3.index') }}" class="btn btn-outline-info w-100 btn-pill" style="border-color: #0dcaf0; color: #087f96;">
+                                    Isi Data <i class="bi bi-arrow-right ms-1"></i>
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-6 col-lg-4 mb-4">
+    <div class="card card-lkps shadow-sm h-100 p-3 border">
+        <div class="card-body d-flex flex-column">
+            <div class="icon-box" style="color: #6f42c1;">
+                <i class="bi bi-book-half"></i>
+            </div>
+            <h5 class="card-title fw-bold text-dark mb-1">Tabel 6.e.3-4</h5>
+            <h6 class="text-muted mb-3 fs-6">Buku Ber-ISBN / Book Chapter</h6>
+            <p class="card-text text-secondary mb-4 fs-6 small">Data luaran penelitian dan PkM mahasiswa berupa Buku ber-ISBN atau Book Chapter yang terbit.</p>
+            <div class="mt-auto">
+                <a href="{{ route('luaran_hki_bagian4.index') }}" class="btn btn-outline-primary w-100 btn-pill" style="border-color: #6f42c1; color: #6f42c1;">
+                    Isi Data <i class="bi bi-arrow-right ms-1"></i>
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+                <div class="col-md-6 col-lg-4 mb-4">
+                <div class="card card-lkps shadow-sm h-100 p-3 border">
+                    <div class="card-body d-flex flex-column">
+                        <div class="icon-box" style="color: #198754;">
+                            <i class="bi bi-box-seam-fill"></i>
+                        </div>
+                        <h5 class="card-title fw-bold text-dark mb-1">Tabel 6.e.4</h5>
+                        <h6 class="text-muted mb-3 fs-6">Produk/Jasa Mahasiswa</h6>
+                        <p class="card-text text-secondary mb-4 fs-6 small">Data luaran berupa Produk/Jasa mahasiswa yang telah diadopsi oleh Industri atau Masyarakat.</p>
+                        <div class="mt-auto">
+                            <a href="{{ route('produk_jasa_mahasiswa.index') }}" class="btn btn-outline-success w-100 btn-pill" style="border-color: #198754; color: #198754;">
+                                Isi Data <i class="bi bi-arrow-right ms-1"></i>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-md-6 col-lg-4 mb-4">
+                <div class="card card-lkps shadow-sm h-100 p-3 border">
+                    <div class="card-body d-flex flex-column">
+                        <div class="icon-box" style="color: #fd7e14;">
+                            <i class="bi bi-stopwatch-fill"></i>
+                        </div>
+                        <h5 class="card-title fw-bold text-dark mb-1">Tabel 6.f.1</h5>
+                        <h6 class="text-muted mb-3 fs-6">Waktu Tunggu Lulusan</h6>
+                        <p class="card-text text-secondary mb-4 fs-6 small">Data masa tunggu lulusan Program Sarjana untuk mendapatkan pekerjaan pertama.</p>
+                        <div class="mt-auto">
+                            <a href="{{ route('waktu_tunggu_lulusan.index') }}" class="btn btn-outline-warning w-100 btn-pill text-dark" style="border-color: #fd7e14; color: #fd7e14;">
+                                Isi Data <i class="bi bi-arrow-right ms-1"></i>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-6 col-lg-4 mb-4">
+                <div class="card card-lkps shadow-sm h-100 p-3 border">
+                    <div class="card-body d-flex flex-column">
+                        <div class="icon-box" style="color: #0dcaf0;">
+                            <i class="bi bi-clipboard2-data-fill"></i>
+                        </div>
+                        <h5 class="card-title fw-bold text-dark mb-1">Tabel 6.f.2</h5>
+                        <h6 class="text-muted mb-3 fs-6">Kesesuaian Bidang Kerja</h6>
+                        <p class="card-text text-secondary mb-4 fs-6 small">Data tingkat kesesuaian bidang kerja lulusan saat mendapatkan pekerjaan pertama.</p>
+                        <div class="mt-auto">
+                            <a href="{{ route('kesesuaian_bidang_kerja.index') }}" class="btn btn-outline-info w-100 btn-pill" style="border-color: #0dcaf0; color: #087f96;">
+                                Isi Data <i class="bi bi-arrow-right ms-1"></i>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
             
         
                 

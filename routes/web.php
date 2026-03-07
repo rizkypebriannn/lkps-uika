@@ -63,7 +63,11 @@ use App\Http\Controllers\PublikasiIlmiahMahasiswaController;
 use App\Http\Controllers\PublikasiMahasiswaTerapanController;
 use App\Http\Controllers\LuaranHkiMahasiswaController;
 use App\Http\Controllers\LuaranHkiBagian2Controller;
-
+use App\Http\Controllers\LuaranHkiBagian3Controller;
+use App\Http\Controllers\LuaranHkiBagian4Controller;
+use App\Http\Controllers\ProdukJasaMahasiswaController;
+use App\Http\Controllers\WaktuTungguLulusanController;
+use App\Http\Controllers\KesesuaianBidangKerjaController;
 
 
 // Rute untuk mengunduh file Excel
@@ -286,3 +290,32 @@ Route::get('/lkps/luaran-hki-bagian2', [LuaranHkiBagian2Controller::class, 'inde
 Route::post('/lkps/luaran-hki-bagian2', [LuaranHkiBagian2Controller::class, 'store'])->name('luaran_hki_bagian2.store');
 Route::delete('/lkps/luaran-hki-bagian2/{id}', [LuaranHkiBagian2Controller::class, 'destroy'])->name('luaran_hki_bagian2.destroy');
 Route::get('/lkps/luaran-hki-bagian2/export', [LuaranHkiBagian2Controller::class, 'export'])->name('luaran_hki_bagian2.export');
+
+// Rute Tabel 6.e.3 Bagian 3 (Teknologi Tepat Guna)
+Route::get('/lkps/luaran-hki-bagian3', [App\Http\Controllers\LuaranHkiBagian3Controller::class, 'index'])->name('luaran_hki_bagian3.index');
+Route::post('/lkps/luaran-hki-bagian3', [App\Http\Controllers\LuaranHkiBagian3Controller::class, 'store'])->name('luaran_hki_bagian3.store');
+Route::delete('/lkps/luaran-hki-bagian3/{id}', [App\Http\Controllers\LuaranHkiBagian3Controller::class, 'destroy'])->name('luaran_hki_bagian3.destroy');
+
+
+// Rute Tabel 6.e.3 Bagian 4 (Buku Ber-ISBN, Book Chapter)
+Route::get('/lkps/luaran-hki-bagian4', [LuaranHkiBagian4Controller::class, 'index'])->name('luaran_hki_bagian4.index');
+Route::post('/lkps/luaran-hki-bagian4', [LuaranHkiBagian4Controller::class, 'store'])->name('luaran_hki_bagian4.store');
+Route::delete('/lkps/luaran-hki-bagian4/{id}', [LuaranHkiBagian4Controller::class, 'destroy'])->name('luaran_hki_bagian4.destroy');
+
+
+// Rute Tabel 6.e.4 (Produk/Jasa Mahasiswa)
+Route::get('/lkps/produk-jasa-mahasiswa', [ProdukJasaMahasiswaController::class, 'index'])->name('produk_jasa_mahasiswa.index');
+Route::post('/lkps/produk-jasa-mahasiswa', [ProdukJasaMahasiswaController::class, 'store'])->name('produk_jasa_mahasiswa.store');
+Route::delete('/lkps/produk-jasa-mahasiswa/{id}', [ProdukJasaMahasiswaController::class, 'destroy'])->name('produk_jasa_mahasiswa.destroy');
+
+
+// Rute Tabel 6.f.1 (Waktu Tunggu Lulusan)
+Route::get('/lkps/waktu-tunggu-lulusan', [WaktuTungguLulusanController::class, 'index'])->name('waktu_tunggu_lulusan.index');
+Route::post('/lkps/waktu-tunggu-lulusan', [WaktuTungguLulusanController::class, 'store'])->name('waktu_tunggu_lulusan.store');
+Route::delete('/lkps/waktu-tunggu-lulusan/{id}', [WaktuTungguLulusanController::class, 'destroy'])->name('waktu_tunggu_lulusan.destroy');
+
+
+// Rute Tabel 6.f.2 (Kesesuaian Bidang Kerja Lulusan)
+Route::get('/lkps/kesesuaian-bidang-kerja', [KesesuaianBidangKerjaController::class, 'index'])->name('kesesuaian_bidang_kerja.index');
+Route::post('/lkps/kesesuaian-bidang-kerja', [KesesuaianBidangKerjaController::class, 'store'])->name('kesesuaian_bidang_kerja.store');
+Route::delete('/lkps/kesesuaian-bidang-kerja/{id}', [KesesuaianBidangKerjaController::class, 'destroy'])->name('kesesuaian_bidang_kerja.destroy');

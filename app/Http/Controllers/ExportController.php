@@ -46,6 +46,12 @@ use App\Models\PublikasiIlmiahMahasiswa;
 use App\Models\PublikasiMahasiswaTerapan;
 use App\Models\LuaranHkiMahasiswa;
 use App\Models\LuaranHkiBagian2;
+use App\Models\LuaranHkiBagian3;
+use App\Models\LuaranHkiBagian4;
+use App\Models\ProdukJasaMahasiswa;
+use App\Models\WaktuTungguLulusan;
+use App\Models\KesesuaianBidangKerja;
+
 
 class ExportController extends Controller
 {
@@ -1087,6 +1093,110 @@ class ExportController extends Controller
 
                 $row6e3_2++;
                 $no6e3_2++;
+            }
+        }
+        // EKSPOR TABEL 6.e.3-3: BAGIAN-3 TEKNOLOGI TEPAT GUNA
+        // Sesuaikan nama sheet ('6e3-3') dengan nama sheet asli di Excel Anda
+        if ($spreadsheet->sheetNameExists('6e3-3')) {
+            $sheet6e3_3 = $spreadsheet->getSheetByName('6e3-3');
+            $data_bagian3 = \App\Models\LuaranHkiBagian3::where('prodi_id', auth()->user()->prodi_id)
+                    ->orderBy('tanggal', 'desc')
+                    ->get();
+            
+            $row6e3_3 = 18; // Mulai dari baris ke-18 sesuai blok kuning di Excel
+            $no6e3_3 = 1;
+
+            foreach ($data_bagian3 as $item) {
+                $sheet6e3_3->setCellValue('A' . $row6e3_3, $no6e3_3);
+                $sheet6e3_3->setCellValue('B' . $row6e3_3, $item->luaran_penelitian);
+                $sheet6e3_3->setCellValue('C' . $row6e3_3, \Carbon\Carbon::parse($item->tanggal)->format('d/m/Y'));
+                $sheet6e3_3->setCellValue('D' . $row6e3_3, $item->status);
+                $sheet6e3_3->setCellValue('E' . $row6e3_3, $item->nomor_sertifikat);
+
+                $row6e3_3++;
+                $no6e3_3++;
+            }
+        }
+        // EKSPOR TABEL 6.e.3-4: BAGIAN-4 BUKU BER-ISBN / BOOK CHAPTER
+        if ($spreadsheet->sheetNameExists('6e3-4')) {
+            $sheet6e3_4 = $spreadsheet->getSheetByName('6e3-4');
+            $data_bagian4 = \App\Models\LuaranHkiBagian4::where('prodi_id', auth()->user()->prodi_id)
+                    ->orderBy('tanggal', 'desc')
+                    ->get();
+            
+            $row6e3_4 = 8; // Mulai dari baris ke-8 sesuai blok kuning di Excel
+            $no6e3_4 = 1;
+
+            foreach ($data_bagian4 as $item) {
+                $sheet6e3_4->setCellValue('A' . $row6e3_4, $no6e3_4);
+                $sheet6e3_4->setCellValue('B' . $row6e3_4, $item->luaran_penelitian);
+                $sheet6e3_4->setCellValue('C' . $row6e3_4, \Carbon\Carbon::parse($item->tanggal)->format('d/m/Y'));
+                $sheet6e3_4->setCellValue('D' . $row6e3_4, $item->nomor_isbn);
+
+                $row6e3_4++;
+                $no6e3_4++;
+            }
+        }
+        // EKSPOR TABEL 6.e.4: PRODUK/JASA MAHASISWA
+        if ($spreadsheet->sheetNameExists('6e4')) {
+            $sheet6e4 = $spreadsheet->getSheetByName('6e4');
+            $produk_jasa = \App\Models\ProdukJasaMahasiswa::where('prodi_id', auth()->user()->prodi_id)->get();
+            
+            $row6e4 = 7; // Mulai dari baris ke-7 
+            $no6e4 = 1;
+
+            foreach ($produk_jasa as $item) {
+                $sheet6e4->setCellValue('A' . $row6e4, $no6e4);
+                $sheet6e4->setCellValue('B' . $row6e4, $item->nama_mahasiswa);
+                $sheet6e4->setCellValue('C' . $row6e4, $item->nama_produk_jasa);
+                $sheet6e4->setCellValue('D' . $row6e4, $item->deskripsi);
+                $sheet6e4->setCellValue('E' . $row6e4, $item->bukti);
+
+                $row6e4++;
+                $no6e4++;
+            }
+        }
+        // EKSPOR TABEL 6.f.1: WAKTU TUNGGU LULUSAN
+        if ($spreadsheet->sheetNameExists('6f1')) {
+            $sheet6f1 = $spreadsheet->getSheetByName('6f1');
+            $waktu_tunggu = WaktuTungguLulusan::where('prodi_id', auth()->user()->prodi_id)
+                    ->orderBy('tahun_lulus', 'asc') // Urutkan TS-2 ke TS-1
+                    ->get();
+            
+            $row6f1 = 31; // Mulai dari baris 31
+
+            foreach ($waktu_tunggu as $item) {
+                // Sesuai gambar Excel, langsung isi kolom A - F tanpa nomor urut
+                $sheet6f1->setCellValue('A' . $row6f1, $item->tahun_lulus);
+                $sheet6f1->setCellValue('B' . $row6f1, $item->jumlah_lulusan);
+                $sheet6f1->setCellValue('C' . $row6f1, $item->jumlah_lulusan_terlacak);
+                $sheet6f1->setCellValue('D' . $row6f1, $item->wt_kurang_3_bulan);
+                $sheet6f1->setCellValue('E' . $row6f1, $item->wt_antara_3_18_bulan);
+                $sheet6f1->setCellValue('F' . $row6f1, $item->wt_lebih_18_bulan);
+
+                $row6f1++;
+            }
+        }
+        // EKSPOR TABEL 6.f.2: KESESUAIAN BIDANG KERJA LULUSAN
+        if ($spreadsheet->sheetNameExists('6f2')) {
+            $sheet6f2 = $spreadsheet->getSheetByName('6f2');
+            $kesesuaian = KesesuaianBidangKerja::where('prodi_id', auth()->user()->prodi_id)
+                    ->orderBy('tahun_lulus', 'asc')
+                    ->get();
+            
+            // PENTING: Ganti 11 dengan angka baris pertama di blok kuning Excel Anda
+            $row6f2 = 11; 
+
+            foreach ($kesesuaian as $item) {
+                // Langsung isi kolom A - F tanpa nomor urut
+                $sheet6f2->setCellValue('A' . $row6f2, $item->tahun_lulus);
+                $sheet6f2->setCellValue('B' . $row6f2, $item->jumlah_lulusan);
+                $sheet6f2->setCellValue('C' . $row6f2, $item->jumlah_lulusan_terlacak);
+                $sheet6f2->setCellValue('D' . $row6f2, $item->kesesuaian_rendah);
+                $sheet6f2->setCellValue('E' . $row6f2, $item->kesesuaian_sedang);
+                $sheet6f2->setCellValue('F' . $row6f2, $item->kesesuaian_tinggi);
+
+                $row6f2++;
             }
         }
 
