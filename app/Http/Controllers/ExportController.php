@@ -51,7 +51,13 @@ use App\Models\LuaranHkiBagian4;
 use App\Models\ProdukJasaMahasiswa;
 use App\Models\WaktuTungguLulusan;
 use App\Models\KesesuaianBidangKerja;
-
+use App\Models\TempatKerjaLulusan;
+use App\Models\KepuasanPenggunaLulusan;
+use App\Models\PenelitianDtpsMahasiswa;
+use App\Models\PenelitianDtpsRujukan;
+use App\Models\PkmDtpsMahasiswa;
+use App\Models\DokumenSpmi;
+use App\Models\PelaksanaanSpmi;
 
 class ExportController extends Controller
 {
@@ -1199,6 +1205,179 @@ class ExportController extends Controller
                 $row6f2++;
             }
         }
+        // EKSPOR TABEL 6.g.1: TEMPAT KERJA LULUSAN
+        if ($spreadsheet->sheetNameExists('6g1')) {
+            $sheet6g1 = $spreadsheet->getSheetByName('6g1');
+            $tempat_kerja = TempatKerjaLulusan::where('prodi_id', auth()->user()->prodi_id)
+                    ->orderBy('tahun_lulus', 'asc')
+                    ->get();
+            
+            $row6g1 = 7; // Mulai dari baris ke-7
+
+            foreach ($tempat_kerja as $item) {
+                // Mengisi kolom A sampai G
+                $sheet6g1->setCellValue('A' . $row6g1, $item->tahun_lulus);
+                $sheet6g1->setCellValue('B' . $row6g1, $item->jumlah_lulusan);
+                $sheet6g1->setCellValue('C' . $row6g1, $item->jumlah_tanggapan);
+                $sheet6g1->setCellValue('D' . $row6g1, $item->jumlah_terlacak);
+                $sheet6g1->setCellValue('E' . $row6g1, $item->tingkat_lokal);
+                $sheet6g1->setCellValue('F' . $row6g1, $item->tingkat_nasional);
+                $sheet6g1->setCellValue('G' . $row6g1, $item->tingkat_multinasional);
+
+                $row6g1++;
+            }
+        }
+
+        // EKSPOR TABEL 6.g.2: KEPUASAN PENGGUNA LULUSAN
+        if ($spreadsheet->sheetNameExists('6g2')) {
+            $sheet6g2 = $spreadsheet->getSheetByName('6g2');
+            $kepuasan = KepuasanPenggunaLulusan::where('prodi_id', auth()->user()->prodi_id)->get();
+            
+            $row6g2 = 7; // Mulai dari baris ke-7
+            $no6g2 = 1;
+
+            foreach ($kepuasan as $item) {
+                $sheet6g2->setCellValue('A' . $row6g2, $no6g2);
+                $sheet6g2->setCellValue('B' . $row6g2, $item->jenis_kemampuan);
+                $sheet6g2->setCellValue('C' . $row6g2, $item->sangat_baik);
+                $sheet6g2->setCellValue('D' . $row6g2, $item->baik);
+                $sheet6g2->setCellValue('E' . $row6g2, $item->cukup);
+                $sheet6g2->setCellValue('F' . $row6g2, $item->kurang);
+                $sheet6g2->setCellValue('G' . $row6g2, $item->rencana_tindak_lanjut);
+
+                $row6g2++;
+                $no6g2++;
+            }
+        }
+
+        // EKSPOR TABEL 6.h.1: PENELITIAN DTPS YANG MELIBATKAN MAHASISWA
+        if ($spreadsheet->sheetNameExists('6h1')) {
+            $sheet6h1 = $spreadsheet->getSheetByName('6h1');
+            $penelitian_dtps = PenelitianDtpsMahasiswa::where('prodi_id', auth()->user()->prodi_id)
+                    ->orderBy('tahun', 'desc')
+                    ->get();
+            
+            $row6h1 = 11; // Mulai dari baris ke-11
+            $no6h1 = 1;
+
+            foreach ($penelitian_dtps as $item) {
+                $sheet6h1->setCellValue('A' . $row6h1, $no6h1);
+                $sheet6h1->setCellValue('B' . $row6h1, $item->nama_dosen);
+                $sheet6h1->setCellValue('C' . $row6h1, $item->tema_penelitian);
+                $sheet6h1->setCellValue('D' . $row6h1, $item->nama_mahasiswa);
+                $sheet6h1->setCellValue('E' . $row6h1, $item->judul_kegiatan);
+                $sheet6h1->setCellValue('F' . $row6h1, $item->tahun);
+
+                $row6h1++;
+                $no6h1++;
+            }
+        }
+        
+        // EKSPOR TABEL 6.h.2: PENELITIAN DTPS RUJUKAN TESIS/DISERTASI
+        if ($spreadsheet->sheetNameExists('6h2')) {
+            $sheet6h2 = $spreadsheet->getSheetByName('6h2');
+            $penelitian_rujukan = PenelitianDtpsRujukan::where('prodi_id', auth()->user()->prodi_id)
+                    ->orderBy('tahun', 'desc')
+                    ->get();
+            
+            $row6h2 = 6; // Mulai dari baris ke-6
+            $no6h2 = 1;
+
+            foreach ($penelitian_rujukan as $item) {
+                $sheet6h2->setCellValue('A' . $row6h2, $no6h2);
+                $sheet6h2->setCellValue('B' . $row6h2, $item->nama_dosen);
+                $sheet6h2->setCellValue('C' . $row6h2, $item->tema_penelitian);
+                $sheet6h2->setCellValue('D' . $row6h2, $item->nama_mahasiswa);
+                $sheet6h2->setCellValue('E' . $row6h2, $item->judul_tesis);
+                $sheet6h2->setCellValue('F' . $row6h2, $item->tahun);
+
+                $row6h2++;
+                $no6h2++;
+            }
+        }
+        // EKSPOR TABEL 6.i: PKM DTPS YANG MELIBATKAN MAHASISWA
+        if ($spreadsheet->sheetNameExists('6i')) {
+            $sheet6i = $spreadsheet->getSheetByName('6i');
+            $pkm_dtps = PkmDtpsMahasiswa::where('prodi_id', auth()->user()->prodi_id)
+                    ->orderBy('tahun', 'desc')
+                    ->get();
+            
+            $row6i = 6; // Mulai dari baris ke-6
+            $no6i = 1;
+
+            foreach ($pkm_dtps as $item) {
+                // Merapikan format nama mahasiswa untuk Excel
+                $daftar_mhs = explode(', ', $item->nama_mahasiswa);
+                $mahasiswa_excel = "";
+                
+                if (count($daftar_mhs) > 1) {
+                    foreach ($daftar_mhs as $idx => $mhs) {
+                        $mahasiswa_excel .= ($idx + 1) . ". " . $mhs . "\n";
+                    }
+                    $mahasiswa_excel = rtrim($mahasiswa_excel); // Hapus enter berlebih di akhir
+                } else {
+                    $mahasiswa_excel = $item->nama_mahasiswa;
+                }
+
+                $sheet6i->setCellValue('A' . $row6i, $no6i);
+                $sheet6i->setCellValue('B' . $row6i, $item->nama_dosen);
+                $sheet6i->setCellValue('C' . $row6i, $item->tema_pkm);
+                
+                // Masukkan nama yang sudah dinomori
+                $sheet6i->setCellValue('D' . $row6i, $mahasiswa_excel);
+                // Wajib aktifkan Wrap Text agar enter (\n) di Excel berfungsi
+                $sheet6i->getStyle('D' . $row6i)->getAlignment()->setWrapText(true); 
+                
+                $sheet6i->setCellValue('E' . $row6i, $item->judul_kegiatan);
+                $sheet6i->setCellValue('F' . $row6i, $item->tahun);
+
+                $row6i++;
+                $no6i++;
+            }
+
+        // EKSPOR TABEL 7.a: DOKUMEN SPMI
+        if ($spreadsheet->sheetNameExists('7a')) {
+            $sheet7a = $spreadsheet->getSheetByName('7a');
+            $dokumen_spmi = DokumenSpmi::where('prodi_id', auth()->user()->prodi_id)
+                    ->orderBy('created_at', 'asc')
+                    ->get();
+            
+            $row7a = 5; // Mulai dari baris ke-5
+            $no7a = 1;
+
+            foreach ($dokumen_spmi as $item) {
+                $sheet7a->setCellValue('A' . $row7a, $no7a);
+                $sheet7a->setCellValue('B' . $row7a, $item->jenis_dokumen);
+                $sheet7a->setCellValue('C' . $row7a, $item->nomor_dokumen);
+                $sheet7a->setCellValue('D' . $row7a, \Carbon\Carbon::parse($item->tanggal_dokumen)->format('d/m/Y'));
+
+                $row7a++;
+                $no7a++;
+            }
+        }
+
+        // EKSPOR TABEL 7.b: PELAKSANAAN SPMI
+        if ($spreadsheet->sheetNameExists('7b')) {
+            $sheet7b = $spreadsheet->getSheetByName('7b');
+            $pelaksanaan_spmi = PelaksanaanSpmi::where('prodi_id', auth()->user()->prodi_id)
+                    ->orderBy('created_at', 'asc')
+                    ->get();
+            
+            $row7b = 5; // Mulai dari baris ke-5
+            $no7b = 1;
+
+            foreach ($pelaksanaan_spmi as $item) {
+                $sheet7b->setCellValue('A' . $row7b, $no7b);
+                $sheet7b->setCellValue('B' . $row7b, $item->dokumen);
+                $sheet7b->setCellValue('C' . $row7b, $item->link_dokumen);
+                $sheet7b->setCellValue('D' . $row7b, $item->link_laporan_audit);
+                $sheet7b->setCellValue('E' . $row7b, $item->link_laporan_rtm);
+                $sheet7b->setCellValue('F' . $row7b, $item->link_dokumen_peningkatan);
+
+                $row7b++;
+                $no7b++;
+            }
+        }
 
         // ========================================================
         // PROSES PENGUNDUHAN FILE EXCEL KE BROWSER PENGGUNA
@@ -1212,5 +1391,6 @@ class ExportController extends Controller
 
         $writer->save('php://output');
         exit;
+    }
     }
 }

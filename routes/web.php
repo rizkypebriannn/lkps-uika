@@ -68,6 +68,13 @@ use App\Http\Controllers\LuaranHkiBagian4Controller;
 use App\Http\Controllers\ProdukJasaMahasiswaController;
 use App\Http\Controllers\WaktuTungguLulusanController;
 use App\Http\Controllers\KesesuaianBidangKerjaController;
+use App\Http\Controllers\TempatKerjaLulusanController;
+use App\Http\Controllers\KepuasanPenggunaLulusanController;
+use App\Http\Controllers\PenelitianDtpsMahasiswaController;
+use App\Http\Controllers\PenelitianDtpsRujukanController;
+use App\Http\Controllers\PkmDtpsMahasiswaController;
+use App\Http\Controllers\DokumenSpmiController;
+use App\Http\Controllers\PelaksanaanSpmiController;
 
 
 // Rute untuk mengunduh file Excel
@@ -319,3 +326,38 @@ Route::delete('/lkps/waktu-tunggu-lulusan/{id}', [WaktuTungguLulusanController::
 Route::get('/lkps/kesesuaian-bidang-kerja', [KesesuaianBidangKerjaController::class, 'index'])->name('kesesuaian_bidang_kerja.index');
 Route::post('/lkps/kesesuaian-bidang-kerja', [KesesuaianBidangKerjaController::class, 'store'])->name('kesesuaian_bidang_kerja.store');
 Route::delete('/lkps/kesesuaian-bidang-kerja/{id}', [KesesuaianBidangKerjaController::class, 'destroy'])->name('kesesuaian_bidang_kerja.destroy');
+
+// Rute Tabel 6.g.1 (Tempat Kerja Lulusan)
+Route::get('/lkps/tempat-kerja-lulusan', [TempatKerjaLulusanController::class, 'index'])->name('tempat_kerja_lulusan.index');
+Route::post('/lkps/tempat-kerja-lulusan', [TempatKerjaLulusanController::class, 'store'])->name('tempat_kerja_lulusan.store');
+Route::delete('/lkps/tempat-kerja-lulusan/{id}', [TempatKerjaLulusanController::class, 'destroy'])->name('tempat_kerja_lulusan.destroy');
+
+// Rute Tabel 6.g.2 (Kepuasan Pengguna Lulusan)
+Route::get('/lkps/kepuasan_pengguna_lulusan', [KepuasanPenggunaLulusanController::class, 'index'])->name('kepuasan_pengguna_lulusan.index');
+Route::post('/lkps/kepuasan_pengguna_lulusan', [KepuasanPenggunaLulusanController::class, 'store'])->name('kepuasan_pengguna_lulusan.store');
+Route::delete('/lkps/kepuasan_pengguna_lulusan/{id}', [KepuasanPenggunaLulusanController::class, 'destroy'])->name('kepuasan_pengguna_lulusan.destroy');
+
+// Rute Tabel 6.h.1 (Penelitian DTPS Melibatkan Mahasiswa)
+Route::get('/lkps/penelitian-dtps-mahasiswa', [PenelitianDtpsMahasiswaController::class, 'index'])->name('penelitian_dtps_mahasiswa.index');
+Route::post('/lkps/penelitian-dtps-mahasiswa', [PenelitianDtpsMahasiswaController::class, 'store'])->name('penelitian_dtps_mahasiswa.store');
+Route::delete('/lkps/penelitian-dtps-mahasiswa/{id}', [PenelitianDtpsMahasiswaController::class, 'destroy'])->name('penelitian_dtps_mahasiswa.destroy');
+
+// Rute Tabel 6.h.2 (Penelitian DTPS Rujukan Tesis/Disertasi)
+Route::get('/lkps/penelitian-dtps-rujukan', [PenelitianDtpsRujukanController::class, 'index'])->name('penelitian_dtps_rujukan.index');
+Route::post('/lkps/penelitian-dtps-rujukan', [PenelitianDtpsRujukanController::class, 'store'])->name('penelitian_dtps_rujukan.store');
+Route::delete('/lkps/penelitian-dtps-rujukan/{id}', [PenelitianDtpsRujukanController::class, 'destroy'])->name('penelitian_dtps_rujukan.destroy');
+
+// Rute Tabel 6.i (PkM DTPS Melibatkan Mahasiswa)
+Route::get('/lkps/pkm-dtps-mahasiswa', [PkmDtpsMahasiswaController::class, 'index'])->name('pkm_dtps_mahasiswa.index');
+Route::post('/lkps/pkm-dtps-mahasiswa', [PkmDtpsMahasiswaController::class, 'store'])->name('pkm_dtps_mahasiswa.store');
+Route::delete('/lkps/pkm-dtps-mahasiswa/{id}', [PkmDtpsMahasiswaController::class, 'destroy'])->name('pkm_dtps_mahasiswa.destroy');
+
+// Rute Tabel 7.a (Dokumen SPMI)
+Route::get('/lkps/dokumen-spmi', [DokumenSpmiController::class, 'index'])->name('dokumen_spmi.index');
+Route::post('/lkps/dokumen-spmi', [DokumenSpmiController::class, 'store'])->name('dokumen_spmi.store');
+Route::delete('/lkps/dokumen-spmi/{id}', [DokumenSpmiController::class, 'destroy'])->name('dokumen_spmi.destroy');
+
+// Rute Tabel 7.b (Pelaksanaan SPMI)
+Route::get('/lkps/pelaksanaan-spmi', [PelaksanaanSpmiController::class, 'index'])->name('pelaksanaan_spmi.index');
+Route::post('/lkps/pelaksanaan-spmi', [PelaksanaanSpmiController::class, 'store'])->name('pelaksanaan_spmi.store');
+Route::delete('/lkps/pelaksanaan-spmi/{id}', [PelaksanaanSpmiController::class, 'destroy'])->name('pelaksanaan_spmi.destroy');

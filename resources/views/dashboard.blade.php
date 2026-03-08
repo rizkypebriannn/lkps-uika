@@ -807,6 +807,132 @@
                     </div>
                 </div>
             </div>
+
+            <div class="col-md-6 col-lg-4 mb-4">
+    <div class="card card-lkps shadow-sm h-100 p-3 border">
+        <div class="card-body d-flex flex-column">
+            <div class="icon-box" style="color: #6610f2;">
+                <i class="bi bi-buildings-fill"></i>
+            </div>
+            <h5 class="card-title fw-bold text-dark mb-1">Tabel 6.g.1</h5>
+            <h6 class="text-muted mb-3 fs-6">Tempat Kerja Lulusan</h6>
+            <p class="card-text text-secondary mb-4 fs-6 small">Data lulusan yang terlacak bekerja berdasarkan tingkat/ukuran tempat kerja atau berwirausaha.</p>
+            <div class="mt-auto">
+                <a href="{{ route('tempat_kerja_lulusan.index') }}" class="btn btn-outline-primary w-100 btn-pill" style="border-color: #6610f2; color: #6610f2;">
+                    Isi Data <i class="bi bi-arrow-right ms-1"></i>
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+
+                <div class="col-md-6 col-lg-4 mb-4">
+    <div class="card card-lkps shadow-sm h-100 p-3 border">
+        <div class="card-body d-flex flex-column">
+            <div class="icon-box" style="color: #d63384;">
+                <i class="bi bi-emoji-smile-fill"></i>
+            </div>
+            <h5 class="card-title fw-bold text-dark mb-1">Tabel 6.g.2</h5>
+            <h6 class="text-muted mb-3 fs-6">Kepuasan Pengguna Lulusan</h6>
+            <p class="card-text text-secondary mb-4 fs-6 small">Data tingkat kepuasan pihak pengguna terhadap kinerja lulusan (dalam persentase).</p>
+            <div class="mt-auto">
+                <a href="{{ route('kepuasan_pengguna_lulusan.index') }}" class="btn btn-outline-danger w-100 btn-pill" style="border-color: #d63384; color: #d63384;">
+                    Isi Data <i class="bi bi-arrow-right ms-1"></i>
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="col-md-6 col-lg-4 mb-4">
+    <div class="card card-lkps shadow-sm h-100 p-3 border">
+        <div class="card-body d-flex flex-column">
+            <div class="icon-box" style="color: #20c997;">
+                <i class="bi bi-diagram-3-fill"></i>
+            </div>
+            <h5 class="card-title fw-bold text-dark mb-1">Tabel 6.h.1</h5>
+            <h6 class="text-muted mb-3 fs-6">Penelitian DTPS & Mahasiswa</h6>
+            <p class="card-text text-secondary mb-4 fs-6 small">Data penelitian Dosen Tetap Perguruan Tinggi (DTPS) yang pelaksanaannya melibatkan mahasiswa program studi.</p>
+            <div class="mt-auto">
+                <a href="{{ route('penelitian_dtps_mahasiswa.index') }}" class="btn btn-outline-success w-100 btn-pill" style="border-color: #20c997; color: #20c997;">
+                    Isi Data <i class="bi bi-arrow-right ms-1"></i>
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="col-md-6 col-lg-4 mb-4">
+    <div class="card card-lkps shadow-sm h-100 p-3 border">
+        <div class="card-body d-flex flex-column">
+            <div class="icon-box" style="color: #fd7e14;">
+                <i class="bi bi-journal-bookmark-fill"></i>
+            </div>
+            <h5 class="card-title fw-bold text-dark mb-1">Tabel 6.h.2</h5>
+            <h6 class="text-muted mb-3 fs-6">Penelitian Rujukan Tesis</h6>
+            <p class="card-text text-secondary mb-4 fs-6 small">Data penelitian DTPS yang menjadi rujukan tema Tesis atau Disertasi mahasiswa.</p>
+            <div class="mt-auto">
+                <a href="{{ route('penelitian_dtps_rujukan.index') }}" class="btn btn-outline-warning w-100 btn-pill text-dark" style="border-color: #fd7e14; color: #fd7e14;">
+                    Isi Data <i class="bi bi-arrow-right ms-1"></i>
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="col-md-6 col-lg-4 mb-4">
+    <div class="card card-lkps shadow-sm h-100 p-3 border">
+        <div class="card-body d-flex flex-column">
+            <div class="icon-box" style="color: #0dcaf0;">
+                <i class="bi bi-people-fill"></i>
+            </div>
+            <h5 class="card-title fw-bold text-dark mb-1">Tabel 6.i</h5>
+            <h6 class="text-muted mb-3 fs-6">PkM DTPS & Mahasiswa</h6>
+            <p class="card-text text-secondary mb-4 fs-6 small">Data kegiatan Pengabdian kepada Masyarakat (PkM) DTPS yang pelaksanaannya melibatkan mahasiswa.</p>
+            <div class="mt-auto">
+                <a href="{{ route('pkm_dtps_mahasiswa.index') }}" class="btn btn-outline-info w-100 btn-pill" style="border-color: #0dcaf0; color: #087f96;">
+                    Isi Data <i class="bi bi-arrow-right ms-1"></i>
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="col-md-6 col-lg-4 mb-4">
+    <div class="card card-lkps shadow-sm h-100 p-3 border">
+        <div class="card-body d-flex flex-column">
+            <div class="icon-box" style="color: #198754;">
+                <i class="bi bi-shield-check"></i>
+            </div>
+            <h5 class="card-title fw-bold text-dark mb-1">Tabel 7.a</h5>
+            <h6 class="text-muted mb-3 fs-6">Dokumen SPMI</h6>
+            <p class="card-text text-secondary mb-4 fs-6 small">Data ketersediaan Dokumen/Buku Sistem Penjaminan Mutu Internal (SPMI) program studi.</p>
+            <div class="mt-auto">
+                <a href="{{ route('dokumen_spmi.index') }}" class="btn btn-outline-success w-100 btn-pill" style="border-color: #198754; color: #198754;">
+                    Isi Data <i class="bi bi-arrow-right ms-1"></i>
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="col-md-6 col-lg-4 mb-4">
+    <div class="card card-lkps shadow-sm h-100 p-3 border">
+        <div class="card-body d-flex flex-column">
+            <div class="icon-box" style="color: #6f42c1;">
+                <i class="bi bi-ui-checks"></i>
+            </div>
+            <h5 class="card-title fw-bold text-dark mb-1">Tabel 7.b</h5>
+            <h6 class="text-muted mb-3 fs-6">Pelaksanaan SPMI</h6>
+            <p class="card-text text-secondary mb-4 fs-6 small">Data ketersediaan bukti pelaksanaan Sistem Penjaminan Mutu Internal (Siklus PPEPP).</p>
+            <div class="mt-auto">
+                <a href="{{ route('pelaksanaan_spmi.index') }}" class="btn btn-outline-primary w-100 btn-pill" style="border-color: #6f42c1; color: #6f42c1;">
+                    Isi Data <i class="bi bi-arrow-right ms-1"></i>
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
             
         
                 
