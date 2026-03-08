@@ -1383,6 +1383,12 @@ class ExportController extends Controller
         // PROSES PENGUNDUHAN FILE EXCEL KE BROWSER PENGGUNA
         // ========================================================
         $writer = IOFactory::createWriter($spreadsheet, 'Xlsx');
+        
+        // --- JURUS MEMPERCEPAT EXPORT (MATIKAN KALKULASI RUMUS) ---
+        // Ini akan mencegah PhpSpreadsheet mikir keras menghitung ulang ratusan rumus Excel
+        $writer->setPreCalculateFormulas(false);
+        // ----------------------------------------------------------
+
         $fileName = 'LKPS_LAMTEKNIK_Otomatis_' . date('Ymd_His') . '.xlsx';
 
         header('Content-Type: application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
@@ -1392,5 +1398,5 @@ class ExportController extends Controller
         $writer->save('php://output');
         exit;
     }
-    }
+}
 }

@@ -14,9 +14,9 @@
 <body class="pb-5">
 
     <div class="container mt-5">
-        <a href="{{ url('/') }}" class="btn btn-outline-secondary mb-4 rounded-pill">
-            <i class="bi bi-arrow-left me-2"></i>Kembali ke Dashboard
-        </a>
+        <a href="{{ url('/dashboard') }}" class="btn btn-outline-secondary mb-4 rounded-pill">
+    <i class="bi bi-arrow-left me-2"></i>Kembali ke Dashboard
+</a>
 
         <div class="mb-4">
             <h3 class="fw-bold m-0">Tabel 3.a.3 Integrasi Kegiatan Penelitian/PkM dalam Pembelajaran</h3>

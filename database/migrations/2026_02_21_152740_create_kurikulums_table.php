@@ -14,6 +14,7 @@ return new class extends Migration
 {
     Schema::create('kurikulums', function (Blueprint $table) {
         $table->id();
+        $table->unsignedBigInteger('prodi_id');
         $table->integer('semester');
         $table->string('kode_mk');
         $table->string('nama_mk');
