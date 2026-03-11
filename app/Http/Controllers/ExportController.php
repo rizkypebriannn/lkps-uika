@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Dosen;
+
 use App\Models\Mahasiswa;
 use App\Models\VisiMisi;
 use Illuminate\Http\Request;
@@ -86,7 +86,7 @@ class ExportController extends Controller
         // ========================================================
         if ($spreadsheet->sheetNameExists('1')) {
             $sheet1 = $spreadsheet->getSheetByName('1');
-            $visiMisis = VisiMisi::all();
+           $visiMisis = \App\Models\VisiMisi::where('prodi_id', auth()->user()->prodi_id)->get();
             
             $row1 = 7;
             $no1 = 1;
@@ -103,68 +103,17 @@ class ExportController extends Controller
             }
         }
 
-        // ========================================================
-        // EKSPOR TABEL 4.a: PROFIL DOSEN
-        // ========================================================
-        if ($spreadsheet->sheetNameExists('4a')) {
-            $sheet4a = $spreadsheet->getSheetByName('4a');
-            $dosens = Dosen::all();
-            
-            $row4a = 15;
-            $no4a = 1;
 
-            foreach ($dosens as $dosen) {
-                $sheet4a->setCellValue('A' . $row4a, $no4a);
-                $sheet4a->setCellValue('B' . $row4a, $dosen->nama_dosen);
-                $sheet4a->setCellValue('C' . $row4a, $dosen->nidn);
-                $sheet4a->setCellValue('D' . $row4a, $dosen->kategori_dosen);
-                $sheet4a->setCellValue('J' . $row4a, $dosen->jabatan_akademik);
-                $sheet4a->setCellValue('O' . $row4a, $dosen->mata_kuliah_diampu);
-                
-                $row4a++;
-                $no4a++;
-            }
-        }
-
-        // ========================================================
-        // EKSPOR TABEL 6.a: MAHASISWA REGULER & ASING
-        // ========================================================
-        if ($spreadsheet->sheetNameExists('6a')) {
-            $sheet6a = $spreadsheet->getSheetByName('6a');
-            $mahasiswas = Mahasiswa::all();
-            
-            $row6a = 15;
-            $no6a = 1;
-
-            foreach ($mahasiswas as $mhs) {
-                $sheet6a->setCellValue('A' . $row6a, $no6a);
-                $sheet6a->setCellValue('B' . $row6a, $mhs->program_studi);
-                
-                $sheet6a->setCellValue('D' . $row6a, $mhs->aktif_ts2);
-                $sheet6a->setCellValue('E' . $row6a, $mhs->aktif_ts1);
-                $sheet6a->setCellValue('F' . $row6a, $mhs->aktif_ts);
-                
-                $sheet6a->setCellValue('G' . $row6a, $mhs->asing_ft_ts2);
-                $sheet6a->setCellValue('H' . $row6a, $mhs->asing_ft_ts1);
-                $sheet6a->setCellValue('I' . $row6a, $mhs->asing_ft_ts);
-                
-                $sheet6a->setCellValue('J' . $row6a, $mhs->asing_pt_ts2);
-                $sheet6a->setCellValue('K' . $row6a, $mhs->asing_pt_ts1);
-                $sheet6a->setCellValue('L' . $row6a, $mhs->asing_pt_ts);
-                
-                $row6a++;
-                $no6a++;
-            }
-        }
+       
 
         // ========================================================
         // EKSPOR TABEL 3.a.1: KURIKULUM
         // ========================================================
         if ($spreadsheet->sheetNameExists('3a1')) {
             $sheet3a1 = $spreadsheet->getSheetByName('3a1');
-            $kurikulums = \App\Models\Kurikulum::orderBy('semester', 'asc')->get();
+            $kurikulums = \App\Models\Kurikulum::where('prodi_id', auth()->user()->prodi_id)->orderBy('semester', 'asc')->get();
             
-            $row3a1 = 15; // Berdasarkan template, data biasanya mulai di baris 15
+            $row3a1 = 10; // Berdasarkan template, data biasanya mulai di baris 15
             $no3a1 = 1;
 
             foreach ($kurikulums as $mk) {
@@ -189,9 +138,9 @@ class ExportController extends Controller
         // ========================================================
         if ($spreadsheet->sheetNameExists('2a1')) {
             $sheet2a1 = $spreadsheet->getSheetByName('2a1');
-            $kerjasamas = \App\Models\KerjasamaPendidikan::orderBy('tanggal_awal', 'asc')->get();
+            $kerjasamas = \App\Models\KerjasamaPendidikan::where('prodi_id', auth()->user()->prodi_id)->orderBy('tanggal_awal', 'asc')->get();
             
-            $row2a1 = 12; // Di file Excel Anda, baris pertama pengisian adalah baris ke-12
+            $row2a1 = 13; // Di file Excel Anda, baris pertama pengisian adalah baris ke-12
             $no2a1 = 1;
 
             foreach ($kerjasamas as $kj) {
@@ -223,9 +172,9 @@ class ExportController extends Controller
         // ========================================================
         if ($spreadsheet->sheetNameExists('2a2')) {
             $sheet2a2 = $spreadsheet->getSheetByName('2a2');
-            $kerjasamaPnl = \App\Models\KerjasamaPenelitian::orderBy('tanggal_awal', 'asc')->get();
+           $kerjasamaPnl = \App\Models\KerjasamaPenelitian::where('prodi_id', auth()->user()->prodi_id)->orderBy('tanggal_awal', 'asc')->get();
             
-            $row2a2 = 12; // Di file Excel Anda, baris pertama pengisian adalah baris ke-12
+            $row2a2 = 13; // Di file Excel Anda, baris pertama pengisian adalah baris ke-12
             $no2a2 = 1;
 
             foreach ($kerjasamaPnl as $kj) {
@@ -256,9 +205,9 @@ class ExportController extends Controller
         // ========================================================
         if ($spreadsheet->sheetNameExists('2a3')) {
             $sheet2a3 = $spreadsheet->getSheetByName('2a3');
-            $kerjasamaPkm = \App\Models\KerjasamaPengabdian::orderBy('tanggal_awal', 'asc')->get();
-            
-            $row2a3 = 12; // Baris pengisian di file excel 2a3
+            $kerjasamaPkm = \App\Models\KerjasamaPengabdian::where('prodi_id', auth()->user()->prodi_id)->orderBy('tanggal_awal', 'asc')->get();
+
+            $row2a3 = 13; // Baris pengisian di file excel 2a3
             $no2a3 = 1;
 
             foreach ($kerjasamaPkm as $kj) {
@@ -289,7 +238,7 @@ class ExportController extends Controller
         // ========================================================
         if ($spreadsheet->sheetNameExists('2b')) {
             $sheet2b = $spreadsheet->getSheetByName('2b');
-            $danas = \App\Models\PenggunaanDana::all();
+            $danas = \App\Models\PenggunaanDana::where('prodi_id', auth()->user()->prodi_id)->get();
             
             // Di Excel LAMTEKNIK, tabel dana biasanya mulai diisi pada baris ke-12 atau 13
             // Kita atur mulai baris 13, sesuaikan jika di template asli posisinya berbeda
@@ -323,10 +272,10 @@ class ExportController extends Controller
         // ========================================================
         if ($spreadsheet->sheetNameExists('3a2')) {
             $sheet3a2 = $spreadsheet->getSheetByName('3a2');
-            $dokumens = \App\Models\DokumenPembelajaran::all();
+            $dokumens = \App\Models\DokumenPembelajaran::where('prodi_id', auth()->user()->prodi_id)->get();
             
             // Berdasarkan gambar Excel LAMTEKNIK, baris 1 dimulai di Cell A9
-            $row3a2 = 9; 
+            $row3a2 = 10; 
             $no3a2 = 1;
 
             foreach ($dokumens as $dok) {
@@ -348,9 +297,9 @@ class ExportController extends Controller
         // ========================================================
         if ($spreadsheet->sheetNameExists('3a3')) {
             $sheet3a3 = $spreadsheet->getSheetByName('3a3');
-            $integrasis = \App\Models\IntegrasiPembelajaran::all();
+           $integrasis = \App\Models\IntegrasiPembelajaran::where('prodi_id', auth()->user()->prodi_id)->get();
             
-            $row3a3 = 12; // Sesuai baris di gambar Excel
+            $row3a3 = 13; // Sesuai baris di gambar Excel
             $no3a3 = 1;
 
             foreach ($integrasis as $item) {
@@ -375,10 +324,10 @@ class ExportController extends Controller
         // ========================================================
         if ($spreadsheet->sheetNameExists('3a4')) {
             $sheet3a4 = $spreadsheet->getSheetByName('3a4');
-            $matkuls = \App\Models\MatkulBasicScience::orderBy('semester', 'asc')->get();
+            $matkuls = \App\Models\MatkulBasicScience::where('prodi_id', auth()->user()->prodi_id)->orderBy('semester', 'asc')->get();
             
             // Baris mulai berdasarkan gambar Excel LAMTEKNIK
-            $row3a4 = 9; 
+            $row3a4 = 10; 
             $no3a4 = 1;
 
             foreach ($matkuls as $mk) {
@@ -399,7 +348,7 @@ class ExportController extends Controller
             // Tentu saja, Export juga harus difilter sesuai Prodi yang login!
             $capstones = \App\Models\CapstoneDesign::where('prodi_id', auth()->user()->prodi_id)->orderBy('semester', 'asc')->get();
             
-            $row3a5 = 9; 
+            $row3a5 = 10; 
             $no3a5 = 1;
 
             foreach ($capstones as $item) {
@@ -413,6 +362,23 @@ class ExportController extends Controller
                 
                 $row3a5++;
                 $no3a5++;
+            }
+        }
+
+        // ========================================================
+        // EKSPOR TABEL 3.b: PENELITIAN DTPS
+        // ========================================================
+        if ($spreadsheet->sheetNameExists('3b')) {
+            $sheet3b = $spreadsheet->getSheetByName('3b');
+            $penelitians = \App\Models\PenelitianDtps::where('prodi_id', auth()->user()->prodi_id)->get();
+            
+            $row3b = 11; // Sesuaikan angka ini dengan baris kuning di Excel Anda
+            foreach ($penelitians as $d) {
+                $sheet3b->setCellValue('B' . $row3b, $d->sumber_pembiayaan);
+                $sheet3b->setCellValue('C' . $row3b, $d->jumlah_ts2);
+                $sheet3b->setCellValue('D' . $row3b, $d->jumlah_ts1);
+                $sheet3b->setCellValue('E' . $row3b, $d->jumlah_ts);
+                $row3b++;
             }
         }
         // EKSPOR TABEL 3.c: PkM DTPS
@@ -433,7 +399,7 @@ class ExportController extends Controller
         if ($spreadsheet->sheetNameExists('4a')) {
             $sheet4a = $spreadsheet->getSheetByName('4a');
             $dosens = \App\Models\ProfilDosen::where('prodi_id', auth()->user()->prodi_id)->get();
-            $row4a = 13; 
+            $row4a = 14; 
             $no4a = 1;
             
             foreach ($dosens as $d) {
@@ -471,10 +437,12 @@ class ExportController extends Controller
             }
         }
 
+        // EKSPOR TABEL 4B 
+
         if ($spreadsheet->sheetNameExists('4b')) {
             $sheet4b = $spreadsheet->getSheetByName('4b');
             $tenagas = \App\Models\TenagaKependidikan::where('prodi_id', auth()->user()->prodi_id)->get();
-            $row4b = 13; 
+            $row4b = 11; 
             $no4b = 1;
             
             foreach ($tenagas as $t) {
@@ -583,8 +551,8 @@ class ExportController extends Controller
         }
         // EKSPOR TABEL 4.f Bagian 1: HKI PATEN
         // Catatan: Ganti '4f' dengan nama sheet yang sebenarnya di template Anda jika berbeda
-        if ($spreadsheet->sheetNameExists('4f')) {
-            $sheet4f = $spreadsheet->getSheetByName('4f');
+        if ($spreadsheet->sheetNameExists('4f-1')) {
+            $sheet4f = $spreadsheet->getSheetByName('4f-1');
             $patens = \App\Models\LuaranHkiPaten::where('prodi_id', auth()->user()->prodi_id)->get();
             $row4f = 7; // Mulai dari baris 7 sesuai gambar
             $no4f = 1;
@@ -601,8 +569,8 @@ class ExportController extends Controller
         }
         // EKSPOR TABEL 4.f Bagian 2: HKI HAK CIPTA DLL
         // Catatan: Ganti '4f2' dengan nama sheet yang sebenarnya jika berbeda
-        if ($spreadsheet->sheetNameExists('4f2')) {
-            $sheet4f2 = $spreadsheet->getSheetByName('4f2');
+        if ($spreadsheet->sheetNameExists('4f-2')) {
+            $sheet4f2 = $spreadsheet->getSheetByName('4f-2');
             $ciptas = \App\Models\LuaranHkiHakCipta::where('prodi_id', auth()->user()->prodi_id)->get();
             $row4f2 = 7; 
             $no4f2 = 1;
@@ -619,8 +587,8 @@ class ExportController extends Controller
         }
         // EKSPOR TABEL 4.f Bagian 3: TEKNOLOGI & PRODUK
         // Catatan: Ganti '4f3' dengan nama sheet yang sebenarnya di file Excel Anda (misalnya '4f3', '4f(3)', dst)
-        if ($spreadsheet->sheetNameExists('4f3')) {
-            $sheet4f3 = $spreadsheet->getSheetByName('4f3');
+        if ($spreadsheet->sheetNameExists('4f-3')) {
+            $sheet4f3 = $spreadsheet->getSheetByName('4f-3');
             $produks = \App\Models\LuaranTeknologiProduk::where('prodi_id', auth()->user()->prodi_id)->get();
             $row4f3 = 7; 
             $no4f3 = 1;
@@ -637,8 +605,8 @@ class ExportController extends Controller
         }
         // EKSPOR TABEL 4.f Bagian 4: BUKU BER-ISBN
         // Catatan: Ganti '4f4' dengan nama sheet yang sebenarnya di file template Anda
-        if ($spreadsheet->sheetNameExists('4f4')) {
-            $sheet4f4 = $spreadsheet->getSheetByName('4f4');
+        if ($spreadsheet->sheetNameExists('4f-4')) {
+            $sheet4f4 = $spreadsheet->getSheetByName('4f-4');
             $bukus = \App\Models\LuaranBukuIsbn::where('prodi_id', auth()->user()->prodi_id)->get();
             $row4f4 = 7; 
             $no4f4 = 1;
@@ -658,7 +626,7 @@ class ExportController extends Controller
         if ($spreadsheet->sheetNameExists('4g')) {
             $sheet4g = $spreadsheet->getSheetByName('4g');
             $produk_jasa = \App\Models\ProdukJasaDtps::where('prodi_id', auth()->user()->prodi_id)->get();
-            $row4g = 5; // Mulai dari baris ke-5 sesuai gambar
+            $row4g = 6; // Mulai dari baris ke-5 sesuai gambar
             $no4g = 1;
             
             foreach ($produk_jasa as $pj) {
@@ -677,7 +645,7 @@ class ExportController extends Controller
         if ($spreadsheet->sheetNameExists('4h')) {
             $sheet4h = $spreadsheet->getSheetByName('4h');
             $kinerjas = \App\Models\KinerjaDtps::where('prodi_id', auth()->user()->prodi_id)->get();
-            $row4h = 15; // Mulai dari baris ke-15 sesuai gambar
+            $row4h = 16; // Mulai dari baris ke-15 sesuai gambar
             $no4h = 1;
             
             foreach ($kinerjas as $kj) {
@@ -698,7 +666,7 @@ class ExportController extends Controller
         if ($spreadsheet->sheetNameExists('4i')) {
             $sheet4i = $spreadsheet->getSheetByName('4i');
             $sitasis = \App\Models\KaryaIlmiahSitasi::where('prodi_id', auth()->user()->prodi_id)->get();
-            $row4i = 5; // Mulai dari baris ke-5 sesuai gambar
+            $row4i = 6; // Mulai dari baris ke-5 sesuai gambar
             $no4i = 1;
             
             foreach ($sitasis as $sitasi) {
@@ -716,7 +684,7 @@ class ExportController extends Controller
         if ($spreadsheet->sheetNameExists('4j')) {
             $sheet4j = $spreadsheet->getSheetByName('4j');
             $pengakuans = \App\Models\PengakuanDtps::where('prodi_id', auth()->user()->prodi_id)->get();
-            $row4j = 11; // Mulai dari baris ke-11 sesuai gambar
+            $row4j = 12; // Mulai dari baris ke-11 sesuai gambar
             $no4j = 1;
             
             foreach ($pengakuans as $p) {
@@ -776,7 +744,7 @@ class ExportController extends Controller
         if ($spreadsheet->sheetNameExists('5a')) {
             $sheet5a = $spreadsheet->getSheetByName('5a');
             $prasaranas = \App\Models\PrasaranaPeralatan::where('prodi_id', auth()->user()->prodi_id)->get();
-            $row5a = 13; // Sesuai gambar, data pertama ada di baris 13
+            $row5a = 10; // Sesuai gambar, data pertama ada di baris 13
             $no5a = 1;
             
             foreach ($prasaranas as $p) {
@@ -818,7 +786,7 @@ class ExportController extends Controller
         if ($spreadsheet->sheetNameExists('5b')) {
             $sheet5b = $spreadsheet->getSheetByName('5b');
             $dokumens = \App\Models\DokumenK3l::where('prodi_id', auth()->user()->prodi_id)->get();
-            $row5b = 7; // Mulai dari baris ke-7 sesuai gambar
+            $row5b = 17; // Mulai dari baris ke-7 sesuai gambar
             $no5b = 1;
             
             foreach ($dokumens as $dok) {
@@ -859,7 +827,7 @@ class ExportController extends Controller
         if ($spreadsheet->sheetNameExists('6a')) {
             $sheet6a = $spreadsheet->getSheetByName('6a');
             $mahasiswas = \App\Models\JumlahMahasiswa::where('prodi_id', auth()->user()->prodi_id)->get();
-            $row6a = 6; // Mulai baris ke-6 sesuai gambar
+            $row6a = 7; // Mulai baris ke-6 sesuai gambar
             $no6a = 1;
             
             foreach ($mahasiswas as $mhs) {
@@ -920,7 +888,7 @@ class ExportController extends Controller
             $prestasis = \App\Models\PrestasiAkademik::where('prodi_id', auth()->user()->prodi_id)
                             ->orderBy('waktu_perolehan', 'desc')
                             ->get();
-            $row6c1 = 9; // Mulai baris ke-9 sesuai gambar
+            $row6c1 = 10; // Mulai baris ke-9 sesuai gambar
             $no6c1 = 1;
             
             foreach ($prestasis as $prestasi) {
@@ -949,7 +917,7 @@ class ExportController extends Controller
             $prestasisNon = \App\Models\PrestasiNonAkademik::where('prodi_id', auth()->user()->prodi_id)
                             ->orderBy('waktu_perolehan', 'desc')
                             ->get();
-            $row6c2 = 10; // Mulai baris ke-10 sesuai gambar
+            $row6c2 = 11; // Mulai baris ke-10 sesuai gambar
             $no6c2 = 1;
             
             foreach ($prestasisNon as $prestasi) {
@@ -1061,8 +1029,8 @@ class ExportController extends Controller
         }
         // EKSPOR TABEL 6.e.3: HKI MAHASISWA
         // Ganti '6e3' dengan nama sheet asli dari template Anda jika berbeda (misal: '6.e.3')
-        if ($spreadsheet->sheetNameExists('6e3')) { 
-            $sheet6e3 = $spreadsheet->getSheetByName('6e3');
+        if ($spreadsheet->sheetNameExists('6e3-1')) { 
+            $sheet6e3 = $spreadsheet->getSheetByName('6e3-1');
             $hkis = \App\Models\LuaranHkiMahasiswa::where('prodi_id', auth()->user()->prodi_id)
                         ->orderBy('tanggal', 'desc')
                         ->get();
@@ -1088,7 +1056,7 @@ class ExportController extends Controller
                     ->orderBy('tanggal', 'desc')
                     ->get();
             
-            $row6e3_2 = 7; // Mulai dari baris ke-7 sesuai baris kuning di gambar Excel
+            $row6e3_2 = 8; // Mulai dari baris ke-7 sesuai baris kuning di gambar Excel
             $no6e3_2 = 1;
 
             foreach ($hki_bagian2 as $item) {
@@ -1148,7 +1116,7 @@ class ExportController extends Controller
             $sheet6e4 = $spreadsheet->getSheetByName('6e4');
             $produk_jasa = \App\Models\ProdukJasaMahasiswa::where('prodi_id', auth()->user()->prodi_id)->get();
             
-            $row6e4 = 7; // Mulai dari baris ke-7 
+            $row6e4 = 6; // Mulai dari baris ke-7 
             $no6e4 = 1;
 
             foreach ($produk_jasa as $item) {
@@ -1191,7 +1159,7 @@ class ExportController extends Controller
                     ->get();
             
             // PENTING: Ganti 11 dengan angka baris pertama di blok kuning Excel Anda
-            $row6f2 = 11; 
+            $row6f2 = 7; 
 
             foreach ($kesesuaian as $item) {
                 // Langsung isi kolom A - F tanpa nomor urut
@@ -1334,6 +1302,7 @@ class ExportController extends Controller
                 $row6i++;
                 $no6i++;
             }
+        }  
 
         // EKSPOR TABEL 7.a: DOKUMEN SPMI
         if ($spreadsheet->sheetNameExists('7a')) {
@@ -1398,5 +1367,4 @@ class ExportController extends Controller
         $writer->save('php://output');
         exit;
     }
-}
 }

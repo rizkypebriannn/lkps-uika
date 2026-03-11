@@ -1,109 +1,113 @@
-<!DOCTYPE html>
-<html lang="id">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Tabel 1 Visi Misi - LKPS</title>
+<x-app-layout>
+    <x-slot name="header">
+        <h2 class="font-semibold text-xl text-gray-800 leading-tight">
+            {{ __('Tabel 1 Visi Misi, Tujuan, dan Strategi - ') }} <span class="text-indigo-600">{{ auth()->user()->prodi->nama_prodi ?? '' }}</span>
+        </h2>
+    </x-slot>
+
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
-    <style>
-        body { font-family: 'Inter', sans-serif; background-color: #f8f9fa; }
-        .card-custom { border: none; border-radius: 1rem; box-shadow: 0 4px 15px rgba(0,0,0,0.05); }
-    </style>
-</head>
-<body class="pb-5">
+    
+    <div class="py-12">
+        <div class="max-w-6xl mx-auto sm:px-6 lg:px-8">
+            
+            <a href="{{ url('/dashboard') }}" class="btn btn-outline-secondary mb-4 rounded-pill">
+                <i class="bi bi-arrow-left me-2"></i>Kembali ke Dashboard
+            </a>
 
-    <div class="container mt-5">
-        <a href="{{ url('/dashboard') }}" class="btn btn-outline-secondary mb-4 rounded-pill">
-    <i class="bi bi-arrow-left me-2"></i>Kembali ke Dashboard
-
-        </a>
-
-        <div class="mb-4">
-            <h3 class="fw-bold m-0">Tabel 1 Visi Misi, Tujuan, dan Strategi</h3>
-            <p class="text-muted">Pendataan VMTS Perguruan Tinggi, UPPS (Fakultas), serta Visi Keilmuan Program Studi.</p>
-        </div>
-
-        @if(session('success'))
-            <div class="alert alert-success alert-dismissible fade show rounded-3" role="alert">
-                <i class="bi bi-check-circle-fill me-2"></i> {{ session('success') }}
-                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-            </div>
-        @endif
-
-        <div class="card card-custom p-4 mb-5">
-            <h5 class="fw-bold mb-4 border-bottom pb-2">Form Tambah Data VMTS</h5>
-            <form action="{{ route('visi_misi.store') }}" method="POST">
-                @csrf
-                <div class="row g-3 mb-4">
-                    <div class="col-md-4">
-                        <label class="form-label fw-semibold">Jenis VMTS</label>
-                        <select name="jenis_vmts" class="form-select" required>
-                            <option value="" disabled selected>-- Pilih Jenis --</option>
-                            <option value="VMTS PT">VMTS Perguruan Tinggi (PT)</option>
-                            <option value="VMTS UPPS">VMTS UPPS (Fakultas)</option>
-                            <option value="Visi Keilmuan PS">Visi Keilmuan Program Studi</option>
-                        </select>
-                    </div>
-                    <div class="col-md-4">
-                        <label class="form-label fw-semibold">No. Surat Keputusan (SK)</label>
-                        <input type="text" name="no_sk" class="form-control" placeholder="Contoh: 0153/SK/LAM Teknik/..." required>
-                    </div>
-                    <div class="col-md-4">
-                        <label class="form-label fw-semibold">Link Dokumen</label>
-                        <input type="url" name="link_dokumen" class="form-control" placeholder="https://drive.google.com/..." required>
-                    </div>
-                    <div class="col-md-12">
-                        <label class="form-label fw-semibold">Pernyataan Visi/Misi</label>
-                        <textarea name="pernyataan" class="form-control" rows="4" placeholder="Tuliskan isi pernyataan visi misi secara lengkap di sini..." required></textarea>
-                    </div>
+            @if(session('success'))
+                <div class="alert alert-success alert-dismissible fade show rounded-4 shadow-sm mb-4" role="alert">
+                    <i class="bi bi-check-circle-fill me-2"></i> {{ session('success') }}
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
                 </div>
+            @endif
 
-                <button type="submit" class="btn btn-primary px-4 py-2 rounded-pill">
-                    <i class="bi bi-save me-2"></i>Simpan Data
-                </button>
-            </form>
-        </div>
+            <div class="card shadow-sm border-0 rounded-4 mb-5 p-4">
+                <h5 class="fw-bold mb-4 border-bottom pb-2">Input Visi Misi, Tujuan, dan Strategi</h5>
+                
+                <form action="{{ route('visi_misi.store') }}" method="POST">
+                    @csrf
+                    
+                    <div class="row g-3 mb-4">
+                        <div class="col-md-4">
+                            <label class="form-label fw-semibold text-sm">Jenis VMTS</label>
+                            <select name="jenis_vmts" class="form-select rounded-3" required>
+                                <option value="" disabled selected>-- Pilih Jenis --</option>
+                                <option value="VMTS PT">VMTS Perguruan Tinggi (PT)</option>
+                                <option value="VMTS UPPS">VMTS UPPS (Fakultas)</option>
+                                <option value="Visi Keilmuan PS">Visi Keilmuan Program Studi</option>
+                            </select>
+                        </div>
+                        <div class="col-md-4">
+                            <label class="form-label fw-semibold text-sm">No. Surat Keputusan (SK)</label>
+                            <input type="text" name="no_sk" class="form-control rounded-3" placeholder="Contoh: 0153/SK/LAM Teknik/..." required>
+                        </div>
+                        <div class="col-md-4">
+                            <label class="form-label fw-semibold text-sm">Link Dokumen</label>
+                            <input type="url" name="link_dokumen" class="form-control rounded-3" placeholder="https://drive.google.com/..." required>
+                        </div>
+                        <div class="col-md-12">
+                            <label class="form-label fw-semibold text-sm">Pernyataan Visi/Misi</label>
+                            <textarea name="pernyataan" class="form-control rounded-3" rows="3" placeholder="Tuliskan isi pernyataan visi misi secara lengkap di sini..." required></textarea>
+                        </div>
+                    </div>
 
-        <div class="card card-custom p-4">
-            <h5 class="fw-bold mb-3 border-bottom pb-2">Data Tersimpan</h5>
-            <div class="table-responsive">
-                <table class="table table-hover table-bordered align-middle">
-                    <thead class="table-dark text-center">
-                        <tr>
-                            <th width="5%">No</th>
-                            <th width="20%">Jenis VMTS</th>
-                            <th width="40%">Pernyataan</th>
-                            <th width="20%">No. SK</th>
-                            <th width="15%">Link Dokumen</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        @forelse($visiMisis as $index => $vm)
-                        <tr>
-                            <td class="text-center">{{ $index + 1 }}</td>
-                            <td class="fw-bold">{{ $vm->jenis_vmts }}</td>
-                            <td>{{ $vm->pernyataan }}</td>
-                            <td>{{ $vm->no_sk }}</td>
-                            <td class="text-center">
-                                <a href="{{ $vm->link_dokumen }}" target="_blank" class="btn btn-sm btn-outline-info rounded-pill">
-                                    <i class="bi bi-link-45deg"></i> Buka Dokumen
-                                </a>
-                            </td>
-                        </tr>
-                        @empty
-                        <tr>
-                            <td colspan="5" class="text-muted text-center py-4">Belum ada data Visi Misi yang diinput.</td>
-                        </tr>
-                        @endforelse
-                    </tbody>
-                </table>
+                    <button type="submit" class="btn btn-primary w-100 py-3 rounded-pill shadow-sm fw-bold">
+                        <i class="bi bi-save me-2"></i>SIMPAN DATA VISI MISI
+                    </button>
+                </form>
             </div>
+            
+            <div class="card shadow-sm border-0 rounded-4 p-4">
+                <h6 class="fw-bold mb-3">Data Visi Misi Tersimpan ({{ $visiMisis->count() }})</h6>
+                <div class="table-responsive">
+                    <table class="table table-sm table-hover table-bordered align-middle text-center">
+                        <thead class="table-light">
+                            <tr>
+                                <th class="align-middle" width="5%">No</th>
+                                <th class="align-middle" width="20%">Jenis VMTS</th>
+                                <th class="align-middle" width="35%">Pernyataan</th>
+                                <th class="align-middle" width="15%">No. SK</th>
+                                <th class="align-middle" width="15%">Link Dokumen</th>
+                                <th class="align-middle" width="10%">Aksi</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @forelse($visiMisis as $index => $vm)
+                            <tr>
+                                <td>{{ $index + 1 }}</td>
+                                <td class="fw-bold">{{ $vm->jenis_vmts }}</td>
+                                <td class="text-start">{{ $vm->pernyataan }}</td>
+                                <td>{{ $vm->no_sk }}</td>
+                                <td>
+                                    <a href="{{ $vm->link_dokumen }}" target="_blank" class="btn btn-sm btn-outline-info rounded-pill">
+                                        <i class="bi bi-link-45deg"></i> Buka
+                                    </a>
+                                </td>
+                                <td>
+                                    <div class="d-flex justify-content-center gap-1">
+                                        <a href="{{ route('visi_misi.edit', $vm->id) }}" class="btn btn-sm text-warning" title="Edit">
+                                            <i class="bi bi-pencil-fill"></i>
+                                        </a>
+                                        <form action="{{ route('visi_misi.destroy', $vm->id) }}" method="POST" onsubmit="return confirm('Yakin ingin menghapus data ini?');">
+                                            @csrf @method('DELETE')
+                                            <button type="submit" class="btn btn-sm text-danger" title="Hapus">
+                                                <i class="bi bi-trash-fill"></i>
+                                            </button>
+                                        </form>
+                                    </div>
+                                </td>
+                            </tr>
+                            @empty
+                            <tr>
+                                <td colspan="6" class="text-muted py-3">Belum ada data Visi Misi yang diinput.</td>
+                            </tr>
+                            @endforelse
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
         </div>
     </div>
-    
-
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-</body>
-</html>
+</x-app-layout>

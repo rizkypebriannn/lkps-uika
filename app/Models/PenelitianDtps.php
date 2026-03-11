@@ -6,5 +6,10 @@ use Illuminate\Database\Eloquent\Model;
 
 class PenelitianDtps extends Model
 {
-    //
+    protected $guarded = ['id'];
+
+    public function prodi()
+    {
+        return $this->belongsTo(Prodi::class, 'prodi_id');
+    }
 }

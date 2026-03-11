@@ -81,9 +81,12 @@ use App\Http\Controllers\PelaksanaanSpmiController;
 Route::get('/lkps/export-excel', [ExportController::class, 'export'])->name('export.excel');
 
 // Rute Tabel Visi Misi (1.a)
-Route::get('/lkps/visi-misi', [VisiMisiController::class, 'index'])->name('visi_misi.index');
-Route::post('/lkps/visi-misi', [VisiMisiController::class, 'store'])->name('visi_misi.store');
-Route::delete('/lkps/visi-misi/{id}', [VisiMisiController::class, 'destroy'])->name('visi_misi.destroy');
+// Tambahkan 3 baris ini untuk melengkapi fitur Edit, Update, dan Delete
+Route::get('/lkps/visi-misi', [App\Http\Controllers\VisiMisiController::class, 'index'])->name('visi_misi.index');
+Route::post('/lkps/visi-misi', [App\Http\Controllers\VisiMisiController::class, 'store'])->name('visi_misi.store');
+Route::get('/lkps/visi-misi/{id}/edit', [App\Http\Controllers\VisiMisiController::class, 'edit'])->name('visi_misi.edit');
+Route::put('/lkps/visi-misi/{id}', [App\Http\Controllers\VisiMisiController::class, 'update'])->name('visi_misi.update');
+Route::delete('/lkps/visi-misi/{id}', [App\Http\Controllers\VisiMisiController::class, 'destroy'])->name('visi_misi.destroy');
 
 // Rute Tabel Kerjasama (2.a.1 - 2.a.3)
 Route::get('/lkps/kerjasama-pendidikan', [KerjasamaPendidikanController::class, 'index'])->name('kerjasama_pendidikan.index');

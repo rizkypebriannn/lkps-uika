@@ -236,14 +236,13 @@ body {
                           <div class="dropdown-group">
                             <label for="prodi_id" class="dropdown-label">PILIH PROGRAM STUDI</label>
                             <select name="prodi_id" id="prodi_id" required>
-                            <option value="" disabled selected>-- Pilih Prodi --</option>
-                            <option value="1">Teknik Sipil</option>
-                            <option value="2">Teknik Mesin</option>
-                            <option value="3">Teknik Elektro</option>
-                            <option value="4">Teknik Informatika</option>
-                            <option value="5">Sistem Informasi</option>
-                            <option value="6">Ilmu Lingkungan</option>
-                            <option value="7">Rekayasa Pertanian dan Biosistem</option>
+                                <option value="" disabled selected>-- Pilih Prodi --</option>
+                                
+                                {{-- Looping otomatis mengambil data dari database --}}
+                                @foreach($prodis as $prodi)
+                                    <option value="{{ $prodi->id }}">{{ $prodi->nama_prodi }}</option>
+                                @endforeach
+                                
                             </select>
                         </div>
 
