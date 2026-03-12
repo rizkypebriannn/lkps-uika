@@ -78,6 +78,10 @@ use App\Http\Controllers\PelaksanaanSpmiController;
 
 
 // Rute untuk mengunduh file Excel
+
+
+Route::middleware(['auth'])->group(function () {
+
 Route::get('/lkps/export-excel', [ExportController::class, 'export'])->name('export.excel');
 
 // Rute Tabel Visi Misi (1.a)
@@ -150,6 +154,7 @@ Route::delete('/lkps/pkm-dtps/{id}', [PkmDtpsController::class, 'destroy'])->nam
 Route::get('/lkps/profil-dosen', [ProfilDosenController::class, 'index'])->name('profil_dosen.index');
 Route::post('/lkps/profil-dosen', [ProfilDosenController::class, 'store'])->name('profil_dosen.store');
 Route::delete('/lkps/profil-dosen/{id}', [ProfilDosenController::class, 'destroy'])->name('profil_dosen.destroy');
+Route::resource('profil-dosen', App\Http\Controllers\ProfilDosenController::class);
 
 
 Route::get('/lkps/tenaga-kependidikan', [TenagaKependidikanController::class, 'index'])->name('tenaga_kependidikan.index');
@@ -364,3 +369,5 @@ Route::delete('/lkps/dokumen-spmi/{id}', [DokumenSpmiController::class, 'destroy
 Route::get('/lkps/pelaksanaan-spmi', [PelaksanaanSpmiController::class, 'index'])->name('pelaksanaan_spmi.index');
 Route::post('/lkps/pelaksanaan-spmi', [PelaksanaanSpmiController::class, 'store'])->name('pelaksanaan_spmi.store');
 Route::delete('/lkps/pelaksanaan-spmi/{id}', [PelaksanaanSpmiController::class, 'destroy'])->name('pelaksanaan_spmi.destroy');
+
+});

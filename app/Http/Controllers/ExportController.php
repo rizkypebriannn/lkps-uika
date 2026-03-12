@@ -590,7 +590,7 @@ class ExportController extends Controller
         if ($spreadsheet->sheetNameExists('4f-3')) {
             $sheet4f3 = $spreadsheet->getSheetByName('4f-3');
             $produks = \App\Models\LuaranTeknologiProduk::where('prodi_id', auth()->user()->prodi_id)->get();
-            $row4f3 = 7; 
+            $row4f3 = 16; 
             $no4f3 = 1;
             
             foreach ($produks as $p) {
