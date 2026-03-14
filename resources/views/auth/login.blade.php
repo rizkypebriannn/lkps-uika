@@ -234,6 +234,12 @@
                         <button type="submit" class="login-button">LOG IN</button>
                     </div>
                     
+                    <div style="text-align: center; margin-top: 1.5rem; border-top: 1px solid rgba(26, 51, 37, 0.2); padding-top: 1rem;">
+                        <span style="color: #1a3325; font-size: 0.85rem;">Belum mendaftarkan Program Studi?</span>
+                        <a href="{{ route('register') }}" style="color: #1a3325; text-decoration: underline; font-weight: bold; font-size: 0.85rem; margin-left: 5px;">
+                            Register di sini
+                        </a>
+                    </div>
                 </form>
             </div>
         </div>

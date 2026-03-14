@@ -25,6 +25,7 @@ class KerjasamaPenelitianController extends Controller
         $input['status_kerjasama'] = $request->status_kerjasama ?? 'Aktif';
         $input['manfaat'] = $request->manfaat ?? '-';
 
+        
         KerjasamaPenelitian::create($input);
 
         return redirect()->back()->with('success', 'Data Kerjasama Penelitian berhasil disimpan!');

@@ -25,6 +25,7 @@ class KerjasamaPengabdianController extends Controller
         $input['status_kerjasama'] = $request->status_kerjasama ?? 'Aktif';
         $input['manfaat'] = $request->manfaat ?? '-';
 
+        
         KerjasamaPengabdian::create($input);
 
         return redirect()->back()->with('success', 'Data Kerjasama PkM berhasil disimpan!');

@@ -61,7 +61,7 @@
             <input type="date" name="tanggal_akhir" class="form-control" required>
         </div>
         <div class="col-md-2">
-            <label class="form-label fw-semibold">Durasi (Angka)</label>
+            <label class="form-label fw-semibold">Durasi (Tahun)</label>
             <input type="number" name="durasi" class="form-control" placeholder="Contoh: 3" required>
         </div>
         <div class="col-md-4">

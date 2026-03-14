@@ -27,6 +27,8 @@ class KerjasamaPendidikanController extends Controller
     // Backup jika manfaat atau status kelupaan diisi
     $input['manfaat'] = $request->manfaat ?? '-';
     $input['status_kerjasama'] = $request->status_kerjasama ?? 'Aktif';
+   
+   
 
     KerjasamaPendidikan::create($input);
 

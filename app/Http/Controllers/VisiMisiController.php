@@ -14,12 +14,20 @@ class VisiMisiController extends Controller
         // Kirim datanya ke halaman view dengan nama variabel yang sesuai
         return view('visi_misi.index', compact('visiMisis'));
     }
-    
+
     public function store(Request $request)
     {
-        VisiMisi::create($request->all());
-       return redirect('/dashboard')->with('success', 'Data berhasil disimpan!');
+    $data = $request->all();
+    // Wajib ada baris ini sebelum create!
+    $data['prodi_id'] = auth()->user()->prodi_id; 
+
+    // Ganti VisiMisi dengan nama Model yang sesuai (KerjasamaPendidikan, dll)
+    VisiMisi::create($data); 
+
+    return redirect()->back()->with('success', 'Data berhasil disimpan!');
     }
+    
+   
     // 1. Fungsi untuk membuka halaman Edit
     public function edit($id)
     {
