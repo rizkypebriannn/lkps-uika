@@ -15,6 +15,18 @@
         .btn-pill { border-radius: 50px !important; }
         /* Tambahan agar layout lebih lebar dan lega untuk sidebar */
         .dashboard-container { max-width: 95%; margin: 0 auto; }
+        /* CSS Tambahan untuk Scroll Sidebar */
+        .scrollable-skor {
+            position: sticky;
+            top: 20px;
+            max-height: calc(100vh - 40px);
+            overflow-y: auto;
+            padding-right: 10px;
+        }
+        .scrollable-skor::-webkit-scrollbar { width: 6px; }
+        .scrollable-skor::-webkit-scrollbar-track { background: transparent; }
+        .scrollable-skor::-webkit-scrollbar-thumb { background: #ced4da; border-radius: 10px; }
+        .scrollable-skor::-webkit-scrollbar-thumb:hover { background: #adb5bd; }
     </style>
 
     <div class="py-8">
@@ -23,6 +35,7 @@
             <div class="row g-4">
                 
                 <div class="col-lg-3 col-md-4">
+                  <div class="scrollable-skor">
                     <div class="sticky-top" style="top: 2rem; z-index: 10;">
                         <h5 class="fw-bold text-secondary mb-3">
                             <i class="bi bi-bar-chart-fill me-2"></i>Ringkasan Skor
@@ -118,8 +131,99 @@
                             </div>
                         </div>
 
+                        <div class="card shadow-sm border-0 rounded-4 border-start border-primary border-4 mb-3" style="border-color: #8b5cf6 !important;">
+                            <div class="card-body">
+                                <div class="d-flex justify-content-between align-items-center mb-2">
+                                    <div>
+                                        <p class="text-muted mb-1 fw-semibold" style="font-size: 0.85rem;">Publikasi Ilmiah DTPS</p>
+                                        <h2 class="fw-bold mb-0" style="color: #8b5cf6;">{{ $skorPublikasiDtps }} <span style="font-size: 1rem; color:#888;">/ 4.00</span></h2>
+                                    </div>
+                                    <div class="bg-opacity-10 p-2 rounded-circle" style="background-color: rgba(139, 92, 246, 0.1);">
+                                        <i class="bi bi-journal-text" style="font-size: 1.2rem; color: #8b5cf6;"></i>
+                                    </div>
+                                </div>
+                                <p class="mb-0 text-muted" style="font-size: 0.75rem;">Target: Rasio Publikasi >= 0.5. (Tabel 4.d)</p>
+                            </div>
+                        </div>
+
+                        <div class="card shadow-sm border-0 rounded-4 border-start border-4 mb-3" style="border-color: #ec4899 !important;">
+                            <div class="card-body">
+                                <div class="d-flex justify-content-between align-items-center mb-2">
+                                    <div>
+                                        <p class="text-muted mb-1 fw-semibold" style="font-size: 0.85rem;">Karya Ilmiah / Pameran</p>
+                                        <h2 class="fw-bold mb-0" style="color: #ec4899;">{{ $skorKaryaIlmiahDtps }} <span style="font-size: 1rem; color:#888;">/ 4.00</span></h2>
+                                    </div>
+                                    <div class="bg-opacity-10 p-2 rounded-circle" style="background-color: rgba(236, 72, 153, 0.1);">
+                                        <i class="bi bi-easel2-fill" style="font-size: 1.2rem; color: #ec4899;"></i>
+                                    </div>
+                                </div>
+                                <p class="mb-0 text-muted" style="font-size: 0.75rem;">Target: Rasio >= 0.5. (Tabel 4.e)</p>
+                            </div>
+                        </div>
+
+                        <div class="card shadow-sm border-0 rounded-4 border-start border-4 mb-3" style="border-color: #06b6d4 !important;">
+                            <div class="card-body">
+                                <div class="d-flex justify-content-between align-items-center mb-2">
+                                    <div>
+                                        <p class="text-muted mb-1 fw-semibold" style="font-size: 0.85rem;">HKI (Paten)</p>
+                                        <h2 class="fw-bold mb-0" style="color: #06b6d4;">{{ $skorLuaranPaten }} <span style="font-size: 1rem; color:#888;">/ 4.00</span></h2>
+                                    </div>
+                                    <div class="bg-opacity-10 p-2 rounded-circle" style="background-color: rgba(6, 182, 212, 0.1);">
+                                        <i class="bi bi-award-fill" style="font-size: 1.2rem; color: #06b6d4;"></i>
+                                    </div>
+                                </div>
+                                <p class="mb-0 text-muted" style="font-size: 0.75rem;">Target: Rasio >= 0.1. (Tabel 4.f.1)</p>
+                            </div>
+                        </div>
+
+                        <div class="card shadow-sm border-0 rounded-4 border-start border-4 mb-3" style="border-color: #f97316 !important;">
+                            <div class="card-body">
+                                <div class="d-flex justify-content-between align-items-center mb-2">
+                                    <div>
+                                        <p class="text-muted mb-1 fw-semibold" style="font-size: 0.85rem;">HKI (Hak Cipta)</p>
+                                        <h2 class="fw-bold mb-0" style="color: #f97316;">{{ $skorLuaranHakCipta }} <span style="font-size: 1rem; color:#888;">/ 4.00</span></h2>
+                                    </div>
+                                    <div class="bg-opacity-10 p-2 rounded-circle" style="background-color: rgba(249, 115, 22, 0.1);">
+                                        <i class="bi bi-c-circle-fill" style="font-size: 1.2rem; color: #f97316;"></i>
+                                    </div>
+                                </div>
+                                <p class="mb-0 text-muted" style="font-size: 0.75rem;">Target: Rasio >= 0.5. (Tabel 4.f.2)</p>
+                            </div>
+                        </div>
+
+                        <div class="card shadow-sm border-0 rounded-4 border-start border-4 mb-3" style="border-color: #14b8a6 !important;">
+                            <div class="card-body">
+                                <div class="d-flex justify-content-between align-items-center mb-2">
+                                    <div>
+                                        <p class="text-muted mb-1 fw-semibold" style="font-size: 0.85rem;">Teknologi & Produk</p>
+                                        <h2 class="fw-bold mb-0" style="color: #14b8a6;">{{ $skorLuaranTeknologi }} <span style="font-size: 1rem; color:#888;">/ 4.00</span></h2>
+                                    </div>
+                                    <div class="bg-opacity-10 p-2 rounded-circle" style="background-color: rgba(20, 184, 166, 0.1);">
+                                        <i class="bi bi-cpu-fill" style="font-size: 1.2rem; color: #14b8a6;"></i>
+                                    </div>
+                                </div>
+                                <p class="mb-0 text-muted" style="font-size: 0.75rem;">Target: Rasio >= 0.5. (Tabel 4.f.3)</p>
+                            </div>
+                        </div>
+
+                        <div class="card shadow-sm border-0 rounded-4 border-start border-4 mb-3" style="border-color: #4f46e5 !important;">
+                            <div class="card-body">
+                                <div class="d-flex justify-content-between align-items-center mb-2">
+                                    <div>
+                                        <p class="text-muted mb-1 fw-semibold" style="font-size: 0.85rem;">Buku Ber-ISBN</p>
+                                        <h2 class="fw-bold mb-0" style="color: #4f46e5;">{{ $skorLuaranBuku }} <span style="font-size: 1rem; color:#888;">/ 4.00</span></h2>
+                                    </div>
+                                    <div class="bg-opacity-10 p-2 rounded-circle" style="background-color: rgba(79, 70, 229, 0.1);">
+                                        <i class="bi bi-book-half" style="font-size: 1.2rem; color: #4f46e5;"></i>
+                                    </div>
+                                </div>
+                                <p class="mb-0 text-muted" style="font-size: 0.75rem;">Target: Rasio >= 0.5. (Tabel 4.f.4)</p>
+                            </div>
+                        </div>
+
                         </div>
                 </div>
+</div>
 
 
                 <div class="col-lg-9 col-md-8">

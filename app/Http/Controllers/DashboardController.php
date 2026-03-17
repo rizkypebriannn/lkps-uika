@@ -19,10 +19,17 @@ class DashboardController extends Controller
         $skorKecukupanDosen = ScoringService::hitungSkorKecukupanDosen($prodi_id);
         $skorTendik = ScoringService::hitungSkorTendik($prodi_id);
         $skorBebanKerja = ScoringService::hitungSkorBebanKerja($prodi_id);
+        $skorPublikasiDtps = ScoringService::hitungSkorPublikasiDTPS($prodi_id);
+        $skorKaryaIlmiahDtps = ScoringService::hitungSkorKaryaIlmiahDTPS($prodi_id);
+        $skorLuaranPaten = ScoringService::hitungSkorLuaranPaten($prodi_id);
+        $skorLuaranHakCipta = ScoringService::hitungSkorLuaranHakCipta($prodi_id);
+        $skorLuaranTeknologi = ScoringService::hitungSkorLuaranTeknologi($prodi_id);
+        $skorLuaranBuku = ScoringService::hitungSkorLuaranBuku($prodi_id);
 
 
         // Lempar ke view
         return view('dashboard', compact('skorKerjasama', 'skorDosenS3', 'skorJabatanDosen', 'skorKecukupanDosen', 'skorTendik',
-            'skorBebanKerja'));
+            'skorBebanKerja', 'skorPublikasiDtps', 'skorKaryaIlmiahDtps', 'skorLuaranPaten', 'skorLuaranHakCipta', 'skorLuaranTeknologi', 
+            'skorLuaranBuku'));
     }
 }

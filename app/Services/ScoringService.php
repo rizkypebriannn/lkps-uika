@@ -8,6 +8,12 @@ use App\Models\KerjasamaPengabdian;
 use App\Models\ProfilDosen;
 use App\Models\TenagaKependidikan;
 use App\Models\BebanKerjaDosen;
+use App\Models\PublikasiIlmiahDtps;
+use App\Models\KaryaIlmiahDtps;
+use App\Models\LuaranHkiPaten;
+use App\Models\LuaranHkiHakCipta;
+use App\Models\LuaranTeknologiProduk;
+use App\Models\LuaranBukuIsbn;
 
 class ScoringService
 {
@@ -166,7 +172,6 @@ class ScoringService
     }
 
     /**
-     /**
      * Hitung Skor Indikator 30: Beban Kerja Dosen (Tabel 4.c)
      */
     public static function hitungSkorBebanKerja($prodi_id)
@@ -191,5 +196,186 @@ class ScoringService
         }
 
         return number_format(0, 2); // Jika RBK > 20
+    }
+    
+    /**
+     * Hitung Skor Indikator 31: Publikasi Ilmiah DTPS (Tabel 4.d)
+     */
+    public static function hitungSkorPublikasiDTPS($prodi_id)
+    {
+        // 1. Ambil jumlah Dosen Tetap (NDTPS)
+        $ndtps = ProfilDosen::where('prodi_id', $prodi_id)
+                    ->where('kategori_dosen', 'Dosen Tetap')
+                    ->count();
+
+        if ($ndtps == 0) return number_format(0, 2);
+
+        // 2. Fungsi bantu untuk mengambil jumlah publikasi berdasarkan "jenis_publikasi"
+        $getTotalByKategori = function ($kategori) use ($prodi_id) {
+            $data = PublikasiIlmiahDtps::where('prodi_id', $prodi_id)
+                        ->where('jenis_publikasi', $kategori)
+                        ->first();
+            
+            // Karena Anda sudah punya kolom 'jumlah_total', kita bisa langsung pakai itu!
+            // Jika datanya tidak ada, kembalikan nilai 0.
+            return $data ? $data->jumlah_total : 0;
+        };
+
+        // 3. Ambil total masing-masing kategori 
+        // ⚠️ PENTING: Sesuaikan teks string di bawah ini dengan pilihan yang ada di form input Anda!
+        $na = $getTotalByKategori('Jurnal Nasional Belum Terakreditasi'); 
+        $nb = $getTotalByKategori('Jurnal Nasional Terakreditasi');       
+        $nc = $getTotalByKategori('Jurnal Internasional');                
+        $nd = $getTotalByKategori('Jurnal Internasional Bereputasi');     
+
+        // 4. Hitung Rasio Publikasi (RI) dengan Bobot LAM Teknik
+        $ri = (($na * 1) + ($nb * 2) + ($nc * 3) + ($nd * 4)) / $ndtps;
+
+        // 5. Logika Skor Matriks LAM Teknik
+        if ($ri >= 0.5) {
+            return number_format(4, 2);
+        } else {
+            return number_format(2 + (4 * $ri), 2);
+        }
+    }
+    /**
+     * Hitung Skor Indikator 32: Karya Ilmiah / Pameran / Presentasi DTPS (Tabel 4.e)
+     */
+    public static function hitungSkorKaryaIlmiahDTPS($prodi_id)
+    {
+        // 1. Ambil jumlah Dosen Tetap (NDTPS)
+        $ndtps = ProfilDosen::where('prodi_id', $prodi_id)
+                    ->where('kategori_dosen', 'Dosen Tetap')
+                    ->count();
+
+        if ($ndtps == 0) return number_format(0, 2);
+
+        // 2. Fungsi bantu ambil jumlah total berdasarkan "jenis_publikasi"
+        $getTotalByKategori = function ($kategori) use ($prodi_id) {
+            $data = KaryaIlmiahDtps::where('prodi_id', $prodi_id)
+                        ->where('jenis_publikasi', $kategori)
+                        ->first();
+            
+            return $data ? $data->jumlah_total : 0;
+        };
+
+        // 3. Ambil total masing-masing kategori 
+        // ⚠️ PENTING: Sesuaikan teks string ini dengan pilihan dropdown di form 4.e Anda!
+        $na = $getTotalByKategori('Wilayah/Lokal');
+        $nb = $getTotalByKategori('Nasional');       
+        $nc = $getTotalByKategori('Internasional');                
+
+        // 4. Hitung Rasio Publikasi (RI) dengan Bobot LAM Teknik
+        $ri = (($na * 1) + ($nb * 2) + ($nc * 3)) / $ndtps;
+
+        // 5. Logika Skor Matriks LAM Teknik
+        if ($ri >= 0.5) {
+            return number_format(4, 2);
+        } else {
+            return number_format(2 + (4 * $ri), 2);
+        }
+    }
+    /**
+     * Hitung Skor Indikator 33: Luaran HKI (Paten) (Tabel 4.f.1)
+     */
+    public static function hitungSkorLuaranPaten($prodi_id)
+    {
+        // 1. Ambil jumlah Dosen Tetap (NDTPS)
+        $ndtps = ProfilDosen::where('prodi_id', $prodi_id)
+                    ->where('kategori_dosen', 'Dosen Tetap')
+                    ->count();
+
+        if ($ndtps == 0) return number_format(0, 2);
+
+        // 2. Hitung jumlah luaran paten
+        // Catatan: Jika Anda HANYA ingin menghitung paten yang sudah keluar nomornya (bukan yang masih proses), 
+        // Anda bisa tambahkan ->whereNotNull('nomor_paten') sebelum ->count(). 
+        // Di sini saya asumsikan semua data yang diinput ke tabel ini dihitung.
+        $totalPaten = LuaranHkiPaten::where('prodi_id', $prodi_id)->count();
+
+        // 3. Hitung Rasio (RI)
+        $ri = $totalPaten / $ndtps;
+
+        // 4. Logika Skor Matriks LAM Teknik
+        if ($ri >= 0.1) {
+            return number_format(4, 2);
+        } else {
+            return number_format(2 + (20 * $ri), 2);
+        }
+    }
+    /**
+     * Hitung Skor Indikator 34: Luaran HKI (Hak Cipta, Desain Industri, dll) (Tabel 4.f.2)
+     */
+    public static function hitungSkorLuaranHakCipta($prodi_id)
+    {
+        // 1. Ambil jumlah Dosen Tetap (NDTPS)
+        $ndtps = ProfilDosen::where('prodi_id', $prodi_id)
+                    ->where('kategori_dosen', 'Dosen Tetap')
+                    ->count();
+
+        if ($ndtps == 0) return number_format(0, 2);
+
+        // 2. Hitung jumlah total luaran Hak Cipta
+        $totalHakCipta = LuaranHkiHakCipta::where('prodi_id', $prodi_id)->count();
+
+        // 3. Hitung Rasio (RI)
+        $ri = $totalHakCipta / $ndtps;
+
+        // 4. Logika Skor Matriks LAM Teknik
+        if ($ri >= 0.5) {
+            return number_format(4, 2);
+        } else {
+            return number_format(2 + (4 * $ri), 2);
+        }
+    }
+    /**
+     * Hitung Skor Indikator 35: Luaran Teknologi / Produk / Karya Seni (Tabel 4.f.3)
+     */
+    public static function hitungSkorLuaranTeknologi($prodi_id)
+    {
+        // 1. Ambil jumlah Dosen Tetap (NDTPS)
+        $ndtps = ProfilDosen::where('prodi_id', $prodi_id)
+                    ->where('kategori_dosen', 'Dosen Tetap')
+                    ->count();
+
+        if ($ndtps == 0) return number_format(0, 2);
+
+        // 2. Hitung jumlah total luaran Teknologi/Produk
+        $totalTeknologi = LuaranTeknologiProduk::where('prodi_id', $prodi_id)->count();
+
+        // 3. Hitung Rasio (RI)
+        $ri = $totalTeknologi / $ndtps;
+
+        // 4. Logika Skor Matriks LAM Teknik
+        if ($ri >= 0.5) {
+            return number_format(4, 2);
+        } else {
+            return number_format(2 + (4 * $ri), 2);
+        }
+    }
+    /**
+     * Hitung Skor Indikator 36: Luaran Buku ber-ISBN / Book Chapter (Tabel 4.f.4)
+     */
+    public static function hitungSkorLuaranBuku($prodi_id)
+    {
+        // 1. Ambil jumlah Dosen Tetap (NDTPS)
+        $ndtps = ProfilDosen::where('prodi_id', $prodi_id)
+                    ->where('kategori_dosen', 'Dosen Tetap')
+                    ->count();
+
+        if ($ndtps == 0) return number_format(0, 2);
+
+        // 2. Hitung jumlah total luaran Buku ISBN
+        $totalBuku = LuaranBukuIsbn::where('prodi_id', $prodi_id)->count();
+
+        // 3. Hitung Rasio (RI)
+        $ri = $totalBuku / $ndtps;
+
+        // 4. Logika Skor Matriks LAM Teknik
+        if ($ri >= 0.5) {
+            return number_format(4, 2);
+        } else {
+            return number_format(2 + (4 * $ri), 2);
+        }
     }
     }
