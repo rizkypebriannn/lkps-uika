@@ -25,11 +25,24 @@ class DashboardController extends Controller
         $skorLuaranHakCipta = ScoringService::hitungSkorLuaranHakCipta($prodi_id);
         $skorLuaranTeknologi = ScoringService::hitungSkorLuaranTeknologi($prodi_id);
         $skorLuaranBuku = ScoringService::hitungSkorLuaranBuku($prodi_id);
+        $skorKurikulum = ScoringService::hitungSkorKurikulum($prodi_id);
+        $skorPenelitianMhs = ScoringService::hitungSkorPenelitianMhs($prodi_id);
+        $skorPkmMhs = ScoringService::hitungSkorPkmMhs($prodi_id);
+        $skorRasioMhs = ScoringService::hitungSkorRasioMahasiswa($prodi_id);
+        $skorMhsAsing = ScoringService::hitungSkorMahasiswaAsing($prodi_id);
+        $skorIpkLulusan = ScoringService::hitungSkorIpkLulusan($prodi_id);
+        $skorPrestasiMhs = ScoringService::hitungSkorPrestasiMahasiswa($prodi_id);
+        $skorMasaStudi = ScoringService::hitungSkorMasaStudi($prodi_id);
+        $skorLulusTepatWaktu = ScoringService::hitungSkorLulusTepatWaktu($prodi_id);
+        $skorPublikasiMhs = ScoringService::hitungSkorPublikasiMahasiswa($prodi_id);
+        $skorLuaranMhs = ScoringService::hitungSkorLuaranMhs($prodi_id);
+        $skorWaktuTunggu = ScoringService::hitungSkorWaktuTunggu($prodi_id);
 
 
         // Lempar ke view
         return view('dashboard', compact('skorKerjasama', 'skorDosenS3', 'skorJabatanDosen', 'skorKecukupanDosen', 'skorTendik',
             'skorBebanKerja', 'skorPublikasiDtps', 'skorKaryaIlmiahDtps', 'skorLuaranPaten', 'skorLuaranHakCipta', 'skorLuaranTeknologi', 
-            'skorLuaranBuku'));
-    }
+            'skorLuaranBuku', 'skorKurikulum', 'skorPenelitianMhs', 'skorPkmMhs', 'skorRasioMhs', 'skorMhsAsing', 'skorIpkLulusan', 'skorPrestasiMhs', 'skorMasaStudi',
+            'skorLulusTepatWaktu', 'skorPublikasiMhs', 'skorLuaranMhs', 'skorWaktuTunggu'));
+    } 
 }

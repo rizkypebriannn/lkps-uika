@@ -221,6 +221,186 @@
                             </div>
                         </div>
 
+                        <div class="card shadow-sm border-0 rounded-4 border-start border-4 mb-3" style="border-color: #059669 !important;">
+                            <div class="card-body">
+                                <div class="d-flex justify-content-between align-items-center mb-2">
+                                    <div>
+                                        <p class="text-muted mb-1 fw-semibold" style="font-size: 0.85rem;">Kurikulum (MK Kompetensi)</p>
+                                        <h2 class="fw-bold mb-0" style="color: #059669;">{{ $skorKurikulum }} <span style="font-size: 1rem; color:#888;">/ 4.00</span></h2>
+                                    </div>
+                                    <div class="bg-opacity-10 p-2 rounded-circle" style="background-color: rgba(5, 150, 105, 0.1);">
+                                        <i class="bi bi-journal-bookmark-fill" style="font-size: 1.2rem; color: #059669;"></i>
+                                    </div>
+                                </div>
+                                <p class="mb-0 text-muted" style="font-size: 0.75rem;">Target: SKS Kompetensi >= 50%. (Tabel 3.a.1)</p>
+                            </div>
+                        </div>
+
+                        <div class="card shadow-sm border-0 rounded-4 border-start border-4 mb-3" style="border-color: #3b82f6 !important;">
+                            <div class="card-body">
+                                <div class="d-flex justify-content-between align-items-center mb-2">
+                                    <div>
+                                        <p class="text-muted mb-1 fw-semibold" style="font-size: 0.85rem;">Penelitian Bersama Mhs</p>
+                                        <h2 class="fw-bold mb-0" style="color: #3b82f6;">{{ $skorPenelitianMhs }} <span style="font-size: 1rem; color:#888;">/ 4.00</span></h2>
+                                    </div>
+                                    <div class="bg-opacity-10 p-2 rounded-circle" style="background-color: rgba(59, 130, 246, 0.1);">
+                                        <i class="bi bi-people-fill" style="font-size: 1.2rem; color: #3b82f6;"></i>
+                                    </div>
+                                </div>
+                                <p class="mb-0 text-muted" style="font-size: 0.75rem;">Target: >= 50% Judul melibatkan Mhs. (Tabel 6.h.1 & 3.b)</p>
+                            </div>
+                        </div>
+
+                        <div class="card shadow-sm border-0 rounded-4 border-start border-4 mb-3" style="border-color: #ec4899 !important;">
+                             <div class="card-body">
+                                    <div class="d-flex justify-content-between align-items-center mb-2">
+                                        <div>
+                                            <p class="text-muted mb-1 fw-semibold" style="font-size: 0.85rem;">PkM Bersama Mahasiswa</p>
+                                                <h2 class="fw-bold mb-0" style="color: #ec4899;">{{ $skorPkmMhs }} <span style="font-size: 1rem; color:#888;">/ 4.00</span></h2>
+                                                </div>
+                                            <div class="bg-opacity-10 p-2 rounded-circle" style="background-color: rgba(236, 72, 153, 0.1);">
+                                                <i class="bi bi-mortarboard-fill" style="font-size: 1.2rem; color: #ec4899;"></i>
+                                            </div>
+                                        </div>
+                                        <p class="mb-0 text-muted" style="font-size: 0.75rem;">Target: >= 50% Judul melibatkan Mhs. (Tabel 6.i & 3.c)</p>
+                                    </div>
+                                </div>
+
+                                <div class="card shadow-sm border-0 rounded-4 border-start border-4 mb-3" style="border-color: #8b5cf6 !important;">
+                                <div class="card-body">
+                                    <div class="d-flex justify-content-between align-items-center mb-2">
+                                        <div>
+                                            <p class="text-muted mb-1 fw-semibold" style="font-size: 0.85rem;">Rasio Mahasiswa : Dosen</p>
+                                            <h2 class="fw-bold mb-0" style="color: #8b5cf6;">{{ $skorRasioMhs }} <span style="font-size: 1rem; color:#888;">/ 4.00</span></h2>
+                                        </div>
+                                        <div class="bg-opacity-10 p-2 rounded-circle" style="background-color: rgba(139, 92, 246, 0.1);">
+                                            <i class="bi bi-person-video3" style="font-size: 1.2rem; color: #885cf6;"></i>
+                                        </div>
+                                    </div>
+                                    <p class="mb-0 text-muted" style="font-size: 0.75rem;">Target ideal: 15 - 25 mhs/dosen. (Tabel 6.a)</p>
+                                </div>
+                            </div>
+
+                            <div class="card shadow-sm border-0 rounded-4 border-start border-4 mb-3" style="border-color: #6366f1 !important;">
+                                <div class="card-body">
+                                    <div class="d-flex justify-content-between align-items-center mb-2">
+                                        <div>
+                                            <p class="text-muted mb-1 fw-semibold" style="font-size: 0.85rem;">Mahasiswa Asing</p>
+                                            <h2 class="fw-bold mb-0" style="color: #6366f1;">{{ $skorMhsAsing }} <span style="font-size: 1rem; color:#888;">/ 4.00</span></h2>
+                                        </div>
+                                        <div class="bg-opacity-10 p-2 rounded-circle" style="background-color: rgba(99, 102, 241, 0.1);">
+                                            <i class="bi bi-globe-americas" style="font-size: 1.2rem; color: #6366f1;"></i>
+                                        </div>
+                                    </div>
+                                    <p class="mb-0 text-muted" style="font-size: 0.75rem;">Target: >= 1% dari total mahasiswa. (Tabel 6.a)</p>
+                                </div>
+                            </div>
+
+                            <div class="card shadow-sm border-0 rounded-4 border-start border-4 mb-3" style="border-color: #facc15 !important;">
+                            <div class="card-body">
+                                <div class="d-flex justify-content-between align-items-center mb-2">
+                                    <div>
+                                        <p class="text-muted mb-1 fw-semibold" style="font-size: 0.85rem;">Rata-rata IPK Lulusan</p>
+                                        <h2 class="fw-bold mb-0" style="color: #ca8a04;">{{ $skorIpkLulusan }} <span style="font-size: 1rem; color:#888;">/ 4.00</span></h2>
+                                    </div>
+                                    <div class="bg-opacity-10 p-2 rounded-circle" style="background-color: rgba(250, 204, 21, 0.1);">
+                                        <i class="bi bi-mortarboard" style="font-size: 1.2rem; color: #ca8a04;"></i>
+                                    </div>
+                                </div>
+                                <p class="mb-0 text-muted" style="font-size: 0.75rem;">Target ideal: RIPK >= 3.25. (Tabel 6.b)</p>
+                            </div>
+                        </div>
+
+                        <div class="card shadow-sm border-0 rounded-4 border-start border-4 mb-3" style="border-color: #10b981 !important;">
+                        <div class="card-body">
+                            <div class="d-flex justify-content-between align-items-center mb-2">
+                                <div>
+                                    <p class="text-muted mb-1 fw-semibold" style="font-size: 0.85rem;">Prestasi Mhs (Akad & Non)</p>
+                                    <h2 class="fw-bold mb-0" style="color: #10b981;">{{ $skorPrestasiMhs }} <span style="font-size: 1rem; color:#888;">/ 4.00</span></h2>
+                                </div>
+                                <div class="bg-opacity-10 p-2 rounded-circle" style="background-color: rgba(16, 185, 129, 0.1);">
+                                    <i class="bi bi-trophy-fill" style="font-size: 1.2rem; color: #10b981;"></i>
+                                </div>
+                            </div>
+                            <p class="mb-0 text-muted" style="font-size: 0.75rem;">Gabungan prestasi 5 tahun terakhir. (Tabel 6.c.1 & 6.c.2)</p>
+                        </div>
+                    </div>
+
+                    <div class="card shadow-sm border-0 rounded-4 border-start border-4 mb-3" style="border-color: #f97316 !important;">
+                    <div class="card-body">
+                        <div class="d-flex justify-content-between align-items-center mb-2">
+                            <div>
+                                <p class="text-muted mb-1 fw-semibold" style="font-size: 0.85rem;">Masa Studi Lulusan</p>
+                                <h2 class="fw-bold mb-0" style="color: #f97316;">{{ $skorMasaStudi }} <span style="font-size: 1rem; color:#888;">/ 4.00</span></h2>
+                            </div>
+                            <div class="bg-opacity-10 p-2 rounded-circle" style="background-color: rgba(249, 115, 22, 0.1);">
+                                <i class="bi bi-calendar-check-fill" style="font-size: 1.2rem; color: #f97316;"></i>
+                            </div>
+                        </div>
+                        <p class="mb-0 text-muted" style="font-size: 0.75rem;">Target: 3.5 < MS <= 4.5 tahun. (Tabel 6.d)</p>
+                    </div>
+                </div>
+
+                <div class="card shadow-sm border-0 rounded-4 border-start border-4 mb-3" style="border-color: #14b8a6 !important;">
+                <div class="card-body">
+                    <div class="d-flex justify-content-between align-items-center mb-2">
+                        <div>
+                            <p class="text-muted mb-1 fw-semibold" style="font-size: 0.85rem;">Lulus Tepat Waktu (PTW)</p>
+                            <h2 class="fw-bold mb-0" style="color: #14b8a6;">{{ $skorLulusTepatWaktu }} <span style="font-size: 1rem; color:#888;">/ 4.00</span></h2>
+                        </div>
+                        <div class="bg-opacity-10 p-2 rounded-circle" style="background-color: rgba(20, 184, 166, 0.1);">
+                            <i class="bi bi-clock-history" style="font-size: 1.2rem; color: #14b8a6;"></i>
+                        </div>
+                    </div>
+                    <p class="mb-0 text-muted" style="font-size: 0.75rem;">Target: >= 50% lulus dlm 4 tahun. (Tabel 6.d)</p>
+                </div>
+            </div>
+
+            <div class="card shadow-sm border-0 rounded-4 border-start border-4 mb-3" style="border-color: #0ea5e9 !important;">
+            <div class="card-body">
+                <div class="d-flex justify-content-between align-items-center mb-2">
+                    <div>
+                        <p class="text-muted mb-1 fw-semibold" style="font-size: 0.85rem;">Publikasi Ilmiah Mahasiswa</p>
+                        <h2 class="fw-bold mb-0" style="color: #0ea5e9;">{{ $skorPublikasiMhs }} <span style="font-size: 1rem; color:#888;">/ 4.00</span></h2>
+                    </div>
+                    <div class="bg-opacity-10 p-2 rounded-circle" style="background-color: rgba(14, 165, 233, 0.1);">
+                        <i class="bi bi-journal-text" style="font-size: 1.2rem; color: #0ea5e9;"></i>
+                    </div>
+                </div>
+                <p class="mb-0 text-muted" style="font-size: 0.75rem;">Publikasi mandiri/bersama dosen (3 thn). (Tabel 6.e.1)</p>
+            </div>
+        </div>
+
+            <div class="card shadow-sm border-0 rounded-4 border-start border-4 mb-3" style="border-color: #d946ef !important;">
+                    <div class="card-body">
+                        <div class="d-flex justify-content-between align-items-center mb-2">
+                            <div>
+                                <p class="text-muted mb-1 fw-semibold" style="font-size: 0.85rem;">Luaran HKI/Produk Mahasiswa</p>
+                                <h2 class="fw-bold mb-0" style="color: #d946ef;">{{ $skorLuaranMhs }} <span style="font-size: 1rem; color:#888;">/ 4.00</span></h2>
+                            </div>
+                            <div class="bg-opacity-10 p-2 rounded-circle" style="background-color: rgba(217, 70, 239, 0.1);">
+                                <i class="bi bi-lightbulb-fill" style="font-size: 1.2rem; color: #d946ef;"></i>
+                            </div>
+                        </div>
+                        <p class="mb-0 text-muted" style="font-size: 0.75rem;">Akumulasi Paten, TTG, Buku, & Ciptaan. (Tabel 6.e.3)</p>
+                    </div>
+                </div>
+
+                <div class="card shadow-sm border-0 rounded-4 border-start border-4 mb-3" style="border-color: #e11d48 !important;">
+                <div class="card-body">
+                    <div class="d-flex justify-content-between align-items-center mb-2">
+                        <div>
+                            <p class="text-muted mb-1 fw-semibold" style="font-size: 0.85rem;">Waktu Tunggu Lulusan</p>
+                            <h2 class="fw-bold mb-0" style="color: #e11d48;">{{ $skorWaktuTunggu }} <span style="font-size: 1rem; color:#888;">/ 4.00</span></h2>
+                        </div>
+                        <div class="bg-opacity-10 p-2 rounded-circle" style="background-color: rgba(225, 29, 72, 0.1);">
+                            <i class="bi bi-briefcase-fill" style="font-size: 1.2rem; color: #e11d48;"></i>
+                        </div>
+                    </div>
+                    <p class="mb-0 text-muted" style="font-size: 0.75rem;">Target: <= 3 bulan & Responden >= 30%. (Tabel 6.f.1)</p>
+                </div>
+            </div>
+
                         </div>
                 </div>
 </div>
