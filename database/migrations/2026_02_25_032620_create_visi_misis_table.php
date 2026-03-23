@@ -10,6 +10,7 @@ return new class extends Migration
     {
         Schema::create('visi_misis', function (Blueprint $table) {
             $table->id();
+            $table->unsignedBigInteger('prodi_id');
             $table->enum('jenis_vmts', ['VMTS PT', 'VMTS UPPS', 'Visi Keilmuan PS']);
             $table->text('pernyataan');
             $table->string('no_sk')->nullable();

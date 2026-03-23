@@ -10,6 +10,7 @@ return new class extends Migration
     {
         Schema::create('matkul_basic_sciences', function (Blueprint $table) {
             $table->id();
+            $table->unsignedBigInteger('prodi_id');
             $table->string('nama_mata_kuliah');
             $table->string('semester'); // Tipe string agar bisa diisi angka "1" atau teks "I (Ganjil)"
             $table->integer('jumlah_sks');

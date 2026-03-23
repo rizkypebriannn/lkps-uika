@@ -10,6 +10,7 @@ return new class extends Migration
     {
         Schema::create('dokumen_pembelajarans', function (Blueprint $table) {
             $table->id();
+            $table->unsignedBigInteger('prodi_id');
             $table->string('mata_kuliah'); // Sesuai Excel Kolom B
             $table->integer('bobot_sks'); // Sesuai Excel Kolom C
             $table->integer('konversi_teori')->default(0); // Sesuai Excel Kolom D

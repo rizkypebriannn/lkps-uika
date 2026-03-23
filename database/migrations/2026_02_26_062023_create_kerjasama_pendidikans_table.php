@@ -10,6 +10,7 @@ return new class extends Migration
     {
         Schema::create('kerjasama_pendidikans', function (Blueprint $table) {
             $table->id();
+            $table->unsignedBigInteger('prodi_id');
             $table->string('lembaga_mitra');
             $table->enum('tingkat', ['Internasional', 'Nasional', 'Lokal/Wilayah']);
             $table->string('judul_kegiatan');

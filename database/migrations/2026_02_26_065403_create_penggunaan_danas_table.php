@@ -10,6 +10,7 @@ return new class extends Migration
     {
         Schema::create('penggunaan_danas', function (Blueprint $table) {
             $table->id();
+            $table->unsignedBigInteger('prodi_id');
             $table->string('jenis_penggunaan'); // Contoh: Biaya Dosen, Biaya Penelitian, dll
             
             // Dana di Unit Pengelola Program Studi / Fakultas (dalam Juta Rupiah)

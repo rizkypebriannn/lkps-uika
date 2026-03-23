@@ -27,6 +27,12 @@ use App\Models\MasaStudiLulusan;
 use App\Models\PublikasiIlmiahMahasiswa;
 use App\Models\LuaranHkiMahasiswa;
 use App\Models\WaktuTungguLulusan;
+use App\Models\KesesuaianBidangKerja;
+use App\Models\TempatKerjaLulusan;
+use App\Models\KepuasanPenggunaLulusan;
+use App\Models\IntegrasiPembelajaran;
+use App\Models\MatkulBasicScience;
+
 
 class ScoringService
 {
@@ -108,54 +114,125 @@ class ScoringService
         }
     }
 
-        /**
-     * Hitung Skor Indikator 26: Kecukupan DTPS
+    /**
+     * Hitung Skor Indikator 31: Penelitian DTPS (Tabel 3.b)
+     * Presisi sesuai Matriks APS-AV 2025 Hal. 16-17
+     */
+    public static function hitungSkorPenelitianDtps($prodi_id)
+    {
+        // 1. Ambil NDTPS (Dosen Tetap Inti)
+        $ndtps = \App\Models\ProfilDosen::where('prodi_id', $prodi_id)
+                ->where('kategori_dosen', 'Dosen Tetap')
+                ->where('kesesuaian_kompetensi', 'V')
+                ->count();
+
+        if ($ndtps == 0) return number_format(0, 2);
+
+        // 2. Ambil data penelitian dari Tabel 3.b
+        $penelitian = \App\Models\PenelitianDtps::where('prodi_id', $prodi_id)->get();
+
+        $ni = 0; // Luar Negeri
+        $nn = 0; // Dalam Negeri
+        $nw = 0; // PT / Mandiri
+
+        foreach ($penelitian as $p) {
+            $total = $p->jumlah_ts2 + $p->jumlah_ts1 + $p->jumlah_ts;
+            $sumber = strtolower($p->sumber_pembiayaan);
+
+            if (str_contains($sumber, 'luar negeri') || str_contains($sumber, 'internasional')) {
+                $ni += $total;
+            } elseif (str_contains($sumber, 'dalam negeri') || str_contains($sumber, 'nasional') || str_contains($sumber, 'kementerian')) {
+                $nn += $total;
+            } else {
+                // Sisanya masuk ke kategori Perguruan Tinggi / Mandiri / Wilayah
+                $nw += $total;
+            }
+        }
+
+        // 3. Hitung Rasio per tahun per dosen
+        $ri = $ni / 3 / $ndtps;
+        $rn = $nn / 3 / $ndtps;
+        $rw = $nw / 3 / $ndtps;
+
+        // Faktor Ketetapan LAM Teknik
+        $a = 0.05;
+        $b = 0.30;
+        $c = 1.00;
+
+        // 4. Logika Skor
+        if ($ri > $a && $rn > $b) {
+            $skor = 4;
+        } else {
+            // Batasi nilai rasio maksimal (Caps) sesuai aturan matriks
+            $ri_capped = min($ri, $a);
+            $rn_capped = min($rn, $b);
+            $rw_capped = min($rw, $c);
+
+            $A_val = $ri_capped / $a;
+            $B_val = $rn_capped / $b;
+            $C_val = $rw_capped / $c;
+
+            // Rumus Polinomial
+            $skor = 3.75 * (
+                ($A_val + $B_val + ($C_val / 2)) - 
+                ($A_val * $B_val) - 
+                (($A_val * $C_val) / 2) - 
+                (($B_val * $C_val) / 2) + 
+                (($A_val * $B_val * $C_val) / 2)
+            );
+        }
+
+        return number_format(max(0, $skor), 2);
+    }
+
+       /**
+     * Hitung Skor Indikator 26: Kecukupan DTPS (Tabel 4.a)
+     * Presisi sesuai Matriks APS-AV 2025 Hal. 15 (Dengan koreksi PDTT > 40%)
      */
     public static function hitungSkorKecukupanDosen($prodi_id)
     {
-        // 1. Hitung Dosen Tetap (NDT / NDTPS)
+        // 1. Hitung NDT (Seluruh Dosen Tetap)
+        $ndt = ProfilDosen::where('prodi_id', $prodi_id)
+                ->where('kategori_dosen', 'Dosen Tetap')
+                ->count();
+
+        // 2. Hitung NDTPS (Dosen Tetap yang sesuai kompetensi inti)
         $ndtps = ProfilDosen::where('prodi_id', $prodi_id)
-                    ->where('kategori_dosen', 'Dosen Tetap')
-                    ->count();
+                ->where('kategori_dosen', 'Dosen Tetap')
+                ->where('kesesuaian_kompetensi', 'V')
+                ->count();
 
-        // 2. Hitung Dosen Tidak Tetap (NDTT)
+        // 3. Hitung NDTT (Dosen Tidak Tetap & Dosen Industri)
         $ndtt = ProfilDosen::where('prodi_id', $prodi_id)
-                    ->where('kategori_dosen', 'Dosen Tidak Tetap')
-                    ->count();
+                ->whereIn('kategori_dosen', ['Dosen Tidak Tetap', 'Dosen Industri'])
+                ->count();
 
-        $totalDosen = $ndtps + $ndtt;
+        // Kondisi Gugur: Dosen Inti kurang dari 5
+        if ($ndtps < 5) return number_format(0, 2);
 
-        // Jika belum ada dosen sama sekali
-        if ($totalDosen == 0) return number_format(0, 2);
+        // 4. Hitung Persentase Dosen Tidak Tetap (PDTT) dalam format desimal (contoh 0.40 = 40%)
+        $totalDosen = $ndt + $ndtt;
+        $pdtt = ($totalDosen > 0) ? ($ndtt / $totalDosen) : 0;
 
-        // 3. Hitung Persentase Dosen Tidak Tetap (PDTT)
-        $pdtt = $ndtt / $totalDosen; 
-
-        // 4. LOGIKA SKOR BERDASARKAN MATRIKS LAM TEKNIK 
-        // Jika dosen tetap kurang dari 5 ATAU dosen tidak tetap lebih dari 40%, langsung skor 0
-        if ($ndtps < 5 || $pdtt > 0.40) {
-            return number_format(0, 2);
-        }
-
-        // Jika dosen tetap >= 12 dan dosen tidak tetap <= 10%, skor Sempurna (4)
+        // 5. Logika Skor Matriks Indikator 26
         if ($ndtps >= 12 && $pdtt <= 0.10) {
-            return number_format(4, 2);
-        }
-
-        // Jika dosen tetap >= 12 TAPI dosen tidak tetap antara 10% - 40%
-        if ($ndtps >= 12 && $pdtt > 0.10 && $pdtt <= 0.40) {
+            // Kondisi Unggul
+            $skor = 4;
+        } elseif ($ndtps >= 5 && $pdtt > 0.40) {
+            // Koreksi dari Anda: Safetynet jika PDTT lebih dari 40%
+            $skor = 2;
+        } elseif ($ndtps >= 12 && $pdtt > 0.10 && $pdtt <= 0.40) {
+            // NDTPS >= 12, tapi PDTT membengkak sedikit
             $b = (0.40 - $pdtt) / 0.30;
-            return number_format(2 + (2 * $b), 2);
-        }
-
-        // Jika dosen tetap antara 5 sampai 11, dan dosen tidak tetap <= 40%
-        if ($ndtps >= 5 && $ndtps < 12 && $pdtt <= 0.40) {
+            $skor = 2 + (2 * $b);
+        } else {
+            // NDTPS antara 5 s.d 11, dan PDTT wajar (<= 40%)
             $a = ($ndtps - 5) / 7;
             $b = (0.40 - $pdtt) / 0.40;
-            return number_format(2 + 2 * ($a * $b), 2);
+            $skor = 2 + 2 * ($a * $b);
         }
 
-        return number_format(0, 2);
+        return number_format($skor, 2);
     }
     /**
      * Hitung Skor Indikator 29: Kualifikasi Tenaga Kependidikan (Tabel 4.b)
@@ -185,161 +262,155 @@ class ScoringService
     }
 
     /**
-     * Hitung Skor Indikator 30: Beban Kerja Dosen (Tabel 4.c)
+     * Hitung Skor Indikator 30: Beban Kerja DTPS (Tabel 4.c)
+     * Presisi sesuai Matriks APS-AV 2025 Hal. 17
      */
     public static function hitungSkorBebanKerja($prodi_id)
     {
-        // 1. Tarik data khusus untuk DTPS
-        $query = BebanKerjaDosen::where('prodi_id', $prodi_id)
-                                ->where('is_dtps', 'Ya');
-                                
-        $count = $query->count();
-        if ($count == 0) return number_format(0, 2);
+        // 1. Ambil data beban kerja khusus DTPS
+        $data = BebanKerjaDosen::where('prodi_id', $prodi_id)
+                    ->where('is_dtps', 'Ya')
+                    ->get();
 
-        // 2. Hitung Rerata Beban Kerja (RBK) menggunakan kolom 'sks_jumlah'
-        $rbk = $query->avg('sks_jumlah');
+        // Aturan matriks: Tidak ada skor kurang dari 1
+        if ($data->isEmpty()) return number_format(1.00, 2); 
 
-        // 3. Logika Skor Matriks LAM Teknik
+        // 2. Hitung RBK (Rata-rata dari kolom sks_rata_rata)
+        $rbk = $data->avg('sks_rata_rata');
+
+        // 3. Logika Skor Matriks Hal. 17
         if ($rbk >= 12 && $rbk <= 16) {
-            return number_format(4, 2);
+            $skor = 4;
         } elseif ($rbk > 16 && $rbk <= 20) {
-            return number_format((64 - (3 * $rbk)) / 4, 2);
-        } elseif ($rbk < 12 && $rbk > 0) {
-            return number_format($rbk / 3, 2); // Proporsional jika di bawah 12
+            // Rumus: (64 - (3 x RBK)) / 4
+            $skor = (64 - (3 * $rbk)) / 4;
+        } else {
+            // Jika RBK < 12 (underload) atau > 20 (extreme overload)
+            $skor = 1; 
         }
 
-        return number_format(0, 2); // Jika RBK > 20
+        // 4. Pengaman akhir (Safety Net)
+        return number_format(max(1, $skor), 2);
     }
-    
     /**
-     * Hitung Skor Indikator 31: Publikasi Ilmiah DTPS (Tabel 4.d)
+     * Hitung Skor Indikator 33: Publikasi Ilmiah DTPS (Tabel 4.d)
+     * Presisi sesuai Matriks APS-AV 2025 Hal. 17-18
      */
-    public static function hitungSkorPublikasiDTPS($prodi_id)
+    public static function hitungSkorPublikasiDtps($prodi_id)
     {
-        // 1. Ambil jumlah Dosen Tetap (NDTPS)
-        $ndtps = ProfilDosen::where('prodi_id', $prodi_id)
-                    ->where('kategori_dosen', 'Dosen Tetap')
-                    ->count();
+        // 1. Ambil NDTPS (Dosen Tetap Inti)
+        $ndtps = \App\Models\ProfilDosen::where('prodi_id', $prodi_id)
+                ->where('kategori_dosen', 'Dosen Tetap')
+                ->where('kesesuaian_kompetensi', 'V')
+                ->count();
 
         if ($ndtps == 0) return number_format(0, 2);
 
-        // 2. Fungsi bantu untuk mengambil jumlah publikasi berdasarkan "jenis_publikasi"
-        $getTotalByKategori = function ($kategori) use ($prodi_id) {
-            $data = PublikasiIlmiahDtps::where('prodi_id', $prodi_id)
-                        ->where('jenis_publikasi', $kategori)
-                        ->first();
-            
-            // Karena Anda sudah punya kolom 'jumlah_total', kita bisa langsung pakai itu!
-            // Jika datanya tidak ada, kembalikan nilai 0.
-            return $data ? $data->jumlah_total : 0;
-        };
+        // 2. Ambil data publikasi dari Tabel 4.d
+        $publikasi = \App\Models\PublikasiIlmiahDtps::where('prodi_id', $prodi_id)->get();
 
-        // 3. Ambil total masing-masing kategori 
-        // ⚠️ PENTING: Sesuaikan teks string di bawah ini dengan pilihan yang ada di form input Anda!
-        $na = $getTotalByKategori('Jurnal Nasional Belum Terakreditasi'); 
-        $nb = $getTotalByKategori('Jurnal Nasional Terakreditasi');       
-        $nc = $getTotalByKategori('Jurnal Internasional');                
-        $nd = $getTotalByKategori('Jurnal Internasional Bereputasi');     
+        $ni = 0; // Internasional
+        $nn = 0; // Nasional
+        $nw = 0; // Wilayah / Lokal / Tidak Terakreditasi
 
-        // 4. Hitung Rasio Publikasi (RI) dengan Bobot LAM Teknik
-        $ri = (($na * 1) + ($nb * 2) + ($nc * 3) + ($nd * 4)) / $ndtps;
+        foreach ($publikasi as $pub) {
+            $total = $pub->jumlah_total; // Menggunakan kolom auto-kalkulasi Anda
+            $jenis = strtolower($pub->jenis_publikasi);
 
-        // 5. Logika Skor Matriks LAM Teknik
-        if ($ri >= 0.5) {
-            return number_format(4, 2);
-        } else {
-            return number_format(2 + (4 * $ri), 2);
+            if (str_contains($jenis, 'internasional')) {
+                $ni += $total;
+            } elseif (str_contains($jenis, 'nasional') && !str_contains($jenis, 'tidak terakreditasi')) {
+                // Jurnal/Prosiding Nasional Terakreditasi
+                $nn += $total;
+            } else {
+                // Jurnal Nasional Tidak Terakreditasi, Wilayah, Lokal, Media Massa
+                $nw += $total;
+            }
         }
+
+        // 3. Hitung Rasio per tahun per dosen (dibagi 3 tahun, dibagi NDTPS)
+        $ri = $ni / 3 / $ndtps;
+        $rn = $nn / 3 / $ndtps;
+        $rw = $nw / 3 / $ndtps;
+
+        // Faktor Ketetapan Publikasi DTPS
+        $a = 0.05;
+        $b = 0.50;
+        $c = 2.00;
+
+        // 4. Logika Skor
+        if ($ri > $a && $rn > $b) {
+            $skor = 4;
+        } else {
+            $ri_capped = min($ri, $a);
+            $rn_capped = min($rn, $b);
+            $rw_capped = min($rw, $c);
+
+            $A_val = $ri_capped / $a;
+            $B_val = $rn_capped / $b;
+            $C_val = $rw_capped / $c;
+
+            $skor = 3.75 * (
+                ($A_val + $B_val + ($C_val / 2)) - 
+                ($A_val * $B_val) - 
+                (($A_val * $C_val) / 2) - 
+                (($B_val * $C_val) / 2) + 
+                (($A_val * $B_val * $C_val) / 2)
+            );
+        }
+
+        return number_format(max(0, $skor), 2);
     }
     /**
-     * Hitung Skor Indikator 32: Karya Ilmiah / Pameran / Presentasi DTPS (Tabel 4.e)
+     * Hitung Skor Indikator 34: Luaran Penelitian dan PkM DTPS (Tabel 4.f / 4.e)
+     * Presisi sesuai Matriks APS-AV 2025 Hal. 18 (Sistem Bobot RLP)
      */
-    public static function hitungSkorKaryaIlmiahDTPS($prodi_id)
+    public static function hitungSkorKaryaIlmiahDtps($prodi_id)
     {
-        // 1. Ambil jumlah Dosen Tetap (NDTPS)
-        $ndtps = ProfilDosen::where('prodi_id', $prodi_id)
-                    ->where('kategori_dosen', 'Dosen Tetap')
-                    ->count();
+        // 1. Ambil NDTPS (Dosen Tetap Inti)
+        $ndtps = \App\Models\ProfilDosen::where('prodi_id', $prodi_id)
+                ->where('kategori_dosen', 'Dosen Tetap')
+                ->where('kesesuaian_kompetensi', 'V')
+                ->count();
 
-        if ($ndtps == 0) return number_format(0, 2);
+        // Tidak ada skor kurang dari 2 (Sesuai pengaman matriks)
+        if ($ndtps == 0) return number_format(2.00, 2); 
 
-        // 2. Fungsi bantu ambil jumlah total berdasarkan "jenis_publikasi"
-        $getTotalByKategori = function ($kategori) use ($prodi_id) {
-            $data = KaryaIlmiahDtps::where('prodi_id', $prodi_id)
-                        ->where('jenis_publikasi', $kategori)
-                        ->first();
-            
-            return $data ? $data->jumlah_total : 0;
-        };
+        // 2. Ambil data luaran karya ilmiah DTPS
+        $luaran = \App\Models\KaryaIlmiahDtps::where('prodi_id', $prodi_id)->get();
 
-        // 3. Ambil total masing-masing kategori 
-        // ⚠️ PENTING: Sesuaikan teks string ini dengan pilihan dropdown di form 4.e Anda!
-        $na = $getTotalByKategori('Wilayah/Lokal');
-        $nb = $getTotalByKategori('Nasional');       
-        $nc = $getTotalByKategori('Internasional');                
+        $nPaten = 0;    // Bobot 3
+        $nTTG_NBC = 0;  // Bobot 2
+        $nHKI = 0;      // Bobot 1
 
-        // 4. Hitung Rasio Publikasi (RI) dengan Bobot LAM Teknik
-        $ri = (($na * 1) + ($nb * 2) + ($nc * 3)) / $ndtps;
+        foreach ($luaran as $item) {
+            $jenis = strtolower($item->jenis_publikasi);
+            $total = $item->jumlah_total; // Pakai auto-kalkulasi dari migrasi Anda
 
-        // 5. Logika Skor Matriks LAM Teknik
-        if ($ri >= 0.5) {
-            return number_format(4, 2);
-        } else {
-            return number_format(2 + (4 * $ri), 2);
+            if (str_contains($jenis, 'paten')) {
+                $nPaten += $total;
+            } elseif (str_contains($jenis, 'teknologi') || str_contains($jenis, 'produk') || str_contains($jenis, 'buku') || str_contains($jenis, 'isbn') || str_contains($jenis, 'chapter')) {
+                $nTTG_NBC += $total;
+            } else {
+                // Asumsi sisanya adalah Hak Cipta / Pencatatan Ciptaan biasa
+                $nHKI += $total;
+            }
         }
-    }
-    /**
-     * Hitung Skor Indikator 33: Luaran HKI (Paten) (Tabel 4.f.1)
-     */
-    public static function hitungSkorLuaranPaten($prodi_id)
-    {
-        // 1. Ambil jumlah Dosen Tetap (NDTPS)
-        $ndtps = ProfilDosen::where('prodi_id', $prodi_id)
-                    ->where('kategori_dosen', 'Dosen Tetap')
-                    ->count();
 
-        if ($ndtps == 0) return number_format(0, 2);
+        // 3. Hitung RLP sesuai rumus matriks: ((3 x NPaten) + 2 x (NTTG + NBC) + NHKI) / NDTPS
+        $pembilang = (3 * $nPaten) + (2 * $nTTG_NBC) + $nHKI;
+        $rlp = $pembilang / $ndtps;
 
-        // 2. Hitung jumlah luaran paten
-        // Catatan: Jika Anda HANYA ingin menghitung paten yang sudah keluar nomornya (bukan yang masih proses), 
-        // Anda bisa tambahkan ->whereNotNull('nomor_paten') sebelum ->count(). 
-        // Di sini saya asumsikan semua data yang diinput ke tabel ini dihitung.
-        $totalPaten = LuaranHkiPaten::where('prodi_id', $prodi_id)->count();
-
-        // 3. Hitung Rasio (RI)
-        $ri = $totalPaten / $ndtps;
-
-        // 4. Logika Skor Matriks LAM Teknik
-        if ($ri >= 0.1) {
-            return number_format(4, 2);
+        // 4. Logika Skor Matriks Hal. 18
+        if ($rlp >= 3) {
+            $skor = 4;
         } else {
-            return number_format(2 + (20 * $ri), 2);
+            // Skor = 2 + ((2 x RLP) / 3)
+            $skor = 2 + ((2 * $rlp) / 3);
         }
-    }
-    /**
-     * Hitung Skor Indikator 34: Luaran HKI (Hak Cipta, Desain Industri, dll) (Tabel 4.f.2)
-     */
-    public static function hitungSkorLuaranHakCipta($prodi_id)
-    {
-        // 1. Ambil jumlah Dosen Tetap (NDTPS)
-        $ndtps = ProfilDosen::where('prodi_id', $prodi_id)
-                    ->where('kategori_dosen', 'Dosen Tetap')
-                    ->count();
 
-        if ($ndtps == 0) return number_format(0, 2);
-
-        // 2. Hitung jumlah total luaran Hak Cipta
-        $totalHakCipta = LuaranHkiHakCipta::where('prodi_id', $prodi_id)->count();
-
-        // 3. Hitung Rasio (RI)
-        $ri = $totalHakCipta / $ndtps;
-
-        // 4. Logika Skor Matriks LAM Teknik
-        if ($ri >= 0.5) {
-            return number_format(4, 2);
-        } else {
-            return number_format(2 + (4 * $ri), 2);
-        }
+        // Pengaman berlapis: Tidak ada skor kurang dari 2
+        return number_format(max(2, $skor), 2);
     }
     /**
      * Hitung Skor Indikator 35: Luaran Teknologi / Produk / Karya Seni (Tabel 4.f.3)
@@ -433,6 +504,74 @@ class ScoringService
             // Contoh interpolasi linier jika target kurang dari 50%
             return number_format(1 + (6 * $pMkk), 2); 
         }
+    }
+
+    /**
+     * Hitung Skor Indikator 32: Kegiatan PkM DTPS (Tabel 3.c)
+     * Presisi sesuai Matriks APS-AV 2025
+     */
+    public static function hitungSkorPkmDtps($prodi_id)
+    {
+        // 1. Ambil NDTPS (Dosen Tetap Inti)
+        $ndtps = \App\Models\ProfilDosen::where('prodi_id', $prodi_id)
+                ->where('kategori_dosen', 'Dosen Tetap')
+                ->where('kesesuaian_kompetensi', 'V')
+                ->count();
+
+        if ($ndtps == 0) return number_format(0, 2);
+
+        // 2. Ambil data PkM dari Tabel 3.c
+        $pkm = PkmDtps::where('prodi_id', $prodi_id)->get();
+
+        $ni = 0; // Luar Negeri
+        $nn = 0; // Dalam Negeri
+        $nw = 0; // PT / Mandiri / Wilayah
+
+        foreach ($pkm as $p) {
+            $total = $p->jumlah_ts2 + $p->jumlah_ts1 + $p->jumlah_ts;
+            $sumber = strtolower($p->sumber_pembiayaan);
+
+            if (str_contains($sumber, 'luar negeri') || str_contains($sumber, 'internasional')) {
+                $ni += $total;
+            } elseif (str_contains($sumber, 'dalam negeri') || str_contains($sumber, 'nasional') || str_contains($sumber, 'kementerian')) {
+                $nn += $total;
+            } else {
+                $nw += $total;
+            }
+        }
+
+        // 3. Hitung Rasio per tahun per dosen
+        $ri = $ni / 3 / $ndtps;
+        $rn = $nn / 3 / $ndtps;
+        $rw = $nw / 3 / $ndtps;
+
+        // Faktor Ketetapan
+        $a = 0.05;
+        $b = 0.30;
+        $c = 1.00;
+
+        // 4. Logika Skor
+        if ($ri > $a && $rn > $b) {
+            $skor = 4;
+        } else {
+            $ri_capped = min($ri, $a);
+            $rn_capped = min($rn, $b);
+            $rw_capped = min($rw, $c);
+
+            $A_val = $ri_capped / $a;
+            $B_val = $rn_capped / $b;
+            $C_val = $rw_capped / $c;
+
+            $skor = 3.75 * (
+                ($A_val + $B_val + ($C_val / 2)) - 
+                ($A_val * $B_val) - 
+                (($A_val * $C_val) / 2) - 
+                (($B_val * $C_val) / 2) + 
+                (($A_val * $B_val * $C_val) / 2)
+            );
+        }
+
+        return number_format(max(0, $skor), 2);
     }
 
     /**
@@ -903,5 +1042,204 @@ class ScoringService
         }
 
         return number_format(max(1, $skor), 2); // Pastikan skor tidak pernah < 1
+    }
+
+    /**
+     * Hitung Skor Indikator 50: Kesesuaian Bidang Kerja Lulusan (Tabel 6.f.2)
+     * Presisi sesuai Matriks APS-AV 2025 Hal. 26
+     */
+    public static function hitungSkorKesesuaianKerja($prodi_id)
+    {
+        // 1. Ambil data hanya untuk lulusan TS-2 dan TS-1
+        $data = KesesuaianBidangKerja::where('prodi_id', $prodi_id)
+                    ->whereIn('tahun_lulus', ['TS-2', 'TS-1'])
+                    ->get();
+
+        if ($data->isEmpty()) return number_format(1.00, 2); // Minimum skor adalah 1
+
+        $totalLulusan = $data->sum('jumlah_lulusan');
+        $totalTerlacak = $data->sum('jumlah_lulusan_terlacak');
+
+        if ($totalTerlacak == 0) return number_format(1.00, 2);
+
+        // 2. Hitung KBK (Kesesuaian Tinggi + Sedang)
+        $kesesuaianTinggiSedang = $data->sum('kesesuaian_tinggi') + $data->sum('kesesuaian_sedang');
+        
+        // KBK dalam format desimal (contoh: 0.60 untuk 60%)
+        $kbk = $kesesuaianTinggiSedang / $totalTerlacak;
+
+        // 3. Logika Skor Matriks Hal. 26
+        // Jika memasukkan $kbk = 0.60 ke rumus (20 * 0.60) / 3 = 12 / 3 = 4
+        if ($kbk >= 0.60) {
+            $skor = 4;
+        } else {
+            $skor = (20 * $kbk) / 3;
+        }
+
+        // 4. Syarat Response Rate: Minimal 30% (0.30)
+        $responseRate = $totalTerlacak / $totalLulusan;
+        if ($responseRate < 0.30) {
+            // Penalti proporsional jika responden di bawah 30%
+            $skor = $skor * ($responseRate / 0.30);
+        }
+
+        return number_format(max(1, $skor), 2); // Pastikan tidak jatuh di bawah 1.00
+    }
+
+    /**
+     * Hitung Skor Indikator 51: Tingkat & Ukuran Tempat Kerja Lulusan (Tabel 6.g.1)
+     * Presisi sesuai Matriks APS-AV 2025 Hal. 26
+     */
+    public static function hitungSkorTempatKerja($prodi_id)
+    {
+        $data = \App\Models\TempatKerjaLulusan::where('prodi_id', $prodi_id)->get();
+
+        if ($data->isEmpty()) return number_format(0, 2);
+
+        $nl = $data->sum('jumlah_lulusan');
+        $nTerlacak = $data->sum('jumlah_tanggapan'); // Mengacu pada kolom respon
+
+        if ($nl == 0 || $nTerlacak == 0) return number_format(0, 2);
+
+        // Jumlah lulusan berdasarkan tingkat
+        $ni = $data->sum('tingkat_multinasional');
+        $nn = $data->sum('tingkat_nasional');
+        $nw = $data->sum('tingkat_lokal');
+
+        // Rasio dalam format desimal (contoh: 0.05 untuk 5%)
+        $ri = $ni / $nl;
+        $rn = $nn / $nl;
+        $rw = $nw / $nl;
+
+        // Faktor Ketetapan
+        $a = 0.05; // 5%
+        $b = 0.20; // 20%
+        $c = 0.90; // 90%
+
+        // Kondisi Skor 4.00
+        if ($ri > $a && $rn > $b) {
+            $skor = 4;
+        } else {
+            // Batasi nilai rasio maksimal sesuai nilai a, b, c (Aturan "Jika RI >= a... dst")
+            $ri_capped = min($ri, $a);
+            $rn_capped = min($rn, $b);
+            $rw_capped = min($rw, $c);
+
+            $A = $ri_capped / $a;
+            $B = $rn_capped / $b;
+            $C = $rw_capped / $c;
+
+            // Persamaan Polinomial LAM Teknik
+            $skor = 3.75 * (
+                ($A + $B + ($C / 2)) - 
+                ($A * $B) - 
+                (($A * $C) / 2) - 
+                (($B * $C) / 2) + 
+                (($A * $B * $C) / 2)
+            );
+        }
+
+        // Syarat Response Rate: Minimal 30%
+        $responseRate = $nTerlacak / $nl;
+        if ($responseRate < 0.30) {
+            // Berikan penalti proporsional jika partisipasi tracer study rendah
+            $skor = $skor * ($responseRate / 0.30);
+        }
+
+        return number_format($skor, 2);
+    }
+
+    /**
+     * Hitung Skor Indikator 52: Kepuasan Pengguna Lulusan (Tabel 6.g.2)
+     * Presisi sesuai Matriks APS-AV 2025 Hal. 26
+     */
+    public static function hitungSkorKepuasanPengguna($prodi_id)
+    {
+        $data = \App\Models\KepuasanPenggunaLulusan::where('prodi_id', $prodi_id)->get();
+
+        if ($data->isEmpty()) return number_format(0, 2);
+
+        $totalTki = 0;
+
+        foreach ($data as $item) {
+            // Mengubah nilai persentase di database (misal 80.5) menjadi desimal (0.805)
+            $ai = $item->sangat_baik / 100;
+            $bi = $item->baik / 100;
+            $ci = $item->cukup / 100;
+            $di = $item->kurang / 100;
+
+            // Rumus: TKi = (4 x ai) + (3 x bi) + (2 x ci) + (1 x di)
+            $tki = (4 * $ai) + (3 * $bi) + (2 * $ci) + (1 * $di);
+            
+            $totalTki += $tki;
+        }
+
+        // Skor akhir adalah total TKi dibagi 7 (konstan sesuai 7 aspek LAM Teknik)
+        $skor = $totalTki / 7;
+
+        return number_format($skor, 2);
+    }
+
+    /**
+     * Hitung Skor Indikator 17: Integrasi Penelitian & PkM dalam Pembelajaran (Tabel 3.a.3)
+     * Presisi sesuai Matriks APS-AV 2025 Hal. 10-11
+     */
+    public static function hitungSkorIntegrasiPembelajaran($prodi_id)
+    {
+        // 1. Ambil data integrasi pembelajaran milik prodi terkait
+        $data = \App\Models\IntegrasiPembelajaran::where('prodi_id', $prodi_id)->get();
+
+        if ($data->isEmpty()) return number_format(1.00, 2); // Matriks mensyaratkan minimal skor 1
+
+        // 2. Hitung jumlah Mata Kuliah UNIK yang diintegrasikan
+        // (Satu mata kuliah bisa diisi oleh beberapa penelitian, tapi dihitung 1 MK)
+        $mkTerintegrasi = $data->unique('mata_kuliah')->count();
+
+        // 3. Tentukan Total Mata Kuliah Inti Prodi
+        // TODO: Ganti angka 40 ini dengan query Count ke tabel Kurikulum Anda jika ada.
+        // Contoh: $totalMkInti = Kurikulum::where('prodi_id', $prodi_id)->where('jenis_mk', 'Inti')->count();
+        $totalMkInti = 40; 
+
+        if ($totalMkInti == 0) return number_format(1.00, 2);
+
+        // 4. Hitung Persentase Integrasi
+        $persentase = ($mkTerintegrasi / $totalMkInti) * 100;
+
+        // 5. Logika Skor Matriks Hal. 10-11
+        // Syarat utama: minimal 10% dari MK Inti
+        if ($persentase >= 10) {
+            $skor = 4; // Asumsi 4 aspek kualitatif terpenuhi karena sudah tervalidasi di RPS
+        } else {
+            // Jika kurang dari 10%, skor merosot proporsional menuju batas bawah (1.00)
+            $skor = 1 + (3 * ($persentase / 10));
+        }
+
+        return number_format(max(1, min(4, $skor)), 2);
+    }
+
+    /**
+     * Hitung Skor Indikator 19: Basic Science & Matematika (Tabel 3.a.4)
+     * Presisi sesuai Matriks APS-AV 2025 Hal. 12
+     */
+    public static function hitungSkorBasicScience($prodi_id)
+    {
+        // 1. Hitung total SKS basic science untuk prodi terkait
+        $totalSks = \App\Models\MatkulBasicScience::where('prodi_id', $prodi_id)
+                    ->sum('jumlah_sks');
+
+        // 2. Logika Skor Matriks Hal. 12
+        if ($totalSks >= 25) {
+            $skor = 4;
+        } elseif ($totalSks >= 20) {
+            $skor = 3;
+        } elseif ($totalSks >= 15) {
+            $skor = 2;
+        } elseif ($totalSks >= 10) {
+            $skor = 1;
+        } else {
+            $skor = 0;
+        }
+
+        return number_format($skor, 2);
     }
     }

@@ -10,6 +10,7 @@ return new class extends Migration
     {
         Schema::create('mahasiswas', function (Blueprint $table) {
             $table->id();
+             $table->unsignedBigInteger('prodi_id');
             $table->string('program_studi'); // Kolom Program Studi
             
             // Kolom Mahasiswa Aktif

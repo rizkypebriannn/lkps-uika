@@ -10,6 +10,7 @@ return new class extends Migration
     {
         Schema::create('integrasi_pembelajarans', function (Blueprint $table) {
             $table->id();
+            $table->unsignedBigInteger('prodi_id');
             $table->string('nama_dosen');
             $table->string('judul_kegiatan'); // Judul Penelitian/PkM
             $table->string('mata_kuliah');
