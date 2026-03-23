@@ -226,7 +226,7 @@
                                 <div class="d-flex justify-content-between align-items-center mb-2">
                                     <div>
                                         <p class="text-muted mb-1 fw-semibold" style="font-size: 0.85rem;">HKI (Paten)</p>
-                                        <h2 class="fw-bold mb-0" style="color: #06b6d4;">{{ $skorLuaranPaten }} <span style="font-size: 1rem; color:#888;">/ 4.00</span></h2>
+                                        <h2 class="fw-bold mb-0" style="color: #06b6d4;">{{ $skorLuaranPenelitianPkM }} <span style="font-size: 1rem; color:#888;">/ 4.00</span></h2>
                                     </div>
                                     <div class="bg-opacity-10 p-2 rounded-circle" style="background-color: rgba(6, 182, 212, 0.1);">
                                         <i class="bi bi-award-fill" style="font-size: 1.2rem; color: #06b6d4;"></i>
@@ -236,50 +236,22 @@
                             </div>
                         </div>
 
-                        <div class="card shadow-sm border-0 rounded-4 border-start border-4 mb-3" style="border-color: #f97316 !important;">
-                            <div class="card-body">
-                                <div class="d-flex justify-content-between align-items-center mb-2">
-                                    <div>
-                                        <p class="text-muted mb-1 fw-semibold" style="font-size: 0.85rem;">HKI (Hak Cipta)</p>
-                                        <h2 class="fw-bold mb-0" style="color: #f97316;">{{ $skorLuaranHakCipta }} <span style="font-size: 1rem; color:#888;">/ 4.00</span></h2>
-                                    </div>
-                                    <div class="bg-opacity-10 p-2 rounded-circle" style="background-color: rgba(249, 115, 22, 0.1);">
-                                        <i class="bi bi-c-circle-fill" style="font-size: 1.2rem; color: #f97316;"></i>
-                                    </div>
+                       <div class="card shadow-sm border-0 rounded-4 border-start border-4 mb-3" style="border-color: #06b6d4 !important;">
+                        <div class="card-body">
+                            <div class="d-flex justify-content-between align-items-center mb-2">
+                                <div>
+                                    <p class="text-muted mb-1 fw-semibold" style="font-size: 0.85rem;">Luaran Penelitian/PkM DTPS</p>
+                                    <h2 class="fw-bold mb-0" style="color: #06b6d4;">{{ $skorLuaranPenelitianPkM }} <span style="font-size: 1rem; color:#888;">/ 4.00</span></h2>
                                 </div>
-                                <p class="mb-0 text-muted" style="font-size: 0.75rem;">Target: Rasio >= 0.5. (Tabel 4.f.2)</p>
+                                <div class="bg-opacity-10 p-2 rounded-circle" style="background-color: rgba(6, 182, 212, 0.1);">
+                                    <i class="bi bi-award-fill" style="font-size: 1.2rem; color: #06b6d4;"></i>
+                                </div>
                             </div>
+                            <p class="mb-0 text-muted" style="font-size: 0.75rem;">Gabungan Paten, Hak Cipta, TTG & Buku. Rasio >= 3. (Tabel 4.f)</p>
                         </div>
+                    </div>
 
-                        <div class="card shadow-sm border-0 rounded-4 border-start border-4 mb-3" style="border-color: #14b8a6 !important;">
-                            <div class="card-body">
-                                <div class="d-flex justify-content-between align-items-center mb-2">
-                                    <div>
-                                        <p class="text-muted mb-1 fw-semibold" style="font-size: 0.85rem;">Teknologi & Produk</p>
-                                        <h2 class="fw-bold mb-0" style="color: #14b8a6;">{{ $skorLuaranTeknologi }} <span style="font-size: 1rem; color:#888;">/ 4.00</span></h2>
-                                    </div>
-                                    <div class="bg-opacity-10 p-2 rounded-circle" style="background-color: rgba(20, 184, 166, 0.1);">
-                                        <i class="bi bi-cpu-fill" style="font-size: 1.2rem; color: #14b8a6;"></i>
-                                    </div>
-                                </div>
-                                <p class="mb-0 text-muted" style="font-size: 0.75rem;">Target: Rasio >= 0.5. (Tabel 4.f.3)</p>
-                            </div>
-                        </div>
-
-                        <div class="card shadow-sm border-0 rounded-4 border-start border-4 mb-3" style="border-color: #4f46e5 !important;">
-                            <div class="card-body">
-                                <div class="d-flex justify-content-between align-items-center mb-2">
-                                    <div>
-                                        <p class="text-muted mb-1 fw-semibold" style="font-size: 0.85rem;">Buku Ber-ISBN</p>
-                                        <h2 class="fw-bold mb-0" style="color: #4f46e5;">{{ $skorLuaranBuku }} <span style="font-size: 1rem; color:#888;">/ 4.00</span></h2>
-                                    </div>
-                                    <div class="bg-opacity-10 p-2 rounded-circle" style="background-color: rgba(79, 70, 229, 0.1);">
-                                        <i class="bi bi-book-half" style="font-size: 1.2rem; color: #4f46e5;"></i>
-                                    </div>
-                                </div>
-                                <p class="mb-0 text-muted" style="font-size: 0.75rem;">Target: Rasio >= 0.5. (Tabel 4.f.4)</p>
-                            </div>
-                        </div>
+                    
 
                         <div class="card shadow-sm border-0 rounded-4 border-start border-4 mb-3" style="border-color: #059669 !important;">
                             <div class="card-body">
@@ -325,6 +297,21 @@
                                         <p class="mb-0 text-muted" style="font-size: 0.75rem;">Target: >= 50% Judul melibatkan Mhs. (Tabel 6.i & 3.c)</p>
                                     </div>
                                 </div>
+
+                                <div class="card shadow-sm border-0 rounded-4 border-start border-4 mb-3" style="border-color: #f43f5e !important;">
+                                <div class="card-body">
+                                    <div class="d-flex justify-content-between align-items-center mb-2">
+                                        <div>
+                                            <p class="text-muted mb-1 fw-semibold" style="font-size: 0.85rem;">Capstone Design</p>
+                                            <h2 class="fw-bold mb-0" style="color: #f43f5e;">{{ $skorCapstoneDesign }} <span style="font-size: 1rem; color:#888;">/ 4.00</span></h2>
+                                        </div>
+                                        <div class="bg-opacity-10 p-2 rounded-circle" style="background-color: rgba(244, 63, 94, 0.1);">
+                                            <i class="bi bi-tools" style="font-size: 1.2rem; color: #f43f5e;"></i>
+                                        </div>
+                                    </div>
+                                    <p class="mb-0 text-muted" style="font-size: 0.75rem;">Target: Memenuhi 4 aspek penyelenggaraan. (Tabel 3.a.5)</p>
+                                </div>
+                            </div>
 
                                 <div class="card shadow-sm border-0 rounded-4 border-start border-4 mb-3" style="border-color: #8b5cf6 !important;">
                                 <div class="card-body">
@@ -503,6 +490,88 @@
                     </div>
                 </div>
                 <p class="mb-0 text-muted" style="font-size: 0.75rem;">Rata-rata 7 aspek kemampuan lulusan. (Tabel 6.g.2)</p>
+            </div>
+        </div>
+
+       <div class="col-12">
+    <div class="card shadow-sm border-0 rounded-4 border-start border-4 mb-3" style="border-color: #fbbf24 !important;">
+        <div class="card-body">
+            <div class="d-flex justify-content-between align-items-center mb-2">
+                <div>
+                    <p class="text-muted mb-1 fw-semibold" style="font-size: 0.85rem;">Biaya Operasional (BOP)</p>
+                    <h2 class="fw-bold mb-0" style="color: #fbbf24;">{{ $skorKeuangan['skorBop'] }} <span style="font-size: 1rem; color:#888;">/ 4.00</span></h2>
+                </div>
+                <div class="bg-opacity-10 p-2 rounded-circle" style="background-color: rgba(251, 191, 36, 0.1);">
+                    <i class="bi bi-cash-stack" style="font-size: 1.2rem; color: #fbbf24;"></i>
+                </div>
+            </div>
+            <p class="mb-0 text-muted" style="font-size: 0.75rem;">Target: > Rp 20 Juta/Mhs/Thn. (Tabel 2.b)</p>
+        </div>
+    </div>
+</div>
+
+<div class="col-12">
+    <div class="card shadow-sm border-0 rounded-4 border-start border-4 mb-3" style="border-color: #f59e0b !important;">
+        <div class="card-body">
+            <div class="d-flex justify-content-between align-items-center mb-2">
+                <div>
+                    <p class="text-muted mb-1 fw-semibold" style="font-size: 0.85rem;">Dana Penelitian DTPS</p>
+                    <h2 class="fw-bold mb-0" style="color: #f59e0b;">{{ $skorKeuangan['skorDpd'] }} <span style="font-size: 1rem; color:#888;">/ 4.00</span></h2>
+                </div>
+                <div class="bg-opacity-10 p-2 rounded-circle" style="background-color: rgba(245, 158, 11, 0.1);">
+                    <i class="bi bi-search" style="font-size: 1.2rem; color: #f59e0b;"></i>
+                </div>
+            </div>
+            <p class="mb-0 text-muted" style="font-size: 0.75rem;">Target: >= Rp 10 Juta/Dosen/Thn. (Tabel 2.b)</p>
+        </div>
+    </div>
+</div>
+
+<div class="col-12">
+    <div class="card shadow-sm border-0 rounded-4 border-start border-4 mb-3" style="border-color: #d97706 !important;">
+        <div class="card-body">
+            <div class="d-flex justify-content-between align-items-center mb-2">
+                <div>
+                    <p class="text-muted mb-1 fw-semibold" style="font-size: 0.85rem;">Dana PkM DTPS</p>
+                    <h2 class="fw-bold mb-0" style="color: #d97706;">{{ $skorKeuangan['skorDpkm'] }} <span style="font-size: 1rem; color:#888;">/ 4.00</span></h2>
+                </div>
+                <div class="bg-opacity-10 p-2 rounded-circle" style="background-color: rgba(217, 119, 6, 0.1);">
+                    <i class="bi bi-people" style="font-size: 1.2rem; color: #d97706;"></i>
+                </div>
+            </div>
+            <p class="mb-0 text-muted" style="font-size: 0.75rem;">Target: >= Rp 5 Juta/Dosen/Thn. (Tabel 2.b)</p>
+        </div>
+    </div>
+</div>
+
+
+            <div class="card shadow-sm border-0 rounded-4 border-start border-4 mb-3" style="border-color: #6366f1 !important;">
+            <div class="card-body">
+                <div class="d-flex justify-content-between align-items-center mb-2">
+                    <div>
+                        <p class="text-muted mb-1 fw-semibold" style="font-size: 0.85rem;">SPMI (Indikator 4)</p>
+                        <h2 class="fw-bold mb-0" style="color: #6366f1;">{{ $skorSpmi }} <span style="font-size: 1rem; color:#888;">/ 4.00</span></h2>
+                    </div>
+                    <div class="bg-opacity-10 p-2 rounded-circle" style="background-color: rgba(99, 102, 241, 0.1);">
+                        <i class="bi bi-shield-check" style="font-size: 1.2rem; color: #6366f1;"></i>
+                    </div>
+                </div>
+                <p class="mb-0 text-muted" style="font-size: 0.75rem;">Siklus PPEPP, Bukti Sahih, & Laporan AMI. (Tabel 7)</p>
+            </div>
+        </div>
+
+        <div class="card shadow-sm border-0 rounded-4 border-start border-4 mb-3" style="border-color: #10b981 !important;">
+            <div class="card-body">
+                <div class="d-flex justify-content-between align-items-center mb-2">
+                    <div>
+                        <p class="text-muted mb-1 fw-semibold" style="font-size: 0.85rem;">Evaluasi Kurikulum</p>
+                        <h2 class="fw-bold mb-0" style="color: #10b981;">{{ $skorEvaluasiKurikulum }} <span style="font-size: 1rem; color:#888;">/ 4.00</span></h2>
+                    </div>
+                    <div class="bg-opacity-10 p-2 rounded-circle" style="background-color: rgba(16, 185, 129, 0.1);">
+                        <i class="bi bi-arrow-repeat" style="font-size: 1.2rem; color: #10b981;"></i>
+                    </div>
+                </div>
+                <p class="mb-0 text-muted" style="font-size: 0.75rem;">Siklus 4-5 tahun & pelibatan stakeholder. (Tabel 3.a.2)</p>
             </div>
         </div>
 

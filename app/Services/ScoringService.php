@@ -20,7 +20,6 @@ use App\Models\PenelitianDtpsMahasiswa; // Model untuk Tabel 6.h.1 yang Anda kir
 use App\Models\PkmDtps; // Tabel 3.c
 use App\Models\PkmDtpsMahasiswa; // Tabel 6.i
 use App\Models\JumlahMahasiswa; 
-use App\Models\IpkLulusan;
 use App\Models\PrestasiAkademik;
 use App\Models\PrestasiNonAkademik;
 use App\Models\MasaStudiLulusan;
@@ -32,6 +31,11 @@ use App\Models\TempatKerjaLulusan;
 use App\Models\KepuasanPenggunaLulusan;
 use App\Models\IntegrasiPembelajaran;
 use App\Models\MatkulBasicScience;
+use App\Models\CapstoneDesign;
+use App\Models\IpkLulusan;
+use App\Models\DokumenSpmi;
+use App\Models\Keuangan;
+
 
 
 class ScoringService
@@ -83,6 +87,43 @@ class ScoringService
         } else {
             return number_format(2 + (4 * $pds3), 2);
         }
+    }
+
+    /**
+     * Hitung Skor Keuangan (Indikator 9, 10, 11)
+     * Referensi: Matriks LAM Teknik Hal. 6-7
+     */
+    public static function hitungSkorKeuangan($prodi_id)
+    {
+        $data = Keuangan::where('prodi_id', $prodi_id)
+            ->whereIn('tahun', ['TS-2', 'TS-1', 'TS'])
+            ->get();
+
+        if ($data->isEmpty()) return [
+            'skorBop' => '0.00',
+            'skorDpd' => '0.00',
+            'skorDpkm' => '0.00'
+        ];
+
+        // Rata-rata 3 tahun
+        $avgBop = $data->avg('dana_operasional_mhs');
+        $avgDpd = $data->avg('dana_penelitian_dtps');
+        $avgDpkm = $data->avg('dana_pkm_dtps');
+
+        // Skor Indikator 9 (BOP)
+        $skorBop = ($avgBop > 20000000) ? 4 : ($avgBop / 5000000);
+
+        // Skor Indikator 10 (DPD)
+        $skorDpd = ($avgDpd >= 10000000) ? 4 : ((2 * $avgDpd) / 5000000);
+
+        // Skor Indikator 11 (DPkM)
+        $skorDpkm = ($avgDpkm >= 5000000) ? 4 : ((4 * $avgDpkm) / 5000000);
+
+        return [
+            'skorBop' => number_format(max(0, min(4, $skorBop)), 2),
+            'skorDpd' => number_format(max(0, min(4, $skorDpd)), 2),
+            'skorDpkm' => number_format(max(0, min(4, $skorDpkm)), 2)
+        ];
     }
 
     /**
@@ -1242,4 +1283,138 @@ class ScoringService
 
         return number_format($skor, 2);
     }
+
+    /**
+     * Hitung Skor Indikator 34: Luaran Penelitian & PkM DTPS (Tabel 4.f)
+     * Sesuai Matriks LAM Teknik 2025 Hal. 19 [cite: 123]
+     */
+    public static function hitungSkorLuaranPenelitianPkM($prodi_id)
+    {
+        // 1. Hitung NDTPS (Dosen Tetap sesuai kompetensi) [cite: 123]
+        $ndtps = ProfilDosen::where('prodi_id', $prodi_id)
+            ->where('kategori_dosen', 'Dosen Tetap')
+            ->where('kesesuaian_kompetensi', 'V')
+            ->count();
+
+        // Jika tidak ada dosen, skor minimal 0 (hindari pembagian dengan nol)
+        if ($ndtps == 0) return number_format(0.00, 2);
+
+        // 2. Ambil data luaran dari tabel-tabel yang sudah dibuat [cite: 123]
+        $nPaten = LuaranHkiPaten::where('prodi_id', $prodi_id)->count();
+        $nTTG   = LuaranTeknologiProduk::where('prodi_id', $prodi_id)->count();
+        $nBC    = LuaranBukuIsbn::where('prodi_id', $prodi_id)->count();
+        $nHKI   = LuaranHkiHakCipta::where('prodi_id', $prodi_id)->count();
+
+        // 3. Hitung Rasio Luaran Penelitian (RLP) [cite: 123]
+        // Rumus: RLP = ((3 * Paten) + (2 * (TTG + Buku)) + Hak Cipta) / NDTPS
+        $rlp = ((3 * $nPaten) + 2 * ($nTTG + $nBC) + $nHKI) / $ndtps;
+
+        // 4. Penentuan Skor sesuai Matriks Hal. 19 [cite: 123]
+        if ($rlp >= 3) {
+            $skor = 4;
+        } else {
+            // Rumus: Skor = 2 + (2 * RLP / 3)
+            $skor = 2 + ((2 * $rlp) / 3);
+        }
+
+        return number_format(max(0, min(4, $skor)), 2);
     }
+
+    /**
+     * Hitung Skor Indikator 20: Capstone Design (Tabel 3.a.5)
+     * Referensi: Matriks Penilaian LAM Teknik Hal. 13
+     */
+    public static function hitungSkorCapstoneDesign($prodi_id)
+    {
+        // Ambil data Capstone Design milik prodi terkait
+        $data = \App\Models\CapstoneDesign::where('prodi_id', $prodi_id)->first();
+
+        // Jika tidak ada data sama sekali (Tidak menyelenggarakan)
+        if (!$data) return number_format(0.00, 2);
+    
+        $skor = 0;
+
+        // Logika penilaian berjenjang sesuai urutan matriks
+        if ($data->has_panduan) {
+            $skor = 1;
+            if ($data->has_cpl_rumusan) {
+                $skor = 2;
+                if ($data->has_standar_keteknikan) {
+                    $skor = 3;
+                    if ($data->has_bukti_sahih) {
+                        $skor = 4;
+                    }
+                }
+            }
+        }
+
+        return number_format($skor, 2);
+    }
+
+    /**
+     * Hitung Skor Indikator 4: SPMI (Tabel 7)
+     * Referensi: Matriks Penilaian LAM Teknik Hal. 5
+     */
+    public static function hitungSkorSpmi($prodi_id)
+    {
+        $dokumen = DokumenSpmi::where('prodi_id', $prodi_id)->get();
+        
+        if ($dokumen->isEmpty()) return number_format(0.00, 2);
+
+        // 1. Cek Kelengkapan 4 Dokumen Baku (Kebijakan, Manual, Standar, Formulir)
+        $jenisWajib = ['Kebijakan', 'Manual', 'Standar', 'Formulir'];
+        $dokumenAda = $dokumen->pluck('jenis_dokumen')->unique()->toArray();
+        $hasSemuaDokumen = count(array_intersect($jenisWajib, $dokumenAda)) == 4;
+
+        // 2. Cek Siklus PPEPP dan Laporan AMI
+        $hasPPEPP = $dokumen->where('is_ppepp', true)->isNotEmpty();
+        $hasAMI = $dokumen->where('is_ami', true)->isNotEmpty();
+
+        $skor = 0;
+
+        // Logika Berjenjang Matriks LAM Teknik
+        if ($hasSemuaDokumen) {
+            $skor = 1; // Aspek 1 terpenuhi
+            if ($hasPPEPP) {
+                $skor = 3; // Matriks: Terlaksana PPEPP & Bukti Sahih (Aspek 2 & 3)
+                if ($hasAMI) {
+                    $skor = 4; // Aspek 4 terpenuhi
+                }
+            }
+        }
+
+        return number_format($skor, 2);
+    }
+
+    /**
+     * Hitung Skor Indikator 21: Evaluasi Kurikulum (Tabel 3.a.2)
+     * Referensi: Matriks LAM Teknik Hal. 14
+     */
+    public static function hitungSkorEvaluasiKurikulum($prodi_id)
+    {
+        // Ambil data kurikulum terakhir milik prodi
+        $data = Kurikulum::where('prodi_id', $prodi_id)->latest()->first();
+
+        if (!$data) return number_format(0.00, 2);
+
+        $skor = 0;
+
+        // Logika Berjenjang (Cascading) sesuai Matriks
+        if ($data->libatkan_stakeholder) {
+            $skor = 1;
+            if ($data->sesuai_visi_misi) {
+                $skor = 2;
+                if ($data->update_berkala) {
+                    $skor = 3;
+                    if ($data->implementasi_hasil_evaluasi) {
+                        $skor = 4;
+                    }
+                }
+            }
+        }
+
+        return number_format($skor, 2);
+    }
+
+
+}

@@ -7,7 +7,6 @@ return new class extends Migration {
     public function up() {
         Schema::create('prodis', function (Blueprint $table) {
             $table->id();
-            $table->unsignedBigInteger('prodi_id');
             $table->string('nama_prodi');
             $table->timestamps();
         });

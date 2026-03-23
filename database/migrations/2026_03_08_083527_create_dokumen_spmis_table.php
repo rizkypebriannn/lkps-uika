@@ -15,6 +15,8 @@ return new class extends Migration
             $table->string('jenis_dokumen'); // Pilihan 4 jenis dokumen baku
             $table->string('nomor_dokumen');
             $table->date('tanggal_dokumen');
+            $table->boolean('is_ppepp')->default(false); // Untuk menandai dokumen ini bukti siklus PPEPP
+            $table->boolean('is_ami')->default(false);   // Untuk menandai ini adalah Laporan AMI
             
             $table->timestamps();
         });

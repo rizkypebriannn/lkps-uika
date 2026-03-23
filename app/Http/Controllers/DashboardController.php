@@ -21,8 +21,8 @@ class DashboardController extends Controller
         $skorBebanKerja = ScoringService::hitungSkorBebanKerja($prodi_id);
         $skorPublikasiDtps = ScoringService::hitungSkorPublikasiDTPS($prodi_id);
         $skorKaryaIlmiahDtps = ScoringService::hitungSkorKaryaIlmiahDTPS($prodi_id);
-        $skorLuaranPaten = ScoringService::hitungSkorLuaranPaten($prodi_id);
-        $skorLuaranHakCipta = ScoringService::hitungSkorLuaranHakCipta($prodi_id);
+        $skorLuaranPenelitianPkM = ScoringService::hitungSkorLuaranPenelitianPkM($prodi_id);
+        $skorLuaranPenelitianPkM = ScoringService::hitungSkorLuaranPenelitianPkM($prodi_id);
         $skorLuaranTeknologi = ScoringService::hitungSkorLuaranTeknologi($prodi_id);
         $skorLuaranBuku = ScoringService::hitungSkorLuaranBuku($prodi_id);
         $skorKurikulum = ScoringService::hitungSkorKurikulum($prodi_id);
@@ -44,13 +44,17 @@ class DashboardController extends Controller
         $skorPkmDtps = ScoringService::hitungSkorPkmDtps($prodi_id);
         $skorIntegrasiPembelajaran = ScoringService::hitungSkorIntegrasiPembelajaran($prodi_id);
         $skorBasicScience = ScoringService::hitungSkorBasicScience($prodi_id);
-
+        $skorCapstoneDesign = ScoringService::hitungSkorCapstoneDesign($prodi_id);
+        $skorSpmi = ScoringService::hitungSkorSpmi($prodi_id);
+        $skorEvaluasiKurikulum = ScoringService::hitungSkorEvaluasiKurikulum($prodi_id);
+        $skorKeuangan = ScoringService::hitungSkorKeuangan($prodi_id);
+        
 
         // Lempar ke view
         return view('dashboard', compact('skorKerjasama', 'skorDosenS3', 'skorJabatanDosen', 'skorKecukupanDosen', 'skorTendik',
-            'skorBebanKerja', 'skorPublikasiDtps', 'skorKaryaIlmiahDtps', 'skorLuaranPaten', 'skorLuaranHakCipta', 'skorLuaranTeknologi', 
-            'skorLuaranBuku', 'skorKurikulum', 'skorPenelitianMhs', 'skorPkmMhs', 'skorRasioMhs', 'skorMhsAsing', 'skorIpkLulusan', 'skorPrestasiMhs', 'skorMasaStudi',
+            'skorBebanKerja', 'skorPublikasiDtps', 'skorKaryaIlmiahDtps', 'skorKurikulum', 'skorPenelitianMhs', 'skorPkmMhs', 'skorRasioMhs', 'skorMhsAsing', 'skorIpkLulusan', 'skorPrestasiMhs', 'skorMasaStudi',
             'skorLulusTepatWaktu', 'skorPublikasiMhs', 'skorLuaranMhs', 'skorWaktuTunggu', 'skorKesesuaianKerja', 'skorTempatKerja', 'skorKepuasanPengguna', 'skorPenelitianDtps',
-            'skorPkmDtps', 'skorIntegrasiPembelajaran', 'skorBasicScience'));
+            'skorPkmDtps', 'skorIntegrasiPembelajaran', 'skorBasicScience', 'skorLuaranPenelitianPkM', 'skorCapstoneDesign', 'skorSpmi', 'skorEvaluasiKurikulum',
+            'skorKeuangan'));
     } 
 }
