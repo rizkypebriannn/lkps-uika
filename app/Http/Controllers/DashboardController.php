@@ -48,6 +48,9 @@ class DashboardController extends Controller
         $skorSpmi = ScoringService::hitungSkorSpmi($prodi_id);
         $skorEvaluasiKurikulum = ScoringService::hitungSkorEvaluasiKurikulum($prodi_id);
         $skorKeuangan = ScoringService::hitungSkorKeuangan($prodi_id);
+        $skorVmts = ScoringService::hitungSkorVmts($prodi_id);
+        $skorPjp = ScoringService::hitungSkorPjp($prodi_id);
+        $skorRekognisi = ScoringService::hitungSkorRekognisiDtps($prodi_id);
         
 
         // Lempar ke view
@@ -55,6 +58,6 @@ class DashboardController extends Controller
             'skorBebanKerja', 'skorPublikasiDtps', 'skorKaryaIlmiahDtps', 'skorKurikulum', 'skorPenelitianMhs', 'skorPkmMhs', 'skorRasioMhs', 'skorMhsAsing', 'skorIpkLulusan', 'skorPrestasiMhs', 'skorMasaStudi',
             'skorLulusTepatWaktu', 'skorPublikasiMhs', 'skorLuaranMhs', 'skorWaktuTunggu', 'skorKesesuaianKerja', 'skorTempatKerja', 'skorKepuasanPengguna', 'skorPenelitianDtps',
             'skorPkmDtps', 'skorIntegrasiPembelajaran', 'skorBasicScience', 'skorLuaranPenelitianPkM', 'skorCapstoneDesign', 'skorSpmi', 'skorEvaluasiKurikulum',
-            'skorKeuangan'));
+            'skorKeuangan', 'skorVmts','skorPjp', 'skorRekognisi'));
     } 
 }

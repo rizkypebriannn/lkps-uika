@@ -41,6 +41,37 @@
                             <i class="bi bi-bar-chart-fill me-2"></i>Ringkasan Skor
                         </h5>
                         
+                        <div class="col-12">
+                            <div class="card shadow-sm border-0 rounded-4 border-start border-4 mb-3" style="border-color: #475569 !important;">
+                                <div class="card-body">
+                                    <div class="d-flex justify-content-between align-items-center mb-2">
+                                        <div>
+                                            <p class="text-muted mb-1 fw-semibold" style="font-size: 0.85rem;">Visi Misi & Strategi (VMTS)</p>
+                                            <h2 class="fw-bold mb-0" style="color: #475569;">{{ $skorVmts['total'] }} <span style="font-size: 1rem; color:#888;">/ 4.00</span></h2>
+                                        </div>
+                                        <div class="bg-opacity-10 p-2 rounded-circle" style="background-color: rgba(71, 85, 105, 0.1);">
+                                            <i class="bi bi-compass" style="font-size: 1.2rem; color: #475569;"></i>
+                                        </div>
+                                    </div>
+                                    <div class="row g-2 mt-1">
+                                        <div class="col-4 text-center border-end">
+                                            <small class="text-muted d-block">Ind 1</small>
+                                            <span class="fw-bold">{{ $skorVmts['ind1'] }}</span>
+                                        </div>
+                                        <div class="col-4 text-center border-end">
+                                            <small class="text-muted d-block">Ind 2</small>
+                                            <span class="fw-bold">{{ $skorVmts['ind2'] }}</span>
+                                        </div>
+                                        <div class="col-4 text-center">
+                                            <small class="text-muted d-block">Ind 3</small>
+                                            <span class="fw-bold">{{ $skorVmts['ind3'] }}</span>
+                                        </div>
+                                    </div>
+                                    <p class="mb-0 text-muted mt-2" style="font-size: 0.75rem;">Linearitas, Mekanisme, & Pemahaman Pemangku Kepentingan. (Tabel 1)</p>
+                                </div>
+                            </div>
+                        </div>
+
                         <div class="card shadow-sm border-0 rounded-4 border-start border-success border-4 mb-3">
                             <div class="card-body">
                                 <div class="d-flex justify-content-between align-items-center mb-2">
@@ -160,6 +191,80 @@
                                 <p class="mb-0 text-muted" style="font-size: 0.75rem;">Target: > 70% Bersertifikat. (Tabel 4.b)</p>
                             </div>
                         </div>
+
+                        <div class="col-12">
+                        <div class="card shadow-sm border-0 rounded-4 border-start border-4 mb-3" style="border-color: #4f46e5 !important;">
+                            <div class="card-body">
+                                <div class="d-flex justify-content-between align-items-center mb-2">
+                                    <div>
+                                        <p class="text-muted mb-1 fw-semibold" style="font-size: 0.85rem;">Porsi Jam Praktik (PJP)</p>
+                                        <h2 class="fw-bold mb-0" style="color: #4f46e5;">
+                                            {{ $skorPjp['skor'] }} 
+                                            <span style="font-size: 1rem; color:#888;">/ 4.00</span>
+                                        </h2>
+                                    </div>
+                                    <div class="bg-opacity-10 p-2 rounded-circle" style="background-color: rgba(79, 70, 229, 0.1);">
+                                        <i class="bi bi-pc-display-horizontal" style="font-size: 1.2rem; color: #4f46e5;"></i>
+                                    </div>
+                                </div>
+                                
+                                <div class="d-flex align-items-center mb-2 mt-3">
+                                    <div class="progress flex-grow-1" style="height: 8px;">
+                                        <div class="progress-bar" role="progressbar" 
+                                            style="background-color: #4f46e5; width: {{ $skorPjp['persentase'] }}%;" 
+                                            aria-valuenow="{{ $skorPjp['persentase'] }}" aria-valuemin="0" aria-valuemax="100">
+                                        </div>
+                                    </div>
+                                    <span class="ms-3 fw-bold text-muted" style="font-size: 0.85rem;">{{ $skorPjp['persentase'] }}%</span>
+                                </div>
+                                
+                                <p class="mb-0 text-muted" style="font-size: 0.75rem;">
+                                    Total Jam Praktik: <b>{{ $skorPjp['total_praktik'] }}</b> dari <b>{{ $skorPjp['total_jam'] }}</b> jam keseluruhan.
+                                    <br>
+                                     Target: 20% - 50% Jam Praktik. (Tabel 3.a.1)
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-12">
+                    <div class="card shadow-sm border-0 rounded-4 border-start border-4 mb-3" style="border-color: #0d9488 !important;">
+                        <div class="card-body">
+                            <div class="d-flex justify-content-between align-items-center mb-2">
+                                <div>
+                                    <p class="text-muted mb-1 fw-semibold" style="font-size: 0.85rem;">Rekognisi Kepakaran DTPS</p>
+                                    <h2 class="fw-bold mb-0" style="color: #0d9488;">
+                                        {{ $skorRekognisi['skor'] }} 
+                                        <span style="font-size: 1rem; color:#888;">/ 4.00</span>
+                                    </h2>
+                                </div>
+                                <div class="bg-opacity-10 p-2 rounded-circle" style="background-color: rgba(13, 148, 136, 0.1);">
+                                    <i class="bi bi-award" style="font-size: 1.2rem; color: #0d9488;"></i>
+                                </div>
+                            </div>
+                            
+                            <div class="row g-2 mt-2">
+                                <div class="col-4 text-center border-end">
+                                    <small class="text-muted d-block" style="font-size: 0.7rem;">Internasional</small>
+                                    <span class="fw-bold">{{ $skorRekognisi['internasional'] }}</span>
+                                </div>
+                                <div class="col-4 text-center border-end">
+                                    <small class="text-muted d-block" style="font-size: 0.7rem;">Nasional</small>
+                                    <span class="fw-bold">{{ $skorRekognisi['nasional'] }}</span>
+                                </div>
+                                <div class="col-4 text-center">
+                                    <small class="text-muted d-block" style="font-size: 0.7rem;">Wilayah</small>
+                                    <span class="fw-bold">{{ $skorRekognisi['wilayah'] }}</span>
+                                </div>
+                            </div>
+                            
+                            <hr class="my-2 opacity-25">
+                            <p class="mb-0 text-muted" style="font-size: 0.75rem;">
+                                Rasio: <b>{{ $skorRekognisi['r_dtps'] }}</b> | Target Rasio: >= 0.5. (Tabel 4.d)
+                            </p>
+                        </div>
+                    </div>
+                </div>
 
                         <div class="card shadow-sm border-0 rounded-4 border-start border-secondary border-4 mb-3">
                             <div class="card-body">

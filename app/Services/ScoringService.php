@@ -35,7 +35,9 @@ use App\Models\CapstoneDesign;
 use App\Models\IpkLulusan;
 use App\Models\DokumenSpmi;
 use App\Models\Keuangan;
-
+use App\Models\VisiMisi;
+use App\Models\DokumenPembelajaran;
+use App\Models\PengakuanDtps;
 
 
 class ScoringService
@@ -1416,5 +1418,155 @@ class ScoringService
         return number_format($skor, 2);
     }
 
+    /**
+     * Hitung Skor Kriteria I: VMTS (Indikator 1, 2, 3)
+     * Referensi: Matriks LAM Teknik Hal. 2-3
+     */
+    public static function hitungSkorVmts($prodi_id)
+    {
+        // Pastikan mengambil data Visi Keilmuan PS sesuai prodi 
+        $data = VisiMisi::where('prodi_id', $prodi_id)
+                        ->where('jenis_vmts', 'Visi Keilmuan PS')
+                        ->first();
 
-}
+        if (!$data) return ['ind1' => '0.00', 'ind2' => '0.00', 'ind3' => '0.00', 'total' => '0.00'];
+
+        // --- Indikator 1: Kekhasan (Cascading)  ---
+        $skor1 = 0;
+        if ($data->is_linear_pt && $data->is_sesuai_renstra) {
+            $skor1 = 2;
+            if ($data->is_sesuai_kurikulum) {
+                $skor1 = 3;
+                if ($data->is_tinjau_berkala) $skor1 = 4;
+            }
+        }
+
+        // --- Indikator 2: Mekanisme (Pelibatan Stakeholder)  ---
+        $skor2 = 0;
+        if ($data->melibatkan_internal) {
+            $skor2 = 1; // Hanya Internal
+            if ($data->melibatkan_lulusan) {
+                $skor2 = 2; // + Lulusan
+                if ($data->melibatkan_pengguna) {
+                    $skor2 = 3; // + Pengguna Lulusan
+                    if ($data->melibatkan_pakar) $skor2 = 4; // + Pakar (Lengkap)
+                }
+            }
+        }
+
+        // --- Indikator 3: Pemahaman & Pencapaian [cite: 21] ---
+        $skor3 = 0;
+        if ($data->is_sosialisasi_menyeluruh) {
+            $skor3 = 1;
+            if ($data->is_dipahami_semua) {
+                $skor3 = 2;
+                if ($data->has_capaian_konkret) {
+                    $skor3 = 3;
+                    if ($data->is_berdampak_berkelanjutan) $skor3 = 4;
+                }
+            }
+        }
+
+        $total = ($skor1 + $skor2 + $skor3) / 3;
+
+        return [
+            'ind1' => number_format($skor1, 2),
+            'ind2' => number_format($skor2, 2),
+            'ind3' => number_format($skor3, 2),
+            'total' => number_format($total, 2)
+        ];
+    }
+
+    /**
+     * Hitung Skor Indikator 18: Jam Pembelajaran Praktik (PJP)
+     * Referensi: Matriks LAM Teknik 2025 Hal 11
+     */
+    public static function hitungSkorPjp($prodi_id)
+    {
+        // 1. Ambil total jam praktik (JP) dan teori dari database
+        $total_praktik = DokumenPembelajaran::where('prodi_id', $prodi_id)->sum('konversi_praktik');
+        $total_teori = DokumenPembelajaran::where('prodi_id', $prodi_id)->sum('konversi_teori');
+
+        // 2. Hitung total jam keseluruhan (JB)
+        $total_jam = $total_praktik + $total_teori;
+
+        // Jika belum ada data sama sekali, kembalikan nilai 0
+        if ($total_jam == 0) {
+            return [
+                'total_praktik' => 0, 
+                'total_jam' => 0, 
+                'persentase' => '0.00', 
+                'skor' => '0.00'
+            ];
+        }
+
+        // 3. Hitung persentase PJP (Desimal)
+        $pjp = $total_praktik / $total_jam;
+
+        // 4. Logika Penilaian LAM Teknik
+        $skor = 0;
+        if ($pjp >= 0.20 && $pjp <= 0.50) {
+            $skor = 4.00;
+        } elseif ($pjp < 0.20) {
+            $skor = 20 * $pjp;
+        } elseif ($pjp > 0.50) {
+            $skor = 8 - (8 * $pjp);
+        }
+
+        return [
+            'total_praktik' => number_format($total_praktik, 0),
+            'total_jam' => number_format($total_jam, 0),
+            'persentase' => number_format($pjp * 100, 1), // Tampilkan dalam format persen (misal 25.5)
+            'skor' => number_format($skor, 2)
+        ];
+    }
+
+    /**
+     * Hitung Skor Indikator 37: Rekognisi/Pengakuan Kepakaran DTPS
+     * Referensi: Tabel 4.d LKPS LAM Teknik
+     */
+    public static function hitungSkorRekognisiDtps($prodi_id)
+    {
+        // 1. Ambil jumlah Dosen Tetap Program Studi (DTPS)
+        // Sesuaikan nama field 'kategori_dosen' dengan yang ada di tabel profil_dosens Anda
+        $jumlah_dtps = ProfilDosen::where('prodi_id', $prodi_id)
+                                  ->where('kategori_dosen', 'Dosen Tetap')
+                                  ->count();
+
+        // Hindari error division by zero jika prodi belum input dosen
+        if ($jumlah_dtps == 0) {
+            return [
+                'internasional' => 0, 'nasional' => 0, 'wilayah' => 0, 
+                'r_dtps' => '0.00', 'skor' => '0.00'
+            ];
+        }
+
+        // 2. Hitung jumlah pengakuan berdasarkan tingkat
+        $internasional = PengakuanDtps::where('prodi_id', $prodi_id)->where('tingkat', 'Internasional')->count();
+        $nasional = PengakuanDtps::where('prodi_id', $prodi_id)->where('tingkat', 'Nasional')->count();
+        $wilayah = PengakuanDtps::where('prodi_id', $prodi_id)->where('tingkat', 'Wilayah')->count();
+
+        // 3. Hitung Rasio R_DTPS
+        $r_dtps = ($internasional + (0.5 * $nasional) + (0.25 * $wilayah)) / $jumlah_dtps;
+
+        // 4. Tentukan Skor
+        $skor = 0;
+        if ($r_dtps >= 0.5) {
+            $skor = 4.00;
+        } else {
+            $skor = 2 + (4 * $r_dtps);
+        }
+
+        // Batasi skor maksimal 4.00 jika ada anomali rumus
+        if ($skor > 4.00) $skor = 4.00;
+
+        return [
+            'internasional' => $internasional,
+            'nasional' => $nasional,
+            'wilayah' => $wilayah,
+            'r_dtps' => number_format($r_dtps, 2),
+            'skor' => number_format($skor, 2)
+        ];
+    }
+} 
+
