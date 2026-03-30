@@ -33,6 +33,27 @@
     <div class="dashboard-container sm:px-6 lg:px-8">
         
         <div class="row g-4">
+
+            @if(auth()->user()->role === 'gpm')
+            <div class="card shadow-sm border-0 rounded-4 mb-4" style="background-color: #f8fafc;">
+                <div class="card-body">
+                    <form action="{{ route('dashboard') }}" method="GET" class="d-flex align-items-center">
+                        <label class="fw-bold me-3 text-secondary mb-0">
+                            <i class="bi bi-funnel-fill me-1"></i> Mode GPM: Lihat Skor Prodi
+                        </label>
+                        <select name="prodi_id" onchange="this.form.submit()" class="form-select form-select-sm w-auto shadow-none border-secondary">
+                            <option value="1" {{ request('prodi_id') == 1 ? 'selected' : '' }}>Teknik Elektro</option>
+                            <option value="2" {{ request('prodi_id') == 2 ? 'selected' : '' }}>Teknik Mesin</option>
+                            <option value="3" {{ request('prodi_id') == 3 ? 'selected' : '' }}>Teknik Sipil</option>
+                            <option value="4" {{ request('prodi_id') == 4 ? 'selected' : '' }}>Teknik Informatika</option>
+                            <option value="5" {{ request('prodi_id') == 5 ? 'selected' : '' }}>Sistem Informasi</option>
+                            <option value="6" {{ request('prodi_id') == 6 ? 'selected' : '' }}>Ilmu Lingkungan</option>
+                            <option value="7" {{ request('prodi_id') == 7 ? 'selected' : '' }}>Rekayasa Pertanian dan Biosistem</option>
+                        </select>
+                    </form>
+                </div>
+            </div>
+            @endif
             
             <div class="col-lg-3 col-md-4">
               <div class="scrollable-skor">

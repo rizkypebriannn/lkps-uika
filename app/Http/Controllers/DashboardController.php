@@ -7,10 +7,20 @@ use App\Services\ScoringService;
 
 class DashboardController extends Controller
 {
-    public function index()
-    {
-        // 1. Ambil ID Prodi yang sedang login
-        $prodi_id = auth()->user()->prodi_id;
+    
+    public function index(\Illuminate\Http\Request $request)
+{
+    $user = auth()->user();
+
+    // LOGIKA HAK AKSES
+    if ($user->role === 'gpm') {
+        // Jika GPM, prodi_id diambil dari pilihan dropdown (request). 
+        // Jika dia baru buka halaman (belum milih), default ke prodi 1 (misal Elektro)
+        $prodi_id = $request->prodi_id ?? 1; 
+    } else {
+        // Jika Admin Prodi, KUNCI mati aksesnya hanya untuk prodinya sendiri
+        $prodi_id = $user->prodi_id;
+    }
 
         // 2. Panggil mesin hitung untuk Kerjasama
         $skorKerjasama = ScoringService::hitungSkorKerjasama($prodi_id);
