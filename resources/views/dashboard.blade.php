@@ -787,23 +787,26 @@
 
                 <div class="col-lg-9 col-md-8">
                     
-                    <div class="mb-4" style="background: linear-gradient(135deg, #10b981 0%, #059669 100%); border-radius: 1.5rem; padding: 2rem; box-shadow: 0 10px 25px rgba(16, 185, 129, 0.2);">
-                        <div class="d-flex flex-column flex-md-row align-items-center justify-content-between">
-                            <div class="text-white mb-3 mb-md-0">
-                                <h4 class="fw-bold mb-2" style="font-size: 1.5rem;">
-                                    <i class="bi bi-file-earmark-excel-fill me-2"></i> Export Borang LAMTEKNIK
-                                </h4>
-                                <p class="mb-0 text-white-50" style="font-size: 0.95rem;">
-                                    Unduh seluruh data tabel yang telah Anda isi ke dalam format Excel (.xlsx) resmi. Sistem otomatis memfilter data Prodi Anda.
-                                </p>
-                            </div>
-                            <div>
-                                <a href="{{ route('export.excel') }}" class="btn btn-light text-success fw-bold px-4 py-3 shadow-sm" style="border-radius: 50px; white-space: nowrap;">
-                                    <i class="bi bi-cloud-arrow-down-fill me-2 fs-5 align-middle"></i> Unduh Excel
-                                </a>
-                            </div>
+                    <div class="mb-4 shadow-sm" style="background: linear-gradient(135deg, #10b981 0%, #059669 100%); border-radius: 1rem; padding: 1rem 1.5rem;">
+                    <div class="d-flex flex-column flex-md-row align-items-center justify-content-between">
+                        
+                        <div class="text-white mb-2 mb-md-0">
+                            <h5 class="fw-bold mb-1" style="font-size: 1.1rem;">
+                                <i class="bi bi-file-earmark-excel-fill me-2"></i> Export Borang LAMTEKNIK
+                            </h5>
+                            <p class="mb-0 text-white-50" style="font-size: 0.85rem;">
+                                Unduh seluruh data tabel yang telah Anda isi ke format Excel (.xlsx). Sistem otomatis memfilter data Prodi.
+                            </p>
                         </div>
+                        
+                        <div>
+                            <a href="{{ route('export.excel') }}" class="btn btn-light text-success fw-bold px-4 py-2 shadow-sm d-flex align-items-center" style="border-radius: 50px; white-space: nowrap;">
+                                <i class="bi bi-cloud-arrow-down-fill me-2 fs-5"></i> Unduh Excel
+                            </a>
+                        </div>
+                        
                     </div>
+                </div>
 
                     <h5 class="fw-bold text-secondary mb-3"><i class="bi bi-table me-2"></i>Daftar Tabel LKPS</h5>
 
