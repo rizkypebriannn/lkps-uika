@@ -20,4 +20,15 @@ class KurikulumController extends Controller
         Kurikulum::create($data);
         return redirect('/dashboard')->with('success', 'Data berhasil disimpan!');
     }
+    public function destroy($id)
+    {
+        // Mencari data berdasarkan ID, jika tidak ada akan error 404
+        $kurikulum = Kurikulum::findOrFail($id); 
+        
+        // Menghapus data dari database
+        $kurikulum->delete();
+
+        // Mengembalikan halaman dengan pesan sukses
+        return redirect()->back()->with('success', 'Mata kuliah berhasil dihapus!');
+    }
 }

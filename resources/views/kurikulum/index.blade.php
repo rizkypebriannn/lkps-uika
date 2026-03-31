@@ -15,8 +15,8 @@
 
     <div class="container mt-5">
         <a href="{{ url('/dashboard') }}" class="btn btn-outline-secondary mb-4 rounded-pill">
-    <i class="bi bi-arrow-left me-2"></i>Kembali ke Dashboard
-</a>
+            <i class="bi bi-arrow-left me-2"></i>Kembali ke Dashboard
+        </a>
 
         <div class="mb-4">
             <h3 class="fw-bold m-0">Tabel 3.a.1 Kurikulum dan Rencana Pembelajaran</h3>
@@ -90,12 +90,13 @@
                 <table class="table table-hover table-bordered text-center align-middle">
                     <thead class="table-dark">
                         <tr>
-                            <th rowspan="2">Smt</th>
-                            <th rowspan="2">Kode MK</th>
-                            <th rowspan="2" class="text-start">Nama Mata Kuliah</th>
-                            <th rowspan="2">MK Kompetensi</th>
+                            <th rowspan="2" class="align-middle">Smt</th>
+                            <th rowspan="2" class="align-middle">Kode MK</th>
+                            <th rowspan="2" class="text-start align-middle">Nama Mata Kuliah</th>
+                            <th rowspan="2" class="align-middle">MK Kompetensi</th>
                             <th colspan="3">Bobot SKS</th>
-                            <th rowspan="2">Unit Penyelenggara</th>
+                            <th rowspan="2" class="align-middle">Unit Penyelenggara</th>
+                            <th rowspan="2" class="align-middle" style="width: 80px;">Aksi</th>
                         </tr>
                         <tr>
                             <th>Kuliah</th><th>Seminar</th><th>Praktik</th>
@@ -112,10 +113,19 @@
                             <td>{{ $mk->sks_seminar }}</td>
                             <td>{{ $mk->sks_praktikum }}</td>
                             <td>{{ $mk->unit_penyelenggara }}</td>
+                            <td>
+                                <form action="{{ route('kurikulum.destroy', $mk->id) }}" method="POST" onsubmit="return confirm('Apakah Anda yakin ingin menghapus mata kuliah {{ $mk->nama_mk }}?');">
+                                    @csrf
+                                    @method('DELETE')
+                                    <button type="submit" class="btn btn-sm btn-danger shadow-sm">
+                                        <i class="bi bi-trash3-fill"></i>
+                                    </button>
+                                </form>
+                            </td>
                         </tr>
                         @empty
                         <tr>
-                            <td colspan="8" class="text-muted py-4">Belum ada mata kuliah yang diinput.</td>
+                            <td colspan="9" class="text-muted py-4">Belum ada mata kuliah yang diinput.</td>
                         </tr>
                         @endforelse
                     </tbody>
