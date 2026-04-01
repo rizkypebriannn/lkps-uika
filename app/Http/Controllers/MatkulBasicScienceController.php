@@ -25,4 +25,15 @@ class MatkulBasicScienceController extends Controller
         MatkulBasicScience::create($data);
         return redirect('/dashboard')->with('success', 'Data berhasil disimpan!');
     }
+    public function destroy($id)
+{
+    // Cari data berdasarkan ID
+    $matkul = MatkulBasicScience::findOrFail($id); 
+
+    // Hapus data
+    $matkul->delete();
+
+    // Redirect kembali dengan pesan sukses
+    return redirect()->back()->with('success', 'Mata kuliah Basic Science berhasil dihapus!');
+}
 }    

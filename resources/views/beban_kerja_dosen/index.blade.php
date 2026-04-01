@@ -40,9 +40,9 @@
 
                             <label class="form-label fw-semibold text-sm text-secondary">Pendidikan: Pembelajaran & Pembimbingan (SKS)</label>
                             <div class="mb-3">
-                                <input type="number" step="0.01" name="sks_ps_diakreditasi" class="form-control rounded-3 mb-2" placeholder="SKS di PS yang Diakreditasi" value="0" required>
-                                <input type="number" step="0.01" name="sks_ps_lain_dalam_pt" class="form-control rounded-3 mb-2" placeholder="SKS di PS Lain (Dalam PT)" value="0" required>
-                                <input type="number" step="0.01" name="sks_ps_lain_luar_pt" class="form-control rounded-3" placeholder="SKS di PS Lain (Luar PT)" value="0" required>
+                                <input type="number" step="0.01" name="sks_ps_diakreditasi" class="form-control rounded-3 mb-2" placeholder="SKS di PS yang Diakreditasi" required>
+                                <input type="number" step="0.01" name="sks_ps_lain_dalam_pt" class="form-control rounded-3 mb-2" placeholder="SKS di PS Lain (Dalam PT)"  required>
+                                <input type="number" step="0.01" name="sks_ps_lain_luar_pt" class="form-control rounded-3" placeholder="SKS di PS Lain (Luar PT)"  required>
                             </div>
                         </div>
 
