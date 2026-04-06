@@ -20,7 +20,6 @@ class ProfilDosenController extends Controller
         $input = $request->all();
         $input['prodi_id'] = auth()->user()->prodi_id;
 
-        // Bersihkan data Perusahaan jika bukan Dosen Industri
         if ($input['kategori_dosen'] != 'Dosen Industri') {
             $input['perusahaan_industri'] = null;
         }
@@ -28,6 +27,33 @@ class ProfilDosenController extends Controller
         ProfilDosen::create($input);
 
         return redirect()->back()->with('success', 'Data Profil Dosen (4.a) berhasil disimpan!');
+    }
+
+    public function edit($id)
+    {
+        $dosen = ProfilDosen::where('id', $id)
+                    ->where('prodi_id', auth()->user()->prodi_id)
+                    ->firstOrFail();
+
+        return view('profil_dosen.edit', compact('dosen'));
+    }
+
+    public function update(Request $request, $id)
+    {
+        $dosen = ProfilDosen::where('id', $id)
+                    ->where('prodi_id', auth()->user()->prodi_id)
+                    ->firstOrFail();
+
+        $input = $request->all();
+
+        if ($input['kategori_dosen'] != 'Dosen Industri') {
+            $input['perusahaan_industri'] = null;
+        }
+
+        $dosen->update($input);
+
+        // Setelah update, tetap di halaman index dosen
+        return redirect()->route('profil_dosen.index')->with('success', 'Data Profil Dosen berhasil diperbarui!');
     }
 
     public function destroy($id)

@@ -22,10 +22,31 @@ class DokumenPembelajaranController extends Controller
         DokumenPembelajaran::create($data);
         return redirect('/dashboard')->with('success', 'Data berhasil disimpan!');
     }
+    public function edit($id)
+    {
+        $dokumen = DokumenPembelajaran::where('id', $id)
+                        ->where('prodi_id', auth()->user()->prodi_id)
+                        ->firstOrFail();
+        return view('dokumen_pembelajaran.edit', compact('dokumen'));
+    }
+
+    public function update(Request $request, $id)
+    {
+        $dokumen = DokumenPembelajaran::where('id', $id)
+                        ->where('prodi_id', auth()->user()->prodi_id)
+                        ->firstOrFail();
+
+        $dokumen->update($request->all());
+
+        return redirect()->route('dokumen_pembelajaran.index')->with('success', 'Data mata kuliah berhasil diperbarui!');
+    }
 
     public function destroy($id)
     {
-        $dokumen = DokumenPembelajaran::findOrFail($id);
+        $dokumen = DokumenPembelajaran::where('id', $id)
+                        ->where('prodi_id', auth()->user()->prodi_id)
+                        ->firstOrFail();
+                        
         $dokumen->delete();
         return redirect()->back()->with('success', 'Data berhasil dihapus!');
     }

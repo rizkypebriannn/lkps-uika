@@ -97,9 +97,10 @@
                     </div>
                 </div>
 
-                <button type="submit" class="btn btn-primary px-4 py-2 rounded-pill">
-                    <i class="bi bi-save me-2"></i>Simpan Data Integrasi
-                </button>
+               <button type="submit" class="btn btn-primary px-4 py-2 rounded-pill"
+        onclick="this.disabled=true; this.innerHTML='<span class=\'spinner-border spinner-border-sm me-2\'></span>Menyimpan...'; this.form.submit();">
+    <i class="bi bi-save me-2"></i>Simpan Data Integrasi
+</button>
             </form>
         </div>
 
@@ -147,14 +148,19 @@
                                 </span>
                             </td>
                             <td>
-                                <form action="{{ route('integrasi_pembelajaran.destroy', $item->id) }}" method="POST" onsubmit="return confirm('Yakin ingin menghapus data ini?');">
-                                    @csrf
-                                    @method('DELETE')
-                                    <button type="submit" class="btn btn-sm btn-outline-danger">
-                                        <i class="bi bi-trash-fill"></i>
-                                    </button>
-                                </form>
-                            </td>
+    <div class="d-flex justify-content-center gap-2">
+        <a href="{{ route('integrasi_pembelajaran.edit', $item->id) }}" class="btn btn-sm btn-outline-warning">
+            <i class="bi bi-pencil-fill"></i>
+        </a>
+        <form action="{{ route('integrasi_pembelajaran.destroy', $item->id) }}" method="POST" onsubmit="return confirm('Yakin ingin menghapus data ini?');">
+            @csrf
+            @method('DELETE')
+            <button type="submit" class="btn btn-sm btn-outline-danger">
+                <i class="bi bi-trash-fill"></i>
+            </button>
+        </form>
+    </div>
+</td>
                         </tr>
                         @empty
                         <tr>

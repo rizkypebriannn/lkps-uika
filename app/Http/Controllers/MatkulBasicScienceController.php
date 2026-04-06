@@ -25,15 +25,37 @@ class MatkulBasicScienceController extends Controller
         MatkulBasicScience::create($data);
         return redirect('/dashboard')->with('success', 'Data berhasil disimpan!');
     }
+
+    public function edit($id)
+    {
+        $matkul = MatkulBasicScience::where('id', $id)
+                        ->where('prodi_id', auth()->user()->prodi_id)
+                        ->firstOrFail();
+                        
+        return view('matkul_basic_science.edit', compact('matkul'));
+    }
+
+    public function update(Request $request, $id)
+    {
+        $matkul = MatkulBasicScience::where('id', $id)
+                        ->where('prodi_id', auth()->user()->prodi_id)
+                        ->firstOrFail();
+
+        $matkul->update($request->all());
+
+        return redirect()->route('matkul_basic_science.index')->with('success', 'Data mata kuliah berhasil diperbarui!');
+    }
+
     public function destroy($id)
-{
-    // Cari data berdasarkan ID
-    $matkul = MatkulBasicScience::findOrFail($id); 
+    {
+        // Gembok keamanan ditambahkan di sini
+        $matkul = MatkulBasicScience::where('id', $id)
+                        ->where('prodi_id', auth()->user()->prodi_id)
+                        ->firstOrFail(); 
 
-    // Hapus data
-    $matkul->delete();
+        $matkul->delete();
 
-    // Redirect kembali dengan pesan sukses
-    return redirect()->back()->with('success', 'Mata kuliah Basic Science berhasil dihapus!');
-}
+        return redirect()->back()->with('success', 'Mata kuliah Basic Science berhasil dihapus!');
+    }
+   
 }    

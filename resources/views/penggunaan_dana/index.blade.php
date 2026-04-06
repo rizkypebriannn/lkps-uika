@@ -77,9 +77,10 @@
                     </div>
                 </div>
 
-                <button type="submit" class="btn btn-primary px-4 py-2 rounded-pill">
-                    <i class="bi bi-save me-2"></i>Simpan Data Keuangan
-                </button>
+                <button type="submit" class="btn btn-primary px-4 py-2 rounded-pill" 
+        onclick="this.disabled=true; this.innerHTML='<span class=\'spinner-border spinner-border-sm me-2\'></span>Menyimpan...'; this.form.submit();">
+    <i class="bi bi-save me-2"></i>Simpan Data Keuangan
+</button>
             </form>
         </div>
 
@@ -114,15 +115,19 @@
                             <td>{{ number_format($dana->ps_ts1, 0, ',', '.') }}</td>
                             <td class="text-success fw-bold">{{ number_format($dana->ps_ts, 0, ',', '.') }}</td>
                             
-                            <td>
-                                <form action="{{ route('penggunaan_dana.destroy', $dana->id) }}" method="POST" onsubmit="return confirm('Apakah Anda yakin ingin menghapus data ini?');">
-                                    @csrf
-                                    @method('DELETE')
+                           <td>
+                            <div class="d-flex justify-content-center gap-2">
+                                <a href="{{ route('penggunaan_dana.edit', $dana->id) }}" class="btn btn-sm btn-outline-warning">
+                                    <i class="bi bi-pencil-fill"></i> Edit
+                                </a>
+                                <form action="{{ route('penggunaan_dana.destroy', $dana->id) }}" method="POST" onsubmit="return confirm('Hapus data?');">
+                                    @csrf @method('DELETE')
                                     <button type="submit" class="btn btn-sm btn-outline-danger">
                                         <i class="bi bi-trash-fill"></i> Hapus
                                     </button>
                                 </form>
-                            </td>
+                            </div>
+                        </td>
                         </tr>
                         </tr>
                         @empty

@@ -23,7 +23,7 @@
 
             <div class="card shadow-sm border-0 rounded-4 mb-5 p-4 border-top border-primary border-4">
                 <h5 class="fw-bold mb-4 border-bottom pb-2 text-primary">Input Data Profil Dosen</h5>
-                <form action="{{ route('profil-dosen.store') }}" method="POST">
+                <form action="{{ route('profil_dosen.store') }}" method="POST">
                     @csrf
                     <div class="row g-3">
                         <div class="col-md-4">
@@ -118,9 +118,10 @@
                             <textarea name="matkul_ps_lain" class="form-control rounded-3" rows="2"></textarea>
                         </div>
                     </div>
-                    <button type="submit" class="btn btn-primary w-100 py-3 mt-4 rounded-pill shadow-sm fw-bold">
-                        <i class="bi bi-save me-2"></i>SIMPAN DATA DOSEN
-                    </button>
+                    <button type="submit" class="btn btn-primary w-100 py-3 mt-4 rounded-pill shadow-sm fw-bold"
+        onclick="this.disabled=true; this.innerHTML='<span class=\'spinner-border spinner-border-sm me-2\'></span>Menyimpan...'; this.form.submit();">
+    <i class="bi bi-save me-2"></i>SIMPAN DATA DOSEN
+</button>
                 </form>
             </div>
 
@@ -175,11 +176,16 @@
                                 <td>{{ $item->kesesuaian_matkul }}</td>
                                 <td class="text-start text-wrap" style="min-width: 200px;">{{ $item->matkul_ps_lain ?? '-' }}</td>
                                 <td class="sticky-end bg-white">
-                                    <form action="{{ route('profil-dosen.destroy', $item->id) }}" method="POST" onsubmit="return confirm('Hapus data dosen ini?');">
-                                        @csrf @method('DELETE')
-                                        <button type="submit" class="btn btn-sm text-danger p-0"><i class="bi bi-trash-fill"></i></button>
-                                    </form>
-                                </td>
+    <div class="d-flex justify-content-center gap-2">
+        <a href="{{ route('profil_dosen.edit', $item->id) }}" class="btn btn-sm text-warning p-0" title="Edit">
+            <i class="bi bi-pencil-fill"></i>
+        </a>
+        <form action="{{ route('profil_dosen.destroy', $item->id) }}" method="POST" onsubmit="return confirm('Hapus data dosen ini?');">
+            @csrf @method('DELETE')
+            <button type="submit" class="btn btn-sm text-danger p-0" title="Hapus"><i class="bi bi-trash-fill"></i></button>
+        </form>
+    </div>
+</td>
                             </tr>
                             @empty
                             <tr><td colspan="18" class="text-muted py-4">Belum ada data profil dosen.</td></tr>

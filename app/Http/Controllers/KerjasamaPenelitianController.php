@@ -31,6 +31,29 @@ class KerjasamaPenelitianController extends Controller
         return redirect()->back()->with('success', 'Data Kerjasama Penelitian berhasil disimpan!');
     }
 
+    public function edit($id)
+    {
+        $kerjasama = KerjasamaPenelitian::where('id', $id)
+                        ->where('prodi_id', auth()->user()->prodi_id)
+                        ->firstOrFail();
+                        
+        return view('kerjasama_penelitian.edit', compact('kerjasama'));
+    }
+
+    public function update(Request $request, $id)
+    {
+        $kerjasama = KerjasamaPenelitian::where('id', $id)
+                        ->where('prodi_id', auth()->user()->prodi_id)
+                        ->firstOrFail();
+
+        $input = $request->all();
+        $input['durasi'] = (int) ($request->durasi ?? 1);
+        
+        $kerjasama->update($input);
+
+        return redirect()->route('kerjasama_penelitian.index')->with('success', 'Data Kerjasama Penelitian berhasil diperbarui!');
+    }
+
     public function destroy($id)
     {
         KerjasamaPenelitian::where('id', $id)

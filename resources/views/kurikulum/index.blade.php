@@ -78,9 +78,10 @@
                     </div>
                 </div>
 
-                <button type="submit" class="btn btn-primary px-4 py-2 rounded-pill">
-                    <i class="bi bi-save me-2"></i>Simpan Mata Kuliah
-                </button>
+              <button type="submit" class="btn btn-primary px-4 py-2 rounded-pill"
+        onclick="this.disabled=true; this.innerHTML='<span class=\'spinner-border spinner-border-sm me-2\'></span>Menyimpan...'; this.form.submit();">
+    <i class="bi bi-save me-2"></i>Simpan Mata Kuliah
+</button>
             </form>
         </div>
 
@@ -113,14 +114,19 @@
                             <td>{{ $mk->sks_seminar }}</td>
                             <td>{{ $mk->sks_praktikum }}</td>
                             <td>{{ $mk->unit_penyelenggara }}</td>
-                            <td>
-                                <form action="{{ route('kurikulum.destroy', $mk->id) }}" method="POST" onsubmit="return confirm('Apakah Anda yakin ingin menghapus mata kuliah {{ $mk->nama_mk }}?');">
-                                    @csrf
-                                    @method('DELETE')
-                                    <button type="submit" class="btn btn-sm btn-danger shadow-sm">
-                                        <i class="bi bi-trash3-fill"></i>
-                                    </button>
-                                </form>
+                           <td>
+                                <div class="d-flex justify-content-center gap-2">
+                                    <a href="{{ route('kurikulum.edit', $mk->id) }}" class="btn btn-sm btn-warning shadow-sm">
+                                        <i class="bi bi-pencil-fill"></i>
+                                    </a>
+                                    <form action="{{ route('kurikulum.destroy', $mk->id) }}" method="POST" onsubmit="return confirm('Apakah Anda yakin ingin menghapus mata kuliah {{ $mk->nama_mk }}?');">
+                                        @csrf
+                                        @method('DELETE')
+                                        <button type="submit" class="btn btn-sm btn-danger shadow-sm">
+                                            <i class="bi bi-trash3-fill"></i>
+                                        </button>
+                                    </form>
+                                </div>
                             </td>
                         </tr>
                         @empty

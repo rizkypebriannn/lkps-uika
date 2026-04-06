@@ -44,4 +44,27 @@ class KerjasamaPendidikanController extends Controller
         
         return redirect()->back()->with('success', 'Data Kerjasama Pendidikan berhasil dihapus!');
     }
+
+    // Fungsi untuk membuka halaman Edit
+    public function edit($id)
+    {
+        // Gembok keamanan prodi
+        $kerjasama = \App\Models\KerjasamaPendidikan::where('id', $id)
+                        ->where('prodi_id', auth()->user()->prodi_id)
+                        ->firstOrFail();
+                        
+        return view('kerjasama_pendidikan.edit', compact('kerjasama'));
+    }
+
+    // Fungsi untuk menyimpan perubahan (Update)
+    public function update(Request $request, $id)
+    {
+        $kerjasama = \App\Models\KerjasamaPendidikan::where('id', $id)
+                        ->where('prodi_id', auth()->user()->prodi_id)
+                        ->firstOrFail();
+
+        $kerjasama->update($request->all());
+
+        return redirect()->route('kerjasama_pendidikan.index')->with('success', 'Data Kerjasama Pendidikan berhasil diperbarui!');
+    }
 }

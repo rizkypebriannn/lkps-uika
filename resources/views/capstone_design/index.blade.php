@@ -57,9 +57,10 @@
                         <textarea name="cakupan_bahasan" class="form-control" rows="3" placeholder="Tuliskan cakupan bahasan..." required></textarea>
                     </div>
 
-                    <button type="submit" class="btn btn-primary px-4 py-2 rounded-pill">
-                        <i class="bi bi-save me-2"></i>Simpan Data
-                    </button>
+                   <button type="submit" class="btn btn-primary px-4 py-2 rounded-pill"
+        onclick="this.disabled=true; this.innerHTML='<span class=\'spinner-border spinner-border-sm me-2\'></span>Menyimpan...'; this.form.submit();">
+    <i class="bi bi-save me-2"></i>Simpan Data
+</button>
                 </form>
             </div>
 
@@ -90,14 +91,19 @@
                                 <td>{{ $item->semester }}</td>
                                 <td class="text-start">{{ $item->cakupan_bahasan }}</td>
                                 <td>
-                                    <form action="{{ route('capstone_design.destroy', $item->id) }}" method="POST" onsubmit="return confirm('Yakin ingin menghapus data ini?');">
-                                        @csrf
-                                        @method('DELETE')
-                                        <button type="submit" class="btn btn-sm btn-outline-danger">
-                                            <i class="bi bi-trash-fill"></i> Hapus
-                                        </button>
-                                    </form>
-                                </td>
+    <div class="d-flex justify-content-center gap-2">
+        <a href="{{ route('capstone_design.edit', $item->id) }}" class="btn btn-sm btn-outline-warning">
+            <i class="bi bi-pencil-fill"></i> Edit
+        </a>
+        <form action="{{ route('capstone_design.destroy', $item->id) }}" method="POST" onsubmit="return confirm('Yakin ingin menghapus data ini?');">
+            @csrf
+            @method('DELETE')
+            <button type="submit" class="btn btn-sm btn-outline-danger">
+                <i class="bi bi-trash-fill"></i> Hapus
+            </button>
+        </form>
+    </div>
+</td>
                             </tr>
                             @empty
                             <tr>

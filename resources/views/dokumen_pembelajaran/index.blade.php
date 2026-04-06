@@ -65,9 +65,10 @@
                     </div>
                 </div>
 
-                <button type="submit" class="btn btn-primary px-4 py-2 rounded-pill">
-                    <i class="bi bi-save me-2"></i>Simpan Data
-                </button>
+                <button type="submit" class="btn btn-primary px-4 py-2 rounded-pill"
+        onclick="this.disabled=true; this.innerHTML='<span class=\'spinner-border spinner-border-sm me-2\'></span>Menyimpan...'; this.form.submit();">
+    <i class="bi bi-save me-2"></i>Simpan Data
+</button>
             </form>
         </div>
 
@@ -99,14 +100,19 @@
                             <td>{{ $dok->konversi_praktik }}</td>
                             <td>{!! $dok->dokumen_rps ? '<a href="'.$dok->dokumen_rps.'" target="_blank" class="text-success fs-5"><i class="bi bi-check-circle-fill"></i> Taut</a>' : '<span class="text-muted">-</span>' !!}</td>
                             <td>
-                                <form action="{{ route('dokumen_pembelajaran.destroy', $dok->id) }}" method="POST" onsubmit="return confirm('Yakin ingin menghapus data mata kuliah ini?');">
-                                    @csrf
-                                    @method('DELETE')
-                                    <button type="submit" class="btn btn-sm btn-outline-danger">
-                                        <i class="bi bi-trash-fill"></i> Hapus
-                                    </button>
-                                </form>
-                            </td>
+    <div class="d-flex justify-content-center gap-2">
+        <a href="{{ route('dokumen_pembelajaran.edit', $dok->id) }}" class="btn btn-sm btn-outline-warning">
+            <i class="bi bi-pencil-fill"></i> Edit
+        </a>
+        <form action="{{ route('dokumen_pembelajaran.destroy', $dok->id) }}" method="POST" onsubmit="return confirm('Yakin ingin menghapus data mata kuliah ini?');">
+            @csrf
+            @method('DELETE')
+            <button type="submit" class="btn btn-sm btn-outline-danger">
+                <i class="bi bi-trash-fill"></i> Hapus
+            </button>
+        </form>
+    </div>
+</td>
                         </tr>
                         @empty
                         <tr>

@@ -30,6 +30,35 @@ class PenggunaanDanaController extends Controller
         PenggunaanDana::create($data);
         return redirect('/dashboard')->with('success', 'Data berhasil disimpan!');
     }
+
+    public function edit($id)
+    {
+        $dana = PenggunaanDana::where('id', $id)
+                    ->where('prodi_id', auth()->user()->prodi_id)
+                    ->firstOrFail();
+        return view('penggunaan_dana.edit', compact('dana'));
+    }
+
+    public function update(Request $request, $id)
+    {
+        $dana = PenggunaanDana::where('id', $id)
+                    ->where('prodi_id', auth()->user()->prodi_id)
+                    ->firstOrFail();
+
+        $data = $request->all();
+
+        // Bersihkan titik rupiah sebelum update
+        $kolomUang = ['upps_ts2', 'upps_ts1', 'upps_ts', 'ps_ts2', 'ps_ts1', 'ps_ts'];
+        foreach ($kolomUang as $kolom) {
+            if (isset($data[$kolom])) {
+                $data[$kolom] = str_replace('.', '', $data[$kolom]);
+            }
+        }
+
+        $dana->update($data);
+
+        return redirect()->route('penggunaan_dana.index')->with('success', 'Data penggunaan dana berhasil diperbarui!');
+    }
     // Fungsi untuk menghapus data
     public function destroy($id)
     {

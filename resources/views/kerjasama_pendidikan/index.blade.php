@@ -103,8 +103,13 @@
                                         <i class="bi bi-link-45deg"></i> Buka Dokumen
                                     </a>
                                 </td>
-                                <td>
+                               <td>
                                     <div class="d-flex justify-content-center gap-1">
+                                        <!-- Tombol Edit Baru -->
+                                        <a href="{{ route('kerjasama_pendidikan.edit', $item->id) }}" class="btn btn-sm text-warning" title="Edit">
+                                            <i class="bi bi-pencil-fill"></i>
+                                        </a>
+                                        <!-- Tombol Hapus Lama -->
                                         <form action="{{ route('kerjasama_pendidikan.destroy', $item->id) }}" method="POST" onsubmit="return confirm('Yakin ingin menghapus data ini?');">
                                             @csrf @method('DELETE')
                                             <button type="submit" class="btn btn-sm text-danger" title="Hapus">

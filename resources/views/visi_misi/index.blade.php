@@ -52,8 +52,12 @@
                         </div>
                     </div>
 
-                    <button type="submit" class="btn btn-primary w-100 py-3 rounded-pill shadow-sm fw-bold">
-                        <i class="bi bi-save me-2"></i>SIMPAN DATA VISI MISI
+                    <!-- Contoh untuk Kerjasama Penelitian -->
+<button type="submit" 
+        class="btn btn-primary w-100 py-3 rounded-pill shadow-sm fw-bold" 
+        onclick="this.disabled=true; this.innerHTML='<span class=\'spinner-border spinner-border-sm me-2\'></span>Menyimpan...'; this.form.submit();">
+    <i class="bi bi-save me-2"></i>SIMPAN DATA VISI MISI
+</button>
                     </button>
                 </form>
             </div>

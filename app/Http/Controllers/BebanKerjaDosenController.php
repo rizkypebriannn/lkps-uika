@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\BebanKerjaDosen; // <-- WAJIB ADA
+use App\Models\BebanKerjaDosen; 
 use Illuminate\Http\Request;
 
 class BebanKerjaDosenController extends Controller
@@ -15,22 +15,72 @@ class BebanKerjaDosenController extends Controller
 
     public function store(Request $request)
     {
-        $data = $request->all();
-        $data['prodi_id'] = auth()->user()->prodi_id; 
+        $validated = $request->validate([
+            'nama_dosen'           => 'required|string',
+            'is_dtps'              => 'required|string',
+            'sks_ps_diakreditasi'  => 'required|numeric',
+            'sks_ps_lain_dalam_pt' => 'required|numeric',
+            'sks_ps_lain_luar_pt'  => 'required|numeric',
+            'sks_penelitian'       => 'required|numeric',
+            'sks_pkm'              => 'required|numeric',
+            'sks_tugas_tambahan'   => 'required|numeric',
+        ]);
+
+        $validated['prodi_id'] = auth()->user()->prodi_id; 
 
         // AUTO-KALKULASI SKS SEBELUM DISIMPAN
-        $data['sks_jumlah'] = $data['sks_ps_diakreditasi'] + $data['sks_ps_lain_dalam_pt'] + $data['sks_ps_lain_luar_pt'] + $data['sks_penelitian'] + $data['sks_pkm'] + $data['sks_tugas_tambahan'];
-        $data['sks_rata_rata'] = $data['sks_jumlah'] / 2;
+        $validated['sks_jumlah'] = $validated['sks_ps_diakreditasi'] + $validated['sks_ps_lain_dalam_pt'] + $validated['sks_ps_lain_luar_pt'] + $validated['sks_penelitian'] + $validated['sks_pkm'] + $validated['sks_tugas_tambahan'];
+        $validated['sks_rata_rata'] = $validated['sks_jumlah'] / 2;
 
-        BebanKerjaDosen::create($data);
+        BebanKerjaDosen::create($validated);
         
-        // Langsung kembali ke Dashboard
-        return redirect('/dashboard')->with('success', 'Data Beban Kerja Dosen berhasil disimpan!');
+        // Tetap di halaman index
+        return redirect()->route('beban_kerja_dosen.index')->with('success', 'Data Beban Kerja Dosen berhasil disimpan!');
+    }
+
+    public function edit($id)
+    {
+        $dosen = BebanKerjaDosen::where('id', $id)
+                    ->where('prodi_id', auth()->user()->prodi_id)
+                    ->firstOrFail();
+
+        return view('beban_kerja_dosen.edit', compact('dosen'));
+    }
+
+    public function update(Request $request, $id)
+    {
+        $dosen = BebanKerjaDosen::where('id', $id)
+                    ->where('prodi_id', auth()->user()->prodi_id)
+                    ->firstOrFail();
+
+        $validated = $request->validate([
+            'nama_dosen'           => 'required|string',
+            'is_dtps'              => 'required|string',
+            'sks_ps_diakreditasi'  => 'required|numeric',
+            'sks_ps_lain_dalam_pt' => 'required|numeric',
+            'sks_ps_lain_luar_pt'  => 'required|numeric',
+            'sks_penelitian'       => 'required|numeric',
+            'sks_pkm'              => 'required|numeric',
+            'sks_tugas_tambahan'   => 'required|numeric',
+        ]);
+
+        // AUTO-KALKULASI ULANG SEBELUM DI-UPDATE
+        $validated['sks_jumlah'] = $validated['sks_ps_diakreditasi'] + $validated['sks_ps_lain_dalam_pt'] + $validated['sks_ps_lain_luar_pt'] + $validated['sks_penelitian'] + $validated['sks_pkm'] + $validated['sks_tugas_tambahan'];
+        $validated['sks_rata_rata'] = $validated['sks_jumlah'] / 2;
+
+        $dosen->update($validated);
+        
+        // Tetap di halaman index
+        return redirect()->route('beban_kerja_dosen.index')->with('success', 'Data Beban Kerja Dosen berhasil diupdate!');
     }
 
     public function destroy($id)
     {
-        BebanKerjaDosen::findOrFail($id)->delete();
-        return redirect('/dashboard')->with('success', 'Data Beban Kerja Dosen berhasil dihapus!');
+        BebanKerjaDosen::where('id', $id)
+            ->where('prodi_id', auth()->user()->prodi_id)
+            ->firstOrFail()
+            ->delete();
+            
+        return redirect()->route('beban_kerja_dosen.index')->with('success', 'Data Beban Kerja Dosen berhasil dihapus!');
     }
 }
