@@ -15,26 +15,62 @@ class PublikasiIlmiahMahasiswaController extends Controller
 
     public function store(Request $request)
     {
-        $data = $request->all();
-        $data['prodi_id'] = auth()->user()->prodi_id; 
+        $validated = $request->validate([
+            'media_publikasi' => 'required|string',
+            'ts_2'            => 'required|numeric|min:0',
+            'ts_1'            => 'required|numeric|min:0',
+            'ts'              => 'required|numeric|min:0',
+        ]);
 
-        // Cek jika kategori publikasi ini sudah pernah diinput
-        $existing = PublikasiIlmiahMahasiswa::where('prodi_id', auth()->user()->prodi_id)
-                                            ->where('media_publikasi', $request->media_publikasi)
-                                            ->first();
+        $validated['prodi_id'] = auth()->user()->prodi_id; 
 
-        if ($existing) {
-            $existing->update($data);
-            return redirect('/dashboard')->with('success', 'Data Publikasi untuk kategori tersebut berhasil diperbarui!');
-        }
+        // updateOrCreate otomatis nambah kalau belum ada, dan update kalau sudah ada kategori yang sama
+        PublikasiIlmiahMahasiswa::updateOrCreate(
+            [
+                'prodi_id'        => $validated['prodi_id'],
+                'media_publikasi' => $validated['media_publikasi']
+            ],
+            $validated
+        );
 
-        PublikasiIlmiahMahasiswa::create($data);
-        return redirect('/dashboard')->with('success', 'Data Publikasi Ilmiah Mahasiswa berhasil disimpan!');
+        return redirect()->back()->with('success', 'Data Publikasi Ilmiah Mahasiswa berhasil disimpan/diperbarui!');
+    }
+
+    public function edit($id)
+    {
+        $publikasi = PublikasiIlmiahMahasiswa::where('id', $id)
+                        ->where('prodi_id', auth()->user()->prodi_id)
+                        ->firstOrFail();
+                        
+        return view('publikasi_ilmiah_mahasiswa.edit', compact('publikasi'));
+    }
+
+    public function update(Request $request, $id)
+    {
+        $publikasi = PublikasiIlmiahMahasiswa::where('id', $id)
+                        ->where('prodi_id', auth()->user()->prodi_id)
+                        ->firstOrFail();
+
+        $validated = $request->validate([
+            'media_publikasi' => 'required|string',
+            'ts_2'            => 'required|numeric|min:0',
+            'ts_1'            => 'required|numeric|min:0',
+            'ts'              => 'required|numeric|min:0',
+        ]);
+
+        $publikasi->update($validated);
+
+        return redirect()->route('publikasi_ilmiah_mahasiswa.index')->with('success', 'Data Publikasi Ilmiah Mahasiswa berhasil diperbarui!');
     }
 
     public function destroy($id)
     {
-        PublikasiIlmiahMahasiswa::findOrFail($id)->delete();
-        return redirect('/dashboard')->with('success', 'Data berhasil dihapus!');
+        $publikasi = PublikasiIlmiahMahasiswa::where('id', $id)
+                        ->where('prodi_id', auth()->user()->prodi_id)
+                        ->firstOrFail();
+                        
+        $publikasi->delete();
+        
+        return redirect()->back()->with('success', 'Data berhasil dihapus!');
     }
 }

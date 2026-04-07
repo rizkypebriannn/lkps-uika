@@ -15,6 +15,26 @@
                 <i class="bi bi-arrow-left me-2"></i>Kembali ke Dashboard
             </a>
 
+            <!-- PESAN SUKSES & ERROR -->
+            @if(session('success'))
+                <div class="alert alert-success alert-dismissible fade show rounded-3" role="alert">
+                    <i class="bi bi-check-circle-fill me-2"></i> {{ session('success') }}
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                </div>
+            @endif
+
+            @if ($errors->any())
+                <div class="alert alert-danger alert-dismissible fade show rounded-3" role="alert">
+                    <i class="bi bi-exclamation-triangle-fill me-2"></i><strong>Gagal Menyimpan Data!</strong>
+                    <ul class="mb-0 mt-2">
+                        @foreach ($errors->all() as $error)
+                            <li>{{ $error }}</li>
+                        @endforeach
+                    </ul>
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                </div>
+            @endif
+
             <div class="card shadow-sm border-0 rounded-4 mb-5 p-4">
                 <h5 class="fw-bold mb-4 border-bottom pb-2">Input Penelitian DTPS yang Melibatkan Mahasiswa</h5>
                 
@@ -28,7 +48,8 @@
                         </div>
                         <div class="col-md-6">
                             <label class="form-label fw-semibold text-sm">Nama Mahasiswa</label>
-                            <input type="text" name="nama_mahasiswa" class="form-control rounded-3" placeholder="Contoh: Siti Aminah..." required>
+                            <input type="text" name="nama_mahasiswa" class="form-control rounded-3" placeholder="Contoh: Siti Aminah, Joko P..." required>
+                            <small class="text-muted" style="font-size: 0.75rem;">Pisahkan dengan koma jika lebih dari satu mahasiswa.</small>
                         </div>
                     </div>
 
@@ -48,7 +69,8 @@
                         </div>
                     </div>
 
-                    <button type="submit" class="btn btn-primary w-100 py-3 rounded-pill shadow-sm fw-bold">
+                    <button type="submit" class="btn btn-primary w-100 py-3 rounded-pill shadow-sm fw-bold"
+                            onclick="if(this.form.checkValidity()) { this.disabled=true; this.innerHTML='<span class=\'spinner-border spinner-border-sm me-2\'></span>Menyimpan...'; this.form.submit(); } else { this.form.reportValidity(); }">
                         <i class="bi bi-save me-2"></i>SIMPAN DATA PENELITIAN
                     </button>
                 </form>
@@ -64,9 +86,9 @@
                                 <th width="15%" class="text-start">Nama Dosen</th>
                                 <th width="20%" class="text-start">Tema Penelitian</th>
                                 <th width="15%" class="text-start">Nama Mahasiswa</th>
-                                <th width="30%" class="text-start">Judul Kegiatan</th>
+                                <th width="25%" class="text-start">Judul Kegiatan</th>
                                 <th width="10%">Tahun</th>
-                                <th width="5%">Hapus</th>
+                                <th width="10%">Aksi</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -78,26 +100,31 @@
                                 <td class="text-start">
                                 @php
                                     // Memecah nama yang disatukan koma menjadi array
-                                    $daftar_mhs = explode(', ', $item->nama_mahasiswa);
+                                    $daftar_mhs = explode(',', $item->nama_mahasiswa);
                                 @endphp
                                 
                                 @if(count($daftar_mhs) > 1)
                                     <ol class="mb-0 text-start" style="padding-left: 1.2rem; margin-top: 0;">
                                         @foreach($daftar_mhs as $mhs)
-                                            <li>{{ $mhs }}</li>
+                                            <li>{{ trim($mhs) }}</li>
                                         @endforeach
                                     </ol>
                                 @else
                                     {{ $item->nama_mahasiswa }}
                                 @endif
-                            </td>
+                                </td>
                                 <td class="text-start" style="font-size: 0.85rem;">{{ $item->judul_kegiatan }}</td>
                                 <td><span class="badge bg-secondary">{{ $item->tahun }}</span></td>
                                 <td>
-                                    <form action="{{ route('penelitian_dtps_mahasiswa.destroy', $item->id) }}" method="POST" onsubmit="return confirm('Yakin ingin menghapus data ini?');">
-                                        @csrf @method('DELETE')
-                                        <button type="submit" class="btn btn-sm text-danger"><i class="bi bi-trash-fill"></i></button>
-                                    </form>
+                                    <div class="d-flex justify-content-center gap-2">
+                                        <a href="{{ route('penelitian_dtps_mahasiswa.edit', $item->id) }}" class="btn btn-sm text-warning p-0" title="Edit">
+                                            <i class="bi bi-pencil-fill"></i>
+                                        </a>
+                                        <form action="{{ route('penelitian_dtps_mahasiswa.destroy', $item->id) }}" method="POST" onsubmit="return confirm('Yakin ingin menghapus data ini?');">
+                                            @csrf @method('DELETE')
+                                            <button type="submit" class="btn btn-sm text-danger p-0" title="Hapus"><i class="bi bi-trash-fill"></i></button>
+                                        </form>
+                                    </div>
                                 </td>
                             </tr>
                             @empty
@@ -112,4 +139,5 @@
 
         </div>
     </div>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 </x-app-layout>

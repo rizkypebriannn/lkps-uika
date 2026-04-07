@@ -16,26 +16,67 @@ class PkmDtpsMahasiswaController extends Controller
         return view('pkm_dtps_mahasiswa.index', compact('data'));
     }
 
-   public function store(Request $request)
+    public function store(Request $request)
     {
-        $input = $request->all();
-        $input['prodi_id'] = auth()->user()->prodi_id; 
+        $validated = $request->validate([
+            'nama_dosen'       => 'required|string',
+            'nama_mahasiswa'   => 'required|array',
+            'nama_mahasiswa.*' => 'required|string',
+            'tema_pkm'         => 'required|string',
+            'judul_kegiatan'   => 'required|string',
+            'tahun'            => 'required|string',
+        ]);
 
-        // TRICK SAKTI: Jika input nama_mahasiswa berupa array (lebih dari 1),
-        // gabungkan menjadi satu string dengan pemisah koma (, )
-        if (isset($input['nama_mahasiswa']) && is_array($input['nama_mahasiswa'])) {
-            $input['nama_mahasiswa'] = implode(', ', $input['nama_mahasiswa']);
-        }
+        $validated['prodi_id'] = auth()->user()->prodi_id; 
 
-        PkmDtpsMahasiswa::create($input);
+        // TRICK SAKTI: Gabungkan array mahasiswa menjadi string dipisah koma
+        $validated['nama_mahasiswa'] = implode(', ', $validated['nama_mahasiswa']);
+
+        PkmDtpsMahasiswa::create($validated);
         
-        return redirect('/dashboard')->with('success', 'Data Tabel 6.i (PkM DTPS & Mahasiswa) berhasil disimpan!');
+        return redirect()->back()->with('success', 'Data Tabel 6.i (PkM DTPS & Mahasiswa) berhasil disimpan!');
     }
 
-public function destroy($id)
+    public function edit($id)
     {
-        PkmDtpsMahasiswa::findOrFail($id)->delete();
+        $data = PkmDtpsMahasiswa::where('id', $id)
+                    ->where('prodi_id', auth()->user()->prodi_id)
+                    ->firstOrFail();
+                    
+        return view('pkm_dtps_mahasiswa.edit', compact('data'));
+    }
+
+    public function update(Request $request, $id)
+    {
+        $data = PkmDtpsMahasiswa::where('id', $id)
+                    ->where('prodi_id', auth()->user()->prodi_id)
+                    ->firstOrFail();
+
+        $validated = $request->validate([
+            'nama_dosen'       => 'required|string',
+            'nama_mahasiswa'   => 'required|array',
+            'nama_mahasiswa.*' => 'required|string',
+            'tema_pkm'         => 'required|string',
+            'judul_kegiatan'   => 'required|string',
+            'tahun'            => 'required|string',
+        ]);
+
+        // TRICK SAKTI: Gabungkan array mahasiswa menjadi string dipisah koma
+        $validated['nama_mahasiswa'] = implode(', ', $validated['nama_mahasiswa']);
+
+        $data->update($validated);
+
+        return redirect()->route('pkm_dtps_mahasiswa.index')->with('success', 'Data Tabel 6.i berhasil diperbarui!');
+    }
+
+    public function destroy($id)
+    {
+        $data = PkmDtpsMahasiswa::where('id', $id)
+                    ->where('prodi_id', auth()->user()->prodi_id)
+                    ->firstOrFail();
+                    
+        $data->delete();
         
-        return redirect('/dashboard')->with('success', 'Data Tabel 6.i berhasil dihapus!');
+        return redirect()->back()->with('success', 'Data Tabel 6.i berhasil dihapus!');
     }
 }

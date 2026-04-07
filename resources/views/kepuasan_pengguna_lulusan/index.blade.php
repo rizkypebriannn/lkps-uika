@@ -15,6 +15,26 @@
                 <i class="bi bi-arrow-left me-2"></i>Kembali ke Dashboard
             </a>
 
+            <!-- PESAN SUKSES & ERROR -->
+            @if(session('success'))
+                <div class="alert alert-success alert-dismissible fade show rounded-3" role="alert">
+                    <i class="bi bi-check-circle-fill me-2"></i> {{ session('success') }}
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                </div>
+            @endif
+
+            @if ($errors->any())
+                <div class="alert alert-danger alert-dismissible fade show rounded-3" role="alert">
+                    <i class="bi bi-exclamation-triangle-fill me-2"></i><strong>Gagal Menyimpan Data!</strong>
+                    <ul class="mb-0 mt-2">
+                        @foreach ($errors->all() as $error)
+                            <li>{{ $error }}</li>
+                        @endforeach
+                    </ul>
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                </div>
+            @endif
+
             <div class="card shadow-sm border-0 rounded-4 mb-5 p-4">
                 <h5 class="fw-bold mb-4 border-bottom pb-2">Input Tingkat Kepuasan Pengguna Lulusan</h5>
                 
@@ -33,6 +53,7 @@
                             <option value="Kerjasama tim">Kerjasama tim</option>
                             <option value="Pengembangan diri">Pengembangan diri</option>
                         </select>
+                        <small class="text-muted" style="font-size: 0.75rem;">(Data akan diperbarui secara otomatis jika Anda memilih jenis kemampuan yang sama)</small>
                     </div>
 
                     <div class="p-3 bg-light rounded-3 mb-4 border">
@@ -62,7 +83,8 @@
                         <textarea name="rencana_tindak_lanjut" class="form-control rounded-3" rows="3" placeholder="Deskripsikan rencana tindak lanjut..." required></textarea>
                     </div>
 
-                    <button type="submit" class="btn btn-primary w-100 py-3 rounded-pill shadow-sm fw-bold">
+                    <button type="submit" class="btn btn-primary w-100 py-3 rounded-pill shadow-sm fw-bold"
+                            onclick="if(this.form.checkValidity()) { this.disabled=true; this.innerHTML='<span class=\'spinner-border spinner-border-sm me-2\'></span>Menyimpan...'; this.form.submit(); } else { this.form.reportValidity(); }">
                         <i class="bi bi-save me-2"></i>SIMPAN DATA KEPUASAN
                     </button>
                 </form>
@@ -78,7 +100,7 @@
                                 <th rowspan="2" class="align-middle text-start" width="25%">Jenis Kemampuan</th>
                                 <th colspan="4">Tingkat Kepuasan Pengguna (%)</th>
                                 <th rowspan="2" class="align-middle text-start" width="25%">Rencana Tindak Lanjut</th>
-                                <th rowspan="2" class="align-middle" width="5%">Hapus</th>
+                                <th rowspan="2" class="align-middle" width="10%">Aksi</th>
                             </tr>
                             <tr>
                                 <th>Sangat Baik</th>
@@ -98,10 +120,15 @@
                                 <td>{{ $item->kurang }}%</td>
                                 <td class="text-start">{{ $item->rencana_tindak_lanjut }}</td>
                                 <td>
-                                    <form action="{{ route('kepuasan_pengguna_lulusan.destroy', $item->id) }}" method="POST" onsubmit="return confirm('Yakin ingin menghapus data ini?');">
-                                        @csrf @method('DELETE')
-                                        <button type="submit" class="btn btn-sm text-danger"><i class="bi bi-trash-fill"></i></button>
-                                    </form>
+                                    <div class="d-flex justify-content-center gap-2">
+                                        <a href="{{ route('kepuasan_pengguna_lulusan.edit', $item->id) }}" class="btn btn-sm text-warning p-0" title="Edit">
+                                            <i class="bi bi-pencil-fill"></i>
+                                        </a>
+                                        <form action="{{ route('kepuasan_pengguna_lulusan.destroy', $item->id) }}" method="POST" onsubmit="return confirm('Yakin ingin menghapus data ini?');">
+                                            @csrf @method('DELETE')
+                                            <button type="submit" class="btn btn-sm text-danger p-0" title="Hapus"><i class="bi bi-trash-fill"></i></button>
+                                        </form>
+                                    </div>
                                 </td>
                             </tr>
                             @empty
@@ -116,4 +143,5 @@
 
         </div>
     </div>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 </x-app-layout>

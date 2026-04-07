@@ -17,17 +17,55 @@ class LuaranHkiMahasiswaController extends Controller
 
     public function store(Request $request)
     {
-        $data = $request->all();
-        $data['prodi_id'] = auth()->user()->prodi_id; 
+        $validated = $request->validate([
+            'luaran_penelitian' => 'required|string',
+            'tanggal'           => 'required|date',
+            'status'            => 'required|in:Registered,Granted,Komersial',
+            'nomor_registrasi'  => 'required|string',
+        ]);
 
-        LuaranHkiMahasiswa::create($data);
+        $validated['prodi_id'] = auth()->user()->prodi_id; 
+
+        LuaranHkiMahasiswa::create($validated);
         
-        return redirect('/dashboard')->with('success', 'Data HKI Mahasiswa berhasil disimpan!');
+        return redirect()->back()->with('success', 'Data HKI Mahasiswa berhasil disimpan!');
+    }
+
+    public function edit($id)
+    {
+        $hki = LuaranHkiMahasiswa::where('id', $id)
+                    ->where('prodi_id', auth()->user()->prodi_id)
+                    ->firstOrFail();
+                    
+        return view('luaran_hki_mahasiswa.edit', compact('hki'));
+    }
+
+    public function update(Request $request, $id)
+    {
+        $hki = LuaranHkiMahasiswa::where('id', $id)
+                    ->where('prodi_id', auth()->user()->prodi_id)
+                    ->firstOrFail();
+
+        $validated = $request->validate([
+            'luaran_penelitian' => 'required|string',
+            'tanggal'           => 'required|date',
+            'status'            => 'required|in:Registered,Granted,Komersial',
+            'nomor_registrasi'  => 'required|string',
+        ]);
+
+        $hki->update($validated);
+
+        return redirect()->route('luaran_hki_mahasiswa.index')->with('success', 'Data HKI Mahasiswa berhasil diperbarui!');
     }
 
     public function destroy($id)
     {
-        LuaranHkiMahasiswa::findOrFail($id)->delete();
-        return redirect('/dashboard')->with('success', 'Data berhasil dihapus!');
+        $hki = LuaranHkiMahasiswa::where('id', $id)
+                    ->where('prodi_id', auth()->user()->prodi_id)
+                    ->firstOrFail();
+                    
+        $hki->delete();
+        
+        return redirect()->back()->with('success', 'Data berhasil dihapus!');
     }
 }

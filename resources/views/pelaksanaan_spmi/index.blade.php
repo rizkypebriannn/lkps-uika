@@ -15,6 +15,26 @@
                 <i class="bi bi-arrow-left me-2"></i>Kembali ke Dashboard
             </a>
 
+            <!-- PESAN SUKSES & ERROR -->
+            @if(session('success'))
+                <div class="alert alert-success alert-dismissible fade show rounded-3" role="alert">
+                    <i class="bi bi-check-circle-fill me-2"></i> {{ session('success') }}
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                </div>
+            @endif
+
+            @if ($errors->any())
+                <div class="alert alert-danger alert-dismissible fade show rounded-3" role="alert">
+                    <i class="bi bi-exclamation-triangle-fill me-2"></i><strong>Gagal Menyimpan Data!</strong>
+                    <ul class="mb-0 mt-2">
+                        @foreach ($errors->all() as $error)
+                            <li>{{ $error }}</li>
+                        @endforeach
+                    </ul>
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                </div>
+            @endif
+
             <div class="card shadow-sm border-0 rounded-4 mb-5 p-4">
                 <h5 class="fw-bold mb-4 border-bottom pb-2">Input Dokumen Pelaksanaan SPMI (Siklus PPEPP)</h5>
                 
@@ -31,6 +51,7 @@
                             <option value="Pengendalian">4. Pengendalian (Isi Link Laporan RTM)</option>
                             <option value="Peningkatan">5. Peningkatan (Isi Link Dok. Peningkatan)</option>
                         </select>
+                        <small class="text-muted" style="font-size: 0.75rem;">(Data akan diperbarui secara otomatis jika Anda memilih tahapan yang sama)</small>
                     </div>
 
                     <div class="mb-4">
@@ -56,14 +77,15 @@
                         </div>
                     </div>
 
-                    <button type="submit" class="btn btn-primary w-100 py-3 rounded-pill shadow-sm fw-bold">
+                    <button type="submit" class="btn btn-primary w-100 py-3 rounded-pill shadow-sm fw-bold"
+                            onclick="if(this.form.checkValidity()) { this.disabled=true; this.innerHTML='<span class=\'spinner-border spinner-border-sm me-2\'></span>Menyimpan...'; this.form.submit(); } else { this.form.reportValidity(); }">
                         <i class="bi bi-save me-2"></i>SIMPAN PELAKSANAAN SPMI
                     </button>
                 </form>
             </div>
             
             <div class="card shadow-sm border-0 rounded-4 p-4">
-                <h6 class="fw-bold mb-3">Data Pelaksanaan Tersimpan ({{ $data->count() }})</h6>
+                <h6 class="fw-bold mb-3">Data Pelaksanaan Tersimpan ({{ $data->count() }}/5)</h6>
                 <div class="table-responsive">
                     <table class="table table-sm table-hover align-middle text-center" style="font-size: 0.85rem;">
                         <thead class="table-light">
@@ -74,7 +96,7 @@
                                 <th width="15%">Link Hasil Audit</th>
                                 <th width="15%">Link Laporan RTM</th>
                                 <th width="20%">Link Dok Peningkatan</th>
-                                <th width="10%">Hapus</th>
+                                <th width="10%">Aksi</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -95,10 +117,15 @@
                                     @if($item->link_dokumen_peningkatan) <a href="{{ $item->link_dokumen_peningkatan }}" target="_blank" class="badge bg-info text-dark text-decoration-none">Ada Link</a> @else <span class="text-muted">-</span> @endif
                                 </td>
                                 <td>
-                                    <form action="{{ route('pelaksanaan_spmi.destroy', $item->id) }}" method="POST" onsubmit="return confirm('Yakin ingin menghapus data ini?');">
-                                        @csrf @method('DELETE')
-                                        <button type="submit" class="btn btn-sm text-danger"><i class="bi bi-trash-fill"></i></button>
-                                    </form>
+                                    <div class="d-flex justify-content-center gap-2">
+                                        <a href="{{ route('pelaksanaan_spmi.edit', $item->id) }}" class="btn btn-sm text-warning p-0" title="Edit">
+                                            <i class="bi bi-pencil-fill"></i>
+                                        </a>
+                                        <form action="{{ route('pelaksanaan_spmi.destroy', $item->id) }}" method="POST" onsubmit="return confirm('Yakin ingin menghapus data ini?');">
+                                            @csrf @method('DELETE')
+                                            <button type="submit" class="btn btn-sm text-danger p-0" title="Hapus"><i class="bi bi-trash-fill"></i></button>
+                                        </form>
+                                    </div>
                                 </td>
                             </tr>
                             @empty
@@ -113,4 +140,5 @@
 
         </div>
     </div>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 </x-app-layout>

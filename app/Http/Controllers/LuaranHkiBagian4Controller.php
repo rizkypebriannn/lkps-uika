@@ -9,24 +9,61 @@ class LuaranHkiBagian4Controller extends Controller
 {
     public function index()
     {
-        $data = LuaranHkiBagian4::where('prodi_id', auth()->user()->prodi_id)->orderBy('tanggal', 'desc')->get();
+        $data = LuaranHkiBagian4::where('prodi_id', auth()->user()->prodi_id)
+                                ->orderBy('tanggal', 'desc')
+                                ->get();
         return view('luaran_hki_bagian4.index', compact('data'));
     }
 
     public function store(Request $request)
     {
-        $input = $request->all();
-        $input['prodi_id'] = auth()->user()->prodi_id; 
+        $validated = $request->validate([
+            'luaran_penelitian' => 'required|string',
+            'tanggal'           => 'required|date',
+            'nomor_isbn'        => 'required|string',
+        ]);
 
-        LuaranHkiBagian4::create($input);
+        $validated['prodi_id'] = auth()->user()->prodi_id; 
+
+        LuaranHkiBagian4::create($validated);
         
-        return redirect('/dashboard')->with('success', 'Data Tabel 6.e.3-4 (Buku/Book Chapter) berhasil disimpan!');
+        return redirect()->back()->with('success', 'Data Tabel 6.e.3-4 (Buku/Book Chapter) berhasil disimpan!');
+    }
+
+    public function edit($id)
+    {
+        $data = LuaranHkiBagian4::where('id', $id)
+                    ->where('prodi_id', auth()->user()->prodi_id)
+                    ->firstOrFail();
+                    
+        return view('luaran_hki_bagian4.edit', compact('data'));
+    }
+
+    public function update(Request $request, $id)
+    {
+        $data = LuaranHkiBagian4::where('id', $id)
+                    ->where('prodi_id', auth()->user()->prodi_id)
+                    ->firstOrFail();
+
+        $validated = $request->validate([
+            'luaran_penelitian' => 'required|string',
+            'tanggal'           => 'required|date',
+            'nomor_isbn'        => 'required|string',
+        ]);
+
+        $data->update($validated);
+
+        return redirect()->route('luaran_hki_bagian4.index')->with('success', 'Data Tabel 6.e.3-4 berhasil diperbarui!');
     }
 
     public function destroy($id)
     {
-        LuaranHkiBagian4::findOrFail($id)->delete();
+        $data = LuaranHkiBagian4::where('id', $id)
+                    ->where('prodi_id', auth()->user()->prodi_id)
+                    ->firstOrFail();
+                    
+        $data->delete();
         
-        return redirect('/dashboard')->with('success', 'Data Tabel 6.e.3-4 berhasil dihapus!');
+        return redirect()->back()->with('success', 'Data Tabel 6.e.3-4 berhasil dihapus!');
     }
 }

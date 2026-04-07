@@ -15,26 +15,62 @@ class PublikasiMahasiswaTerapanController extends Controller
 
     public function store(Request $request)
     {
-        $data = $request->all();
-        $data['prodi_id'] = auth()->user()->prodi_id; 
+        $validated = $request->validate([
+            'jenis_publikasi' => 'required|string',
+            'ts_2'            => 'required|numeric|min:0',
+            'ts_1'            => 'required|numeric|min:0',
+            'ts'              => 'required|numeric|min:0',
+        ]);
 
-        // Cek jika kategori ini sudah pernah diinput (Auto Update)
-        $existing = PublikasiMahasiswaTerapan::where('prodi_id', auth()->user()->prodi_id)
-                                             ->where('jenis_publikasi', $request->jenis_publikasi)
-                                             ->first();
+        $validated['prodi_id'] = auth()->user()->prodi_id; 
 
-        if ($existing) {
-            $existing->update($data);
-            return redirect('/dashboard')->with('success', 'Data Publikasi (Terapan) berhasil diperbarui!');
-        }
+        // Auto insert kalau baru, auto update kalau jenisnya sudah ada
+        PublikasiMahasiswaTerapan::updateOrCreate(
+            [
+                'prodi_id'        => $validated['prodi_id'],
+                'jenis_publikasi' => $validated['jenis_publikasi']
+            ],
+            $validated
+        );
 
-        PublikasiMahasiswaTerapan::create($data);
-        return redirect('/dashboard')->with('success', 'Data Publikasi (Terapan) berhasil disimpan!');
+        return redirect()->back()->with('success', 'Data Publikasi (Terapan) berhasil disimpan/diperbarui!');
+    }
+
+    public function edit($id)
+    {
+        $publikasi = PublikasiMahasiswaTerapan::where('id', $id)
+                        ->where('prodi_id', auth()->user()->prodi_id)
+                        ->firstOrFail();
+                        
+        return view('publikasi_mahasiswa_terapan.edit', compact('publikasi'));
+    }
+
+    public function update(Request $request, $id)
+    {
+        $publikasi = PublikasiMahasiswaTerapan::where('id', $id)
+                        ->where('prodi_id', auth()->user()->prodi_id)
+                        ->firstOrFail();
+
+        $validated = $request->validate([
+            'jenis_publikasi' => 'required|string',
+            'ts_2'            => 'required|numeric|min:0',
+            'ts_1'            => 'required|numeric|min:0',
+            'ts'              => 'required|numeric|min:0',
+        ]);
+
+        $publikasi->update($validated);
+
+        return redirect()->route('publikasi_mahasiswa_terapan.index')->with('success', 'Data Publikasi (Terapan) berhasil diperbarui!');
     }
 
     public function destroy($id)
     {
-        PublikasiMahasiswaTerapan::findOrFail($id)->delete();
-        return redirect('/dashboard')->with('success', 'Data berhasil dihapus!');
+        $publikasi = PublikasiMahasiswaTerapan::where('id', $id)
+                        ->where('prodi_id', auth()->user()->prodi_id)
+                        ->firstOrFail();
+                        
+        $publikasi->delete();
+        
+        return redirect()->back()->with('success', 'Data berhasil dihapus!');
     }
 }

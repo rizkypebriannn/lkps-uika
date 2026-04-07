@@ -18,26 +18,66 @@ class MasaStudiLulusanController extends Controller
 
     public function store(Request $request)
     {
-        $data = $request->all();
-        $data['prodi_id'] = auth()->user()->prodi_id; 
+        $validated = $request->validate([
+            'tahun_masuk'  => 'required|in:TS-7,TS-6,TS-5,TS-4,TS-3,TS-2,TS-1,TS',
+            'jumlah_masuk' => 'required|numeric|min:0',
+            'lulus_3_5'    => 'nullable|numeric|min:0',
+            'lulus_4_5'    => 'nullable|numeric|min:0',
+            'lulus_5_5'    => 'nullable|numeric|min:0',
+            'lulus_6_5'    => 'nullable|numeric|min:0',
+        ]);
 
-        // Cek apakah data tahun masuk tersebut sudah ada
-        $existing = MasaStudiLulusan::where('prodi_id', auth()->user()->prodi_id)
-                                    ->where('tahun_masuk', $request->tahun_masuk)
-                                    ->first();
+        $validated['prodi_id'] = auth()->user()->prodi_id;
 
-        if ($existing) {
-            $existing->update($data);
-            return redirect('/dashboard')->with('success', 'Data Masa Studi ' . $request->tahun_masuk . ' berhasil diperbarui!');
-        }
+        // updateOrCreate: Kalau tahun_masuk sudah ada, di-update. Kalau belum, di-create.
+        MasaStudiLulusan::updateOrCreate(
+            [
+                'prodi_id'    => $validated['prodi_id'],
+                'tahun_masuk' => $validated['tahun_masuk']
+            ],
+            $validated
+        );
 
-        MasaStudiLulusan::create($data);
-        return redirect('/dashboard')->with('success', 'Data Masa Studi berhasil disimpan!');
+        return redirect()->back()->with('success', 'Data Masa Studi ' . $request->tahun_masuk . ' berhasil disimpan!');
+    }
+
+    public function edit($id)
+    {
+        $masa_studi = MasaStudiLulusan::where('id', $id)
+                        ->where('prodi_id', auth()->user()->prodi_id)
+                        ->firstOrFail();
+                        
+        return view('masa_studi_lulusan.edit', compact('masa_studi'));
+    }
+
+    public function update(Request $request, $id)
+    {
+        $masa_studi = MasaStudiLulusan::where('id', $id)
+                        ->where('prodi_id', auth()->user()->prodi_id)
+                        ->firstOrFail();
+
+        $validated = $request->validate([
+            'tahun_masuk'  => 'required|in:TS-7,TS-6,TS-5,TS-4,TS-3,TS-2,TS-1,TS',
+            'jumlah_masuk' => 'required|numeric|min:0',
+            'lulus_3_5'    => 'nullable|numeric|min:0',
+            'lulus_4_5'    => 'nullable|numeric|min:0',
+            'lulus_5_5'    => 'nullable|numeric|min:0',
+            'lulus_6_5'    => 'nullable|numeric|min:0',
+        ]);
+
+        $masa_studi->update($validated);
+
+        return redirect()->route('masa_studi_lulusan.index')->with('success', 'Data Masa Studi berhasil diperbarui!');
     }
 
     public function destroy($id)
     {
-        MasaStudiLulusan::findOrFail($id)->delete();
-        return redirect('/dashboard')->with('success', 'Data berhasil dihapus!');
+        $masa_studi = MasaStudiLulusan::where('id', $id)
+                        ->where('prodi_id', auth()->user()->prodi_id)
+                        ->firstOrFail();
+                        
+        $masa_studi->delete();
+        
+        return redirect()->back()->with('success', 'Data berhasil dihapus!');
     }
 }
