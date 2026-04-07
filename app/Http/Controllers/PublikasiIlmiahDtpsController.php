@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\PublikasiIlmiahDtps; // <--- DIJAMIN AMAN
+use App\Models\PublikasiIlmiahDtps;
 use Illuminate\Http\Request;
 
 class PublikasiIlmiahDtpsController extends Controller
@@ -15,21 +15,57 @@ class PublikasiIlmiahDtpsController extends Controller
 
     public function store(Request $request)
     {
-        $data = $request->all();
-        $data['prodi_id'] = auth()->user()->prodi_id; 
-        
-        // Auto-kalkulasi total publikasi
-        $data['jumlah_total'] = $data['jumlah_ts2'] + $data['jumlah_ts1'] + $data['jumlah_ts'];
+        $validated = $request->validate([
+            'jenis_publikasi' => 'required|string',
+            'jumlah_ts2'      => 'required|numeric',
+            'jumlah_ts1'      => 'required|numeric',
+            'jumlah_ts'       => 'required|numeric',
+        ]);
 
-        PublikasiIlmiahDtps::create($data);
+        $validated['prodi_id'] = auth()->user()->prodi_id; 
+        $validated['jumlah_total'] = $validated['jumlah_ts2'] + $validated['jumlah_ts1'] + $validated['jumlah_ts'];
+
+        PublikasiIlmiahDtps::create($validated);
         
-        // Langsung kembali ke Dashboard
-        return redirect('/dashboard')->with('success', 'Data Publikasi Ilmiah berhasil disimpan!');
+        return redirect()->back()->with('success', 'Data Publikasi Ilmiah berhasil disimpan!');
+    }
+
+    public function edit($id)
+    {
+        $publikasi = PublikasiIlmiahDtps::where('id', $id)
+                        ->where('prodi_id', auth()->user()->prodi_id)
+                        ->firstOrFail();
+                        
+        return view('publikasi_ilmiah_dtps.edit', compact('publikasi'));
+    }
+
+    public function update(Request $request, $id)
+    {
+        $publikasi = PublikasiIlmiahDtps::where('id', $id)
+                        ->where('prodi_id', auth()->user()->prodi_id)
+                        ->firstOrFail();
+
+        $validated = $request->validate([
+            'jenis_publikasi' => 'required|string',
+            'jumlah_ts2'      => 'required|numeric',
+            'jumlah_ts1'      => 'required|numeric',
+            'jumlah_ts'       => 'required|numeric',
+        ]);
+
+        $validated['jumlah_total'] = $validated['jumlah_ts2'] + $validated['jumlah_ts1'] + $validated['jumlah_ts'];
+
+        $publikasi->update($validated);
+
+        return redirect()->route('publikasi_ilmiah_dtps.index')->with('success', 'Data Publikasi Ilmiah berhasil diperbarui!');
     }
 
     public function destroy($id)
     {
-        PublikasiIlmiahDtps::findOrFail($id)->delete();
-        return redirect('/dashboard')->with('success', 'Data Publikasi Ilmiah berhasil dihapus!');
+        $publikasi = PublikasiIlmiahDtps::where('id', $id)
+                        ->where('prodi_id', auth()->user()->prodi_id)
+                        ->firstOrFail();
+        
+        $publikasi->delete();
+        return redirect()->back()->with('success', 'Data Publikasi Ilmiah berhasil dihapus!');
     }
 }

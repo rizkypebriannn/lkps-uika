@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\LuaranBukuIsbn; // <--- DIJAMIN AMAN
+use App\Models\LuaranBukuIsbn; 
 use Illuminate\Http\Request;
 
 class LuaranBukuIsbnController extends Controller
@@ -15,18 +15,53 @@ class LuaranBukuIsbnController extends Controller
 
     public function store(Request $request)
     {
-        $data = $request->all();
-        $data['prodi_id'] = auth()->user()->prodi_id; 
+        $validated = $request->validate([
+            'judul_luaran' => 'required|string',
+            'tanggal'      => 'required|date',
+            'keterangan'   => 'required|string',
+        ]);
 
-        LuaranBukuIsbn::create($data);
+        $validated['prodi_id'] = auth()->user()->prodi_id; 
+
+        LuaranBukuIsbn::create($validated);
         
-        // Auto-Redirect ke Dashboard
-        return redirect('/dashboard')->with('success', 'Data Buku Ber-ISBN berhasil disimpan!');
+        return redirect()->back()->with('success', 'Data Buku Ber-ISBN berhasil disimpan!');
+    }
+
+    public function edit($id)
+    {
+        $buku = LuaranBukuIsbn::where('id', $id)
+                    ->where('prodi_id', auth()->user()->prodi_id)
+                    ->firstOrFail();
+                    
+        return view('luaran_buku_isbn.edit', compact('buku'));
+    }
+
+    public function update(Request $request, $id)
+    {
+        $buku = LuaranBukuIsbn::where('id', $id)
+                    ->where('prodi_id', auth()->user()->prodi_id)
+                    ->firstOrFail();
+
+        $validated = $request->validate([
+            'judul_luaran' => 'required|string',
+            'tanggal'      => 'required|date',
+            'keterangan'   => 'required|string',
+        ]);
+
+        $buku->update($validated);
+
+        return redirect()->route('luaran_buku_isbn.index')->with('success', 'Data Buku Ber-ISBN berhasil diperbarui!');
     }
 
     public function destroy($id)
     {
-        LuaranBukuIsbn::findOrFail($id)->delete();
-        return redirect('/dashboard')->with('success', 'Data Buku Ber-ISBN berhasil dihapus!');
+        $buku = LuaranBukuIsbn::where('id', $id)
+                    ->where('prodi_id', auth()->user()->prodi_id)
+                    ->firstOrFail();
+                    
+        $buku->delete();
+        
+        return redirect()->back()->with('success', 'Data Buku Ber-ISBN berhasil dihapus!');
     }
 }

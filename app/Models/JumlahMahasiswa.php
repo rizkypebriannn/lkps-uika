@@ -6,6 +6,9 @@ use Illuminate\Database\Eloquent\Model;
 
 class JumlahMahasiswa extends Model
 {
+    // Tambahkan baris ini biar nggak nyasar ke tabel lain!
+    protected $table = 'mahasiswas'; 
+    
     protected $guarded = ['id'];
 
     public function prodi()

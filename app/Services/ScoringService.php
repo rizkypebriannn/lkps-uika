@@ -697,7 +697,6 @@ class ScoringService
 
         // 2. NM: Jumlah Mahasiswa Aktif pada saat TS (Tabel 6.a)
         $mhs = JumlahMahasiswa::where('prodi_id', $prodi_id)
-                    ->where('is_diakreditasi', 'Ya')
                     ->first();
         $nm = $mhs ? $mhs->aktif_ts : 0;
 
@@ -733,12 +732,11 @@ class ScoringService
      * Hitung Skor Indikator 41: Persentase Mahasiswa Asing (PMA)
      * Presisi sesuai Matriks APS-AV 2025 Hal. 22
      */
-    public static function hitungSkorMahasiswaAsing($prodi_id)
+   public static function hitungSkorMahasiswaAsing($prodi_id)
     {
         // 1. Ambil data mahasiswa dari Tabel 6.a (jumlah_mahasiswas)
-        $mhs = JumlahMahasiswa::where('prodi_id', $prodi_id)
-                    ->where('is_diakreditasi', 'Ya')
-                    ->first();
+        // HAPUS where is_diakreditasi karena tidak ada di database
+        $mhs = JumlahMahasiswa::where('prodi_id', $prodi_id)->first();
 
         if (!$mhs || $mhs->aktif_ts == 0) return number_format(0, 2);
 
@@ -802,7 +800,6 @@ class ScoringService
     {
         // 1. Ambil NM (Jumlah Mahasiswa Aktif saat TS)
         $mhs = \App\Models\JumlahMahasiswa::where('prodi_id', $prodi_id)
-                    ->where('is_diakreditasi', 'Ya')
                     ->first();
         $nm = $mhs ? $mhs->aktif_ts : 0;
 
@@ -952,7 +949,7 @@ class ScoringService
     public static function hitungSkorPublikasiMahasiswa($prodi_id)
     {
         // 1. Ambil NM (Jumlah Mahasiswa saat TS) dari tabel jumlah_mahasiswas
-        $mhs = \App\Models\JumlahMahasiswa::where('prodi_id', $prodi_id)->where('is_diakreditasi', 'Ya')->first();
+        $mhs = \App\Models\JumlahMahasiswa::where('prodi_id', $prodi_id)->first();
         $nm = $mhs ? $mhs->aktif_ts : 0;
         if ($nm == 0) return number_format(0, 2);
 

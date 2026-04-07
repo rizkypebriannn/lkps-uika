@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\LuaranHkiPaten; // <--- DIJAMIN AMAN DARI ERROR CLASS NOT FOUND
+use App\Models\LuaranHkiPaten; 
 use Illuminate\Http\Request;
 
 class LuaranHkiPatenController extends Controller
@@ -15,18 +15,55 @@ class LuaranHkiPatenController extends Controller
 
     public function store(Request $request)
     {
-        $data = $request->all();
-        $data['prodi_id'] = auth()->user()->prodi_id; 
+        // Validasi input
+        $validated = $request->validate([
+            'judul_luaran' => 'required|string',
+            'tanggal'      => 'required|date',
+            'nomor_paten'  => 'nullable|string',
+        ]);
 
-        LuaranHkiPaten::create($data);
+        $validated['prodi_id'] = auth()->user()->prodi_id; 
+
+        LuaranHkiPaten::create($validated);
         
-        // Auto-Redirect ke Dashboard
-        return redirect('/dashboard')->with('success', 'Data HKI Paten berhasil disimpan!');
+        // Tetap di halaman index
+        return redirect()->back()->with('success', 'Data HKI Paten berhasil disimpan!');
+    }
+
+    public function edit($id)
+    {
+        $hki = LuaranHkiPaten::where('id', $id)
+                    ->where('prodi_id', auth()->user()->prodi_id)
+                    ->firstOrFail();
+                    
+        return view('luaran_hki_paten.edit', compact('hki'));
+    }
+
+    public function update(Request $request, $id)
+    {
+        $hki = LuaranHkiPaten::where('id', $id)
+                    ->where('prodi_id', auth()->user()->prodi_id)
+                    ->firstOrFail();
+
+        $validated = $request->validate([
+            'judul_luaran' => 'required|string',
+            'tanggal'      => 'required|date',
+            'nomor_paten'  => 'nullable|string',
+        ]);
+
+        $hki->update($validated);
+
+        return redirect()->route('luaran_hki_paten.index')->with('success', 'Data HKI Paten berhasil diperbarui!');
     }
 
     public function destroy($id)
     {
-        LuaranHkiPaten::findOrFail($id)->delete();
-        return redirect('/dashboard')->with('success', 'Data HKI Paten berhasil dihapus!');
+        $hki = LuaranHkiPaten::where('id', $id)
+                    ->where('prodi_id', auth()->user()->prodi_id)
+                    ->firstOrFail();
+                    
+        $hki->delete();
+        
+        return redirect()->back()->with('success', 'Data HKI Paten berhasil dihapus!');
     }
 }

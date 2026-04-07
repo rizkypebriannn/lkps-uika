@@ -43,9 +43,10 @@
                         </div>
                     </div>
 
-                    <button type="submit" class="btn btn-primary w-100 py-3 rounded-pill shadow-sm fw-bold">
-                        <i class="bi bi-save me-2"></i>SIMPAN DATA
-                    </button>
+                    <button type="submit" class="btn btn-primary w-100 py-3 rounded-pill shadow-sm fw-bold"
+        onclick="this.disabled=true; this.innerHTML='<span class=\'spinner-border spinner-border-sm me-2\'></span>Menyimpan...'; this.form.submit();">
+    <i class="bi bi-save me-2"></i>SIMPAN DATA
+</button>
                 </form>
             </div>
             
@@ -60,7 +61,7 @@
                                 <th class="text-start">Fungsi</th>
                                 <th class="text-center">Jumlah Unit</th>
                                 <th>Kondisi</th>
-                                <th>Hapus</th>
+                                <th>Aksi</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -72,10 +73,15 @@
                                 <td class="text-center">{{ $item->jumlah_unit }}</td>
                                 <td><span class="badge {{ $item->kondisi == 'Terawat' ? 'bg-success' : 'bg-danger' }}">{{ $item->kondisi }}</span></td>
                                 <td>
-                                    <form action="{{ route('fasilitas_k3l.destroy', $item->id) }}" method="POST">
-                                        @csrf @method('DELETE')
-                                        <button type="submit" class="btn btn-sm text-danger"><i class="bi bi-trash-fill"></i></button>
-                                    </form>
+                                    <div class="d-flex justify-content-center gap-2">
+                                        <a href="{{ route('fasilitas_k3l.edit', $item->id) }}" class="btn btn-sm text-warning p-0" title="Edit">
+                                            <i class="bi bi-pencil-fill"></i>
+                                        </a>
+                                        <form action="{{ route('fasilitas_k3l.destroy', $item->id) }}" method="POST" onsubmit="return confirm('Yakin ingin menghapus data ini?');">
+                                            @csrf @method('DELETE')
+                                            <button type="submit" class="btn btn-sm text-danger p-0" title="Hapus"><i class="bi bi-trash-fill"></i></button>
+                                        </form>
+                                    </div>
                                 </td>
                             </tr>
                             @endforeach

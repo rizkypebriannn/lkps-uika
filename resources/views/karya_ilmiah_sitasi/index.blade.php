@@ -36,9 +36,10 @@
                         <textarea name="judul_artikel" class="form-control rounded-3" rows="3" placeholder="Contoh: Jurnal/Buku/Prosiding, Volume, Tahun, Nomor, Halaman..." required></textarea>
                     </div>
 
-                    <button type="submit" class="btn btn-primary w-100 py-3 rounded-pill shadow-sm fw-bold">
-                        <i class="bi bi-save me-2"></i>SIMPAN DATA
-                    </button>
+                                <button type="submit" class="btn btn-primary w-100 py-3 rounded-pill shadow-sm fw-bold"
+                        onclick="this.disabled=true; this.innerHTML='<span class=\'spinner-border spinner-border-sm me-2\'></span>Menyimpan...'; this.form.submit();">
+                    <i class="bi bi-save me-2"></i>SIMPAN DATA
+                </button>
                 </form>
             </div>
             
@@ -52,7 +53,7 @@
                                 <th style="width: 20%;">Nama DTPS</th>
                                 <th class="text-start" style="width: 50%;">Judul Artikel yang Disitasi</th>
                                 <th class="text-center">Jumlah Sitasi</th>
-                                <th>Hapus</th>
+                                <th>Aksi</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -63,10 +64,15 @@
                                 <td class="text-start" style="font-size: 0.85rem; white-space: normal;">{{ $item->judul_artikel }}</td>
                                 <td class="text-center fw-bold text-primary">{{ $item->jumlah_sitasi }}</td>
                                 <td>
-                                    <form action="{{ route('karya_ilmiah_sitasi.destroy', $item->id) }}" method="POST">
-                                        @csrf @method('DELETE')
-                                        <button type="submit" class="btn btn-sm text-danger"><i class="bi bi-trash-fill"></i></button>
-                                    </form>
+                                    <div class="d-flex justify-content-center gap-2">
+                                        <a href="{{ route('karya_ilmiah_sitasi.edit', $item->id) }}" class="btn btn-sm text-warning p-0" title="Edit">
+                                            <i class="bi bi-pencil-fill"></i>
+                                        </a>
+                                        <form action="{{ route('karya_ilmiah_sitasi.destroy', $item->id) }}" method="POST" onsubmit="return confirm('Yakin ingin menghapus data ini?');">
+                                            @csrf @method('DELETE')
+                                            <button type="submit" class="btn btn-sm text-danger p-0" title="Hapus"><i class="bi bi-trash-fill"></i></button>
+                                        </form>
+                                    </div>
                                 </td>
                             </tr>
                             @endforeach

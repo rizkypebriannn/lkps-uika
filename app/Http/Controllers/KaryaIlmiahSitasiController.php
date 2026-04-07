@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\KaryaIlmiahSitasi; // <--- PENTING: Anti Class Not Found
+use App\Models\KaryaIlmiahSitasi;
 use Illuminate\Http\Request;
 
 class KaryaIlmiahSitasiController extends Controller
@@ -15,18 +15,53 @@ class KaryaIlmiahSitasiController extends Controller
 
     public function store(Request $request)
     {
-        $data = $request->all();
-        $data['prodi_id'] = auth()->user()->prodi_id; 
+        $validated = $request->validate([
+            'nama_dtps'     => 'required|string',
+            'jumlah_sitasi' => 'required|numeric|min:0',
+            'judul_artikel' => 'required|string',
+        ]);
 
-        KaryaIlmiahSitasi::create($data);
+        $validated['prodi_id'] = auth()->user()->prodi_id; 
+
+        KaryaIlmiahSitasi::create($validated);
         
-        // Auto-Redirect ke Dashboard
-        return redirect('/dashboard')->with('success', 'Data Sitasi Karya Ilmiah berhasil disimpan!');
+        return redirect()->back()->with('success', 'Data Sitasi Karya Ilmiah berhasil disimpan!');
+    }
+
+    public function edit($id)
+    {
+        $sitasi = KaryaIlmiahSitasi::where('id', $id)
+                    ->where('prodi_id', auth()->user()->prodi_id)
+                    ->firstOrFail();
+                    
+        return view('karya_ilmiah_sitasi.edit', compact('sitasi'));
+    }
+
+    public function update(Request $request, $id)
+    {
+        $sitasi = KaryaIlmiahSitasi::where('id', $id)
+                    ->where('prodi_id', auth()->user()->prodi_id)
+                    ->firstOrFail();
+
+        $validated = $request->validate([
+            'nama_dtps'     => 'required|string',
+            'jumlah_sitasi' => 'required|numeric|min:0',
+            'judul_artikel' => 'required|string',
+        ]);
+
+        $sitasi->update($validated);
+
+        return redirect()->route('karya_ilmiah_sitasi.index')->with('success', 'Data Sitasi Karya Ilmiah berhasil diperbarui!');
     }
 
     public function destroy($id)
     {
-        KaryaIlmiahSitasi::findOrFail($id)->delete();
-        return redirect('/dashboard')->with('success', 'Data Sitasi berhasil dihapus!');
+        $sitasi = KaryaIlmiahSitasi::where('id', $id)
+                    ->where('prodi_id', auth()->user()->prodi_id)
+                    ->firstOrFail();
+                    
+        $sitasi->delete();
+        
+        return redirect()->back()->with('success', 'Data Sitasi berhasil dihapus!');
     }
 }

@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\ProdukJasaDtps; // <--- DIJAMIN AMAN
+use App\Models\ProdukJasaDtps; 
 use Illuminate\Http\Request;
 
 class ProdukJasaDtpsController extends Controller
@@ -15,18 +15,59 @@ class ProdukJasaDtpsController extends Controller
 
     public function store(Request $request)
     {
-        $data = $request->all();
-        $data['prodi_id'] = auth()->user()->prodi_id; 
+        // Validasi data untuk mencegah null/error
+        $validated = $request->validate([
+            'nama_dtps'        => 'required|string',
+            'nama_produk'      => 'required|string',
+            'deskripsi_produk' => 'required|string',
+            'bukti'            => 'required|string',
+        ]);
 
-        ProdukJasaDtps::create($data);
+        $validated['prodi_id'] = auth()->user()->prodi_id; 
+
+        ProdukJasaDtps::create($validated);
         
-        // Auto-Redirect ke Dashboard
-        return redirect('/dashboard')->with('success', 'Data Produk/Jasa DTPS berhasil disimpan!');
+        // Tetap di halaman index
+        return redirect()->back()->with('success', 'Data Produk/Jasa DTPS berhasil disimpan!');
+    }
+
+    public function edit($id)
+    {
+        $produk = ProdukJasaDtps::where('id', $id)
+                    ->where('prodi_id', auth()->user()->prodi_id)
+                    ->firstOrFail();
+                    
+        return view('produk_jasa_dtps.edit', compact('produk'));
+    }
+
+    public function update(Request $request, $id)
+    {
+        $produk = ProdukJasaDtps::where('id', $id)
+                    ->where('prodi_id', auth()->user()->prodi_id)
+                    ->firstOrFail();
+
+        $validated = $request->validate([
+            'nama_dtps'        => 'required|string',
+            'nama_produk'      => 'required|string',
+            'deskripsi_produk' => 'required|string',
+            'bukti'            => 'required|string',
+        ]);
+
+        $produk->update($validated);
+
+        // Setelah update selesai, kembali ke tabel index
+        return redirect()->route('produk_jasa_dtps.index')->with('success', 'Data Produk/Jasa DTPS berhasil diperbarui!');
     }
 
     public function destroy($id)
     {
-        ProdukJasaDtps::findOrFail($id)->delete();
-        return redirect('/dashboard')->with('success', 'Data berhasil dihapus!');
+        $produk = ProdukJasaDtps::where('id', $id)
+                    ->where('prodi_id', auth()->user()->prodi_id)
+                    ->firstOrFail();
+                    
+        $produk->delete();
+        
+        // Tetap di halaman index
+        return redirect()->back()->with('success', 'Data Produk/Jasa DTPS berhasil dihapus!');
     }
 }

@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\KinerjaDtps; // <--- DIJAMIN AMAN
+use App\Models\KinerjaDtps; 
 use Illuminate\Http\Request;
 
 class KinerjaDtpsController extends Controller
@@ -15,21 +15,63 @@ class KinerjaDtpsController extends Controller
 
     public function store(Request $request)
     {
-        $data = $request->all();
-        $data['prodi_id'] = auth()->user()->prodi_id; 
+        $validated = $request->validate([
+            'nama_dtps'  => 'required|string',
+            'jumlah_ts2' => 'required|numeric',
+            'jumlah_ts1' => 'required|numeric',
+            'jumlah_ts'  => 'required|numeric',
+            'keterangan' => 'nullable|string',
+        ]);
+
+        $validated['prodi_id'] = auth()->user()->prodi_id; 
         
         // Auto-kalkulasi Jumlah Publikasi
-        $data['jumlah_publikasi'] = $data['jumlah_ts2'] + $data['jumlah_ts1'] + $data['jumlah_ts'];
+        $validated['jumlah_publikasi'] = $validated['jumlah_ts2'] + $validated['jumlah_ts1'] + $validated['jumlah_ts'];
 
-        KinerjaDtps::create($data);
+        KinerjaDtps::create($validated);
         
-        // Auto-Redirect ke Dashboard
-        return redirect('/dashboard')->with('success', 'Data Kinerja DTPS berhasil disimpan!');
+        return redirect()->back()->with('success', 'Data Kinerja DTPS berhasil disimpan!');
+    }
+
+    public function edit($id)
+    {
+        $kinerja = KinerjaDtps::where('id', $id)
+                    ->where('prodi_id', auth()->user()->prodi_id)
+                    ->firstOrFail();
+                    
+        return view('kinerja_dtps.edit', compact('kinerja'));
+    }
+
+    public function update(Request $request, $id)
+    {
+        $kinerja = KinerjaDtps::where('id', $id)
+                    ->where('prodi_id', auth()->user()->prodi_id)
+                    ->firstOrFail();
+
+        $validated = $request->validate([
+            'nama_dtps'  => 'required|string',
+            'jumlah_ts2' => 'required|numeric',
+            'jumlah_ts1' => 'required|numeric',
+            'jumlah_ts'  => 'required|numeric',
+            'keterangan' => 'nullable|string',
+        ]);
+
+        // Auto-kalkulasi ulang saat di-update
+        $validated['jumlah_publikasi'] = $validated['jumlah_ts2'] + $validated['jumlah_ts1'] + $validated['jumlah_ts'];
+
+        $kinerja->update($validated);
+
+        return redirect()->route('kinerja_dtps.index')->with('success', 'Data Kinerja DTPS berhasil diperbarui!');
     }
 
     public function destroy($id)
     {
-        KinerjaDtps::findOrFail($id)->delete();
-        return redirect('/dashboard')->with('success', 'Data berhasil dihapus!');
+        $kinerja = KinerjaDtps::where('id', $id)
+                    ->where('prodi_id', auth()->user()->prodi_id)
+                    ->firstOrFail();
+                    
+        $kinerja->delete();
+        
+        return redirect()->back()->with('success', 'Data berhasil dihapus!');
     }
 }

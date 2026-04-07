@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\DokumenK3l; // <--- PENTING: Anti Class Not Found
+use App\Models\DokumenK3l;
 use Illuminate\Http\Request;
 
 class DokumenK3lController extends Controller
@@ -15,17 +15,53 @@ class DokumenK3lController extends Controller
 
     public function store(Request $request)
     {
-        $data = $request->all();
-        $data['prodi_id'] = auth()->user()->prodi_id; 
+        $validated = $request->validate([
+            'jenis_dokumen'      => 'required|string',
+            'jumlah'             => 'required|numeric|min:1',
+            'riwayat_pengesahan' => 'required|string',
+        ]);
 
-        DokumenK3l::create($data);
+        $validated['prodi_id'] = auth()->user()->prodi_id; 
+
+        DokumenK3l::create($validated);
         
-        return redirect('/dashboard')->with('success', 'Data Dokumen K3L berhasil disimpan!');
+        return redirect()->back()->with('success', 'Data Dokumen K3L berhasil disimpan!');
+    }
+
+    public function edit($id)
+    {
+        $dokumen = DokumenK3l::where('id', $id)
+                        ->where('prodi_id', auth()->user()->prodi_id)
+                        ->firstOrFail();
+                        
+        return view('dokumen_k3l.edit', compact('dokumen'));
+    }
+
+    public function update(Request $request, $id)
+    {
+        $dokumen = DokumenK3l::where('id', $id)
+                        ->where('prodi_id', auth()->user()->prodi_id)
+                        ->firstOrFail();
+
+        $validated = $request->validate([
+            'jenis_dokumen'      => 'required|string',
+            'jumlah'             => 'required|numeric|min:1',
+            'riwayat_pengesahan' => 'required|string',
+        ]);
+
+        $dokumen->update($validated);
+
+        return redirect()->route('dokumen_k3l.index')->with('success', 'Data Dokumen K3L berhasil diperbarui!');
     }
 
     public function destroy($id)
     {
-        DokumenK3l::findOrFail($id)->delete();
-        return redirect('/dashboard')->with('success', 'Data berhasil dihapus!');
+        $dokumen = DokumenK3l::where('id', $id)
+                        ->where('prodi_id', auth()->user()->prodi_id)
+                        ->firstOrFail();
+                        
+        $dokumen->delete();
+        
+        return redirect()->back()->with('success', 'Data berhasil dihapus!');
     }
 }

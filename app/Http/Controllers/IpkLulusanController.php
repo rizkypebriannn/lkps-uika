@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\IpkLulusan; // <--- PENTING
+use App\Models\IpkLulusan;
 use Illuminate\Http\Request;
 
 class IpkLulusanController extends Controller
@@ -18,8 +18,15 @@ class IpkLulusanController extends Controller
 
     public function store(Request $request)
     {
-        $data = $request->all();
-        $data['prodi_id'] = auth()->user()->prodi_id; 
+        $validated = $request->validate([
+            'tahun_lulus'    => 'required|in:TS-2,TS-1,TS',
+            'jumlah_lulusan' => 'required|numeric|min:0',
+            'ipk_min'        => 'required|numeric|min:0|max:4',
+            'ipk_rata'       => 'required|numeric|min:0|max:4',
+            'ipk_maks'       => 'required|numeric|min:0|max:4',
+        ]);
+
+        $validated['prodi_id'] = auth()->user()->prodi_id; 
 
         // Cek apakah tahun lulus tersebut sudah diinput sebelumnya untuk prodi ini
         $existing = IpkLulusan::where('prodi_id', auth()->user()->prodi_id)
@@ -27,18 +34,49 @@ class IpkLulusanController extends Controller
                               ->first();
 
         if ($existing) {
-            // Jika sudah ada, kita update nilainya agar tidak double row
-            $existing->update($data);
-            return redirect('/dashboard')->with('success', 'Data IPK ' . $request->tahun_lulus . ' berhasil diperbarui!');
+            $existing->update($validated);
+            return redirect()->back()->with('success', 'Data IPK ' . $request->tahun_lulus . ' berhasil diperbarui!');
         }
 
-        IpkLulusan::create($data);
-        return redirect('/dashboard')->with('success', 'Data IPK Lulusan berhasil disimpan!');
+        IpkLulusan::create($validated);
+        return redirect()->back()->with('success', 'Data IPK Lulusan berhasil disimpan!');
+    }
+
+    public function edit($id)
+    {
+        $ipk = IpkLulusan::where('id', $id)
+                    ->where('prodi_id', auth()->user()->prodi_id)
+                    ->firstOrFail();
+                    
+        return view('ipk_lulusan.edit', compact('ipk'));
+    }
+
+    public function update(Request $request, $id)
+    {
+        $ipk = IpkLulusan::where('id', $id)
+                    ->where('prodi_id', auth()->user()->prodi_id)
+                    ->firstOrFail();
+
+        $validated = $request->validate([
+            'jumlah_lulusan' => 'required|numeric|min:0',
+            'ipk_min'        => 'required|numeric|min:0|max:4',
+            'ipk_rata'       => 'required|numeric|min:0|max:4',
+            'ipk_maks'       => 'required|numeric|min:0|max:4',
+        ]);
+
+        $ipk->update($validated);
+
+        return redirect()->route('ipk_lulusan.index')->with('success', 'Data IPK Lulusan berhasil diperbarui!');
     }
 
     public function destroy($id)
     {
-        IpkLulusan::findOrFail($id)->delete();
-        return redirect('/dashboard')->with('success', 'Data berhasil dihapus!');
+        $ipk = IpkLulusan::where('id', $id)
+                    ->where('prodi_id', auth()->user()->prodi_id)
+                    ->firstOrFail();
+                    
+        $ipk->delete();
+        
+        return redirect()->back()->with('success', 'Data berhasil dihapus!');
     }
 }

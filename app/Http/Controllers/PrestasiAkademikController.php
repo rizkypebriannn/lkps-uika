@@ -17,17 +17,55 @@ class PrestasiAkademikController extends Controller
 
     public function store(Request $request)
     {
-        $data = $request->all();
-        $data['prodi_id'] = auth()->user()->prodi_id; 
+        $validated = $request->validate([
+            'nama_kegiatan'    => 'required|string',
+            'waktu_perolehan'  => 'required|date',
+            'tingkat'          => 'required|in:Lokal/Wilayah,Nasional,Internasional',
+            'prestasi_dicapai' => 'required|string',
+        ]);
 
-        PrestasiAkademik::create($data);
+        $validated['prodi_id'] = auth()->user()->prodi_id; 
+
+        PrestasiAkademik::create($validated);
         
-        return redirect('/dashboard')->with('success', 'Data Prestasi Akademik berhasil disimpan!');
+        return redirect()->back()->with('success', 'Data Prestasi Akademik berhasil disimpan!');
+    }
+
+    public function edit($id)
+    {
+        $prestasi = PrestasiAkademik::where('id', $id)
+                        ->where('prodi_id', auth()->user()->prodi_id)
+                        ->firstOrFail();
+                        
+        return view('prestasi_akademik.edit', compact('prestasi'));
+    }
+
+    public function update(Request $request, $id)
+    {
+        $prestasi = PrestasiAkademik::where('id', $id)
+                        ->where('prodi_id', auth()->user()->prodi_id)
+                        ->firstOrFail();
+
+        $validated = $request->validate([
+            'nama_kegiatan'    => 'required|string',
+            'waktu_perolehan'  => 'required|date',
+            'tingkat'          => 'required|in:Lokal/Wilayah,Nasional,Internasional',
+            'prestasi_dicapai' => 'required|string',
+        ]);
+
+        $prestasi->update($validated);
+
+        return redirect()->route('prestasi_akademik.index')->with('success', 'Data Prestasi Akademik berhasil diperbarui!');
     }
 
     public function destroy($id)
     {
-        PrestasiAkademik::findOrFail($id)->delete();
-        return redirect('/dashboard')->with('success', 'Data berhasil dihapus!');
+        $prestasi = PrestasiAkademik::where('id', $id)
+                        ->where('prodi_id', auth()->user()->prodi_id)
+                        ->firstOrFail();
+                        
+        $prestasi->delete();
+        
+        return redirect()->back()->with('success', 'Data berhasil dihapus!');
     }
 }
